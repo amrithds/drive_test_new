@@ -1,0 +1,94 @@
+<div id="detailsDiv" class="detailsDiv button_content button_1">
+    <form action="" method="post" class="form-inline ng-pristine ng-valid">
+
+        <section>
+        <div class="form-group marginBottom">    
+            <h3>Course ID:</h3>
+                    <input type="text" class="form-control" placeholder="Course Ser.no" name="courseId" id="courseId">
+                <section>
+                <label>Select Drive Mode</label>
+                <select class="form-control" id="selDriveMode" name="driveMode">
+                SELECT DRIVE MODE 
+                
+                <option value="T">EVALUATE</option>
+                <option value="L">TRAINING</option></section>
+            </select>
+            </div>
+            </section>
+
+            <section>
+            <h3>Instructor</h3>
+            <div class="form-group marginBottom">
+                    <label for="trainerId">Army No:</label>
+                    <input type="text" class="form-control" placeholder="Army No / Sl.no" onchange="gettrainerdetails()" name="trainerId" id="trainerId">
+            </div>
+            <div class="form-group marginBottom">
+                    <label for="trainerName">Name:</label>
+                    <input type="text" class="form-control" placeholder="Name" name="trainerName" id="trainerName">
+            </div>
+            <div class="form-group marginBottom">
+                    <label for="trainerRank">Rank:</label>
+                    <select class="form-control" id="selTrainerRank" name="trainerRank">
+                        <option value="Select one ">Select one </option>								
+                    <option value="L Nk">L Nk</option>
+                    <option value="Nk">Nk</option>
+                    <option value="L Hav">L Hav</option>
+                    <option value="Hav">Hav</option>
+                    <option value="Nb Sub">Nb Sub</option>
+                    <option value="Sub">Sub</option>
+                    <option value="Sub Maj">Sub Maj</option>
+                    <option value="Lt">Lt</option>
+                    <option value="Maj">Maj</option>
+                    <option value="Capt">Capt</option>
+                    <option value="Lt Col">Lt Col</option>
+                </select>
+            </div>
+            <div class="form-group marginBottom">
+                    <label for="TrainerUnit">Unit:</label>
+                    <input type="text" class="form-control" placeholder="Unit" name="TrainerUnit" id="TrainerUnit">
+            </div>
+        </section>
+
+        <section>
+            <h3>Driver</h3>
+            <div id="driver" class="form-group marginBottom">
+                    <label for="traineeId">Army No:</label>
+                    <input type="text" class="form-control" placeholder="Army No / Sl.no" onchange="gettraineedetails()" name="traineeId" id="traineeId">
+            </div>
+            <div class="form-group marginBottom">
+                    <label for="traineeName">Name:</label>
+                    <input type="text" class="form-control" placeholder="Name" name="traineeName" id="TraineeName">
+            </div>
+            
+            <div class="form-group marginBottom">
+                    <label for="traineeRank">Rank:</label>
+                    <select class="form-control" id="selTraineeRank" name="traineeRank">
+                    <option value="Select one ">Select one </option>
+                    <option value="Rect">Rect</option>
+                    <option value="SEP">SEP</option>
+                    <option value="L Nk">L Nk</option>
+                    <option value="Nk">Nk</option>
+                    <option value="L Hav">L Hav</option>
+                    <option value="Hav">Hav</option>
+                    <option value="Nb Sub">Nb Sub</option>
+                    <option value="Sub">Sub</option>
+                    <option value="Sub Maj">Sub Maj</option>
+                    <option value="Lt">Lt</option>
+                    <option value="Maj">Maj</option>
+                    <option value="Capt">Capt</option>
+                    <option value="Lt Col">Lt Col</option>
+                </select>
+            </div>
+            <div class="form-group marginBottom">
+                    <label for="TraineeUnit">Unit:</label>
+                    <input type="text" class="form-control" placeholder="Unit" id="TraineeUnit" name="traineeUnit">
+            </div>
+            <br><br>   
+            <div class="text-center">
+                <button type="button" class="btn btn-info customClassStartSession" onclick="continueToTest()">Start Session</button>
+            </div>
+            
+        </section> 
+        
+    </form>
+</div>  

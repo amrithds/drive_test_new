@@ -1,0 +1,369 @@
+
+
+.col-12 {
+    overflow: auto; /* Enable scrolling if the content is too wide */
+}
+.col-12 {
+    z-index: 1000; /* Increase the z-index to bring the element to the front */
+}
+.col-12, .col-12 * {
+    max-width: 100%; /* Ensure that the content does not exceed the viewport width */
+}
+#detailsDiv, #viewreport, #allreport, #adduser, #contact {
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 80%; /* Adjust the width as needed */
+    padding: 20px;
+    background-color: #fafafa;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    max-width: 1200px;
+    margin: 0 auto;
+    z-index: 5px;
+}
+
+#viewreport form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#viewreport .form-control{
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+}
+
+#viewreport .form-label {
+    font-weight: bold;
+    margin-bottom: 5px; /*Space below the label */
+}
+
+#finalReportDiv{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+#allreport form{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+#allreport .form-control{
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+}
+
+#allreport .form-label {
+    font-weight: bold;
+    margin-bottom: 5px; /* Space below the label */
+}
+
+/* Style the body for detailsDiv */
+#detailsDiv {
+    padding: 20px; /* Add some padding */
+    z-index: 2000;
+}
+
+/* Style the body for detailsDiv */
+#detailsDiv {
+    width: 80%;
+    padding: 20px; /* Add some padding */
+    background-color: #fafafa; /* White background */
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    max-width: 1200px; /* Set a maximum width for the content */
+    margin: 0 auto; /* Center the content horizontally */
+    z-index: 5;
+}
+
+.form-group {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+ #detailsDiv form {
+    display: flex;
+    flex-direction: row;
+    gap: 10px; 
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+} 
+
+#detailsDiv .input-gap {
+    margin-bottom: 10px; /* Adjust the gap size as needed */
+}
+/* Style the form inputs */
+#detailsDiv .form-control {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ced4da; /* Light grey border */
+    margin-bottom: 10px;
+
+}
+
+/* Style the form labels */
+#detailsDiv .form-label {
+    font-weight: bold;
+    margin-bottom: 5px; /* Space below the label */
+}
+
+#adduser .table {
+    max-width: 80%; /* Adjust the percentage as needed */
+    margin: 0 auto; /* Center the table horizontally */
+    table-layout: auto; 
+}
+#adduser .table th, #adduser .table td {
+    max-width: 200px;
+    word-wrap: break-word; /* Allow text to wrap within the cell */
+}
+#adduser .table-responsive {
+    overflow-x: auto; /* Enable horizontal scrolling */
+}
+
+#adduser .form-group {
+    display: flex;
+    justify-content: flex-start; /* This will space the fields evenly across the container */
+    align-items: center; /* This will align the fields vertically in the center */
+}
+
+#adduser {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow: auto;
+}
+#adduser form{
+    display: flex;
+    flex-direction: row;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#adduser .form-control {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ced4da; /* Light grey border */
+}
+
+/* Style the form labels */
+#adduser .form-label {
+    font-weight: bold;
+    margin-bottom: 5px; /* Space below the label */
+}
+#adduser .form-group label {
+    margin-right: 5px; /* Adjust the margin as needed */
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 120px;
+    font-size: 14px;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+    background-color: #fafafa; 
+    box-shadow: 0 4px 8px 0 rgba(59, 59, 59, 0.2), 0 6px 20px 0 rgba(59,59,59,0.2);
+}
+.header-logo{
+    width: 100px; /* Adjust as needed */
+    height: auto;
+}
+.header-content {
+    text-align: center;
+}
+.header-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+}
+.header-content h3 {
+    font-size: 18px; /* Adjusted font size for readability */
+}
+.header-content p {
+    font-size: 14px; /* Adjusted font size for readability */
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-right: 10px; 
+    margin-left: 20px;
+    gap: 20px;
+}
+.btn-square-md {
+    background-color: #32a2c7;
+    cursor: pointer;
+    width: 75px !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    height: 75px !important;
+    text-align: center;
+    padding: 5px 10px;
+    font-size:10px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    border: none;
+    color: white;
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19); 
+    font-weight: bold; 
+    }
+    .btn-square-md:hover {
+        background-color: #3B71CA; /* Dark blue background on hover */
+        transform: scale(1.1); /* Scale up on hover */
+        color: white;
+    } 
+
+    .center-logo-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        width: 50px;
+    }
+
+    .input-container {
+        display: flex;
+        flex-wrap: wrap; /* Allows the items to wrap onto multiple lines */
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .input-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 10px;
+        grid-auto-flow: row; /* Ensures items flow in rows and wrap to a new line */
+    }
+
+    .input-field {
+        white-space: normal; /* Allows the text to wrap within the input field */
+    }
+
+  
+/* Ensure the header spans 100% of the width */
+
+.container-fluid {
+    display: flex;
+    flex-wrap: wrap;
+    overflow: auto;
+}
+
+.container-fluid .row:first-child {
+    width: 100%;
+}
+
+/* Adjust the layout for the buttons and form */
+.container-fluid .row:nth-child(2) {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* Style the buttons */
+.container-fluid .row:nth-child(2) .col-md-3 {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Style the form */
+.container-fluid .row:nth-child(2) .col-md-6 {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.footer {
+    position: fixed;
+    text-align: center;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f0f0f0;
+    box-shadow: 0px -5px 15px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow */
+    z-index: 10;
+}
+
+.container {
+    max-width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+    padding: 20px; 
+}
+
+#mainButtonsDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Aligns items to the left */
+    padding: 20px; /* Add some padding */
+}
+
+/* Custom styles for the special button */
+.customClassStartSession {
+    background-color: #32a2c7; /* Blue background */
+    border-color: #32a2c7; /* Blue border */
+    color: #fff; /* White text */
+    font-weight: bold; /* Bold text */
+    padding: 10px 20px; /* Increased padding */
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition */
+}
+
+/* Hover effect for the special button */
+.customClassStartSession:hover {
+    background-color: #3B71CA; /* Darker blue background on hover */
+    transform: scale(1.05); /* Slightly scale up on hover */
+}
+
+.no-bullets {
+    list-style-type: none;
+}
+
+
+.table-bordered {
+    border: 1px solid #ddd;
+}
+
+.table {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 20px;
+    background-color: transparent;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+/* Table */
+.table {
+    display: table;
+    /* border-collapse: separate;
+    box-sizing: border-box; */
+    text-indent: initial;
+    line-height: normal;
+    font-weight: normal;
+    font-size: medium;
+    font-style: normal;
+    color: -internal-quirk-inherit;
+    text-align: start;
+    /* border-spacing: 2px;
+    border-color: gray; */
+    white-space: normal;
+    font-variant: normal;
+}
+

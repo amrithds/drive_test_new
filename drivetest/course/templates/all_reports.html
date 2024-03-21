@@ -1,0 +1,25 @@
+<div id="allreport" class="allreport button_content button_3">
+
+    <div id="finalReportDiv">
+        <section>
+        <div class="viewReportDivClass" id="course_form_div" style="display: block;">
+            <form action="" method="post" id="course_form_id" class="ng-pristine ng-valid">
+                <div class="form-group">
+                  <h3><label for="trainee_id_report">Course Id</label></h3>
+                  <input type="text" class="form-control ng-pristine ng-valid ng-empty ng-touched" ng-model="courseIdobj" id="course_id_report" placeholder="Course id" name="course_id_report"></section>
+                  
+                  <section>
+                  <h3><label for="from_date">From Date</label></h3>
+                  <input ng-model="from_date" type="Date" class="form-control ng-pristine ng-untouched ng-valid ng-empty" data-provide="datepicker" id="from_date" placeholder="Select Date" name="from_date"></section>
+
+                  <section>
+                  <h3><label for="to_date">To Date</label></h3>
+                  <input ng-model="to_date" type="Date" class="form-control ng-pristine ng-untouched ng-valid ng-empty" data-provide="datepicker" id="to_date" placeholder="Select Date" name="to_date"></section>
+                </div>
+               
+                <br><br>
+                <div class="text-center">
+                    <button type="button" class="btn btn-info customClassStartSession" onclick="getReport()">Submit</button>
+                </div>
+             </form>
+        </div>

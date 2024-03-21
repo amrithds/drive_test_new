@@ -1,0 +1,97 @@
+{% load static %}
+<div id="adduser" class="adduser button_content button_4">
+    <div class="container input-container">
+            <div class="table-responsive ng-scope " ng-app="myApp" ng-controller="crudController" ng-init="fetchData()">      
+                <div class="form-group ">
+                    <label><strong>Select</strong> </label>
+
+                        <div class="col-md-5">
+                            <select class="form-control ng-valid ng-valid-required ng-touched ng-dirty ng-valid-parse" ng-model="addData.trainee_instructor" ng-change="chooseOption()" ng-required="true" name="traineeRank" required="required">                                
+                            <option value="T">Driver</option>
+                            <option value="I">Instructor</option>
+                            </select>
+                        </div>
+                        <label> <strong>Course Id</strong></label>
+                    <div class="col-md-4 ">
+                        
+                        <!-- ngIf: courseIdOption -->
+                     <!-- end ngIf: courseIdOption -->
+                        <div class="col-md-5" ng-show="courseIdOption">
+                            <input type="text" class="form-control ng-pristine ng-untouched ng-valid" ng-change="fetchAutoChange()" placeholder="Course Id" ng-model="addData.course">
+                        </div>
+                    </div> 
+                    <div class="col-md-4 ">
+                        <div class="inner-addon right-addon">
+                            <i class="glyphicon glyphicon-search"></i>
+                            <input type="text" class="form-control ng-pristine ng-untouched ng-valid" placeholder="Search Army No..." ng-model="search.armyno">
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="form-group">
+                    <div class="col-md-8"></div>  
+                </div>
+
+                <div>
+                    <table class="table table-bordered table-condensed table-striped">
+                        <thead>
+                        <tr style="background-color:lightgray;">
+                            <th width="20%">S.No</th>
+                            <th>Armyno</th>
+                            <th>RANK</th>
+                            <th>NAME</th>                    
+                            <th>Unit</th>               
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <input type="number" ng-model="addData.sl_no" ng-change="changeObj()" onkeypress="if(this.value.length==2) return false;" class="form-control ng-pristine ng-untouched ng-invalid ng-invalid-required" placeholder="Enter your slno" ng-required="true" required="required">
+                                </td>
+                                <td>
+                                    <input type="text" ng-model="addData.armyno" class="form-control ng-pristine ng-untouched ng-invalid ng-invalid-required" placeholder="Enter your armyno" ng-required="true" required="required">
+                                </td>                   
+                                <td>
+                                    <select class="form-control ng-pristine ng-untouched ng-invalid ng-invalid-required" ng-model="addData.rank" ng-required="true" name="traineeRank" required="required"><option value="? undefined:undefined ?"></option>
+                                              
+                                        <option value="Rect">Rect</option>
+                                        <option value="SEP">SEP</option>
+                                        <option value="L Nk">L Nk</option>
+                                        <option value="Nk">Nk</option>
+                                        <option value="L Hav">L Hav</option>
+                                        <option value="Hav">Hav</option>
+                                        <option value="Nb Sub">Nb Sub</option>
+                                        <option value="Sub">Sub</option>
+                                        <option value="Sub Maj">Sub Maj</option>
+                                        <option value="Lt">Lt</option>
+                                        <option value="Maj">Maj</option>
+                                        <option value="Capt">Capt</option>
+                                        <option value="Lt Col">Lt Col</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" ng-model="addData.name" class="form-control ng-pristine ng-untouched ng-invalid ng-invalid-required" placeholder="Enter your name" ng-required="true" required="required">
+                                </td>
+                                <td>
+                                    <input type="text" ng-model="addData.unit_name" class="form-control ng-pristine ng-untouched ng-invalid ng-invalid-required" placeholder="UNIT NAME" ng-required="true" required="required">
+                                </td>
+                                <td>
+                                    <button type="submit" class="btn-success btn-sm btn btn-info customClassStartSession center-logo-btn" ng-click="insertData()" ng-disabled="myform.$invalid"><em class="glyphicon glyphicon-plus"><img src="{% static 'img/icons8-plus-64.png' %}" alt="img"></em></button>
+
+        
+                                </td>
+                            </tr>
+                        <!-- ngRepeat: dataObjSorce in namesData|orderBy:columnName:reverse| filter:search | itemsPerPage:10 -->           
+                        </tbody>
+                    </table>
+                            <dir-pagination-controls class="pull-right ng-isolate-scope"><!-- ngIf: 1 < pages.length -->
+                            </dir-pagination-controls>
+                </div>
+                <br><br><br>          
+                <!-- <div class="alert alert-success alert-dismissible ng-binding ng-hide" ng-show="success">
+                    <a href="#" class="close" data-dismiss="alert" ng-click="closeMsg()" aria-label="close">×</a> 
+                </div> -->
+        </div>
+    </div>
+</div>
