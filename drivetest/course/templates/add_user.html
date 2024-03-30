@@ -6,9 +6,9 @@
                     <label><strong>Select</strong> </label>
 
                         <div class="col-md-5">
-                            <select class="form-control ng-valid ng-valid-required ng-touched ng-dirty ng-valid-parse" ng-model="addData.trainee_instructor" ng-change="chooseOption()" ng-required="true" name="traineeRank" required="required">                                
-                            <option value="T">Driver</option>
-                            <option value="I">Instructor</option>
+                            <select class="form-control ng-valid ng-valid-required ng-touched ng-dirty ng-valid-parse" ng-model="addData.trainee_instructor"  ng-required="true" id="type" required="required">                                
+                            <option value="1">Driver</option>
+                            <option value="2">Instructor</option>
                             </select>
                         </div>
                         <label> <strong>Course Id</strong></label>
@@ -17,15 +17,15 @@
                         <!-- ngIf: courseIdOption -->
                      <!-- end ngIf: courseIdOption -->
                         <div class="col-md-5" ng-show="courseIdOption">
-                            <input type="text" class="form-control ng-pristine ng-untouched ng-valid" ng-change="fetchAutoChange()" placeholder="Course Id" ng-model="addData.course">
+                            <input type="text" class="form-control ng-pristine ng-untouched ng-valid" placeholder="Course Id" id="course_id" name="course_id">
                         </div>
                     </div> 
-                    <div class="col-md-4 ">
+                    <!-- <div class="col-md-4 ">
                         <div class="inner-addon right-addon">
                             <i class="glyphicon glyphicon-search"></i>
-                            <input type="text" class="form-control ng-pristine ng-untouched ng-valid" placeholder="Search Army No..." ng-model="search.armyno">
+                            <input type="text" class="form-control ng-pristine ng-untouched ng-valid" placeholder="Search Army No...">
                         </div>
-                    </div>
+                    </div> -->
                 </div>
         
                 <div class="form-group">
@@ -33,28 +33,17 @@
                 </div>
 
                 <div>
-                    <table class="table table-bordered table-condensed table-striped">
-                        <thead>
-                        <tr style="background-color:lightgray;">
-                            <th width="20%">S.No</th>
-                            <th>Armyno</th>
-                            <th>RANK</th>
-                            <th>NAME</th>                    
-                            <th>Unit</th>               
-                            <th>Action</th>
-                        </tr>
-                        </thead>
+                    <table class="display nowrap" id="user_add_form">
                         <tbody>
                             <tr>
                                 <td>
-                                    <input type="number" ng-model="addData.sl_no" ng-change="changeObj()" onkeypress="if(this.value.length==2) return false;" class="form-control ng-pristine ng-untouched ng-invalid ng-invalid-required" placeholder="Enter your slno" ng-required="true" required="required">
+                                    <input type="number"  ng-change="changeObj()" onkeypress="if(this.value.length==2) return false;" class="form-control ng-pristine ng-untouched ng-invalid ng-invalid-required" placeholder="Enter your slno" ng-required="true" required="required" id="serial_number">
                                 </td>
                                 <td>
-                                    <input type="text" ng-model="addData.armyno" class="form-control ng-pristine ng-untouched ng-invalid ng-invalid-required" placeholder="Enter your armyno" ng-required="true" required="required">
+                                    <input type="text" class="form-control ng-pristine ng-untouched ng-invalid ng-invalid-required" placeholder="Enter your armyno" ng-required="true" required="required" id="unique_ref_id">
                                 </td>                   
                                 <td>
-                                    <select class="form-control ng-pristine ng-untouched ng-invalid ng-invalid-required" ng-model="addData.rank" ng-required="true" name="traineeRank" required="required"><option value="? undefined:undefined ?"></option>
-                                              
+                                    <select class="form-control ng-pristine ng-untouched ng-invalid ng-invalid-required" ng-model="addData.rank" ng-required="true" id="rank" required="required"><option value="? undefined:undefined ?"></option>    
                                         <option value="Rect">Rect</option>
                                         <option value="SEP">SEP</option>
                                         <option value="L Nk">L Nk</option>
@@ -71,27 +60,34 @@
                                     </select>
                                 </td>
                                 <td>
-                                    <input type="text" ng-model="addData.name" class="form-control ng-pristine ng-untouched ng-invalid ng-invalid-required" placeholder="Enter your name" ng-required="true" required="required">
+                                    <input type="text"  class="form-control ng-pristine ng-untouched ng-invalid ng-invalid-required" placeholder="Enter your name" ng-required="true" required="required" id="name">
                                 </td>
                                 <td>
-                                    <input type="text" ng-model="addData.unit_name" class="form-control ng-pristine ng-untouched ng-invalid ng-invalid-required" placeholder="UNIT NAME" ng-required="true" required="required">
+                                    <input type="text"  class="form-control ng-pristine ng-untouched ng-invalid ng-invalid-required" placeholder="UNIT NAME" ng-required="true" required="required" id="unit">
                                 </td>
                                 <td>
-                                    <button type="submit" class="btn-success btn-sm btn btn-info customClassStartSession center-logo-btn" ng-click="insertData()" ng-disabled="myform.$invalid"><em class="glyphicon glyphicon-plus"><img src="{% static 'img/icons8-plus-64.png' %}" alt="img"></em></button>
-
-        
+                                    <button type="submit" id="add_user_submit" class="btn-success btn-sm btn btn-info customClassStartSession center-logo-btn"><em class="glyphicon glyphicon-plus"><img src="{% static 'img/icons8-plus-64.png' %}" alt="img"></em></button>
                                 </td>
-                            </tr>
-                        <!-- ngRepeat: dataObjSorce in namesData|orderBy:columnName:reverse| filter:search | itemsPerPage:10 -->           
+                            </tr>         
                         </tbody>
                     </table>
-                            <dir-pagination-controls class="pull-right ng-isolate-scope"><!-- ngIf: 1 < pages.length -->
-                            </dir-pagination-controls>
-                </div>
-                <br><br><br>          
-                <!-- <div class="alert alert-success alert-dismissible ng-binding ng-hide" ng-show="success">
-                    <a href="#" class="close" data-dismiss="alert" ng-click="closeMsg()" aria-label="close">×</a> 
-                </div> -->
+                    <table class="display nowrap" id="user_list">
+                        <thead>
+                        <tr style="background-color:lightgray;">
+                            <th width="20%">Serial Number</th>
+                            <th>Army Number</th>
+                            <th>Rank</th>
+                            <th>Name</th>                    
+                            <th>Unit</th>               
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                                  <!-- user content -->
+                        </tbody>
+                    </table>
+
+                </div>        
         </div>
     </div>
 </div>

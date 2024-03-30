@@ -6,16 +6,28 @@ class User(BaseModel):
     id = models.AutoField(primary_key = True)
     name = models.CharField(max_length=100)
     unique_ref_id=models.CharField(max_length=100)
-    course_id=models.ForeignKey(Course, on_delete=models.CASCADE)
-    rank=models.CharField(max_length=50)
+    course=models.ForeignKey(Course, on_delete=models.CASCADE)
+    rank=models.CharField(max_length=50, choices=(
+            ("Rect" , "Rect"),
+            ("SEP" , "SEP"),
+            ("L Nk" , "L Nk"),
+            ("Nk" , "Nk"),
+            ("L Hav" , "L Hav"),
+            ("Hav" , "Hav"),
+            ("Nb Sub" , "Nb Sub"),
+            ("Sub" , "Sub"),
+            ("Sub Maj" , "Sub Maj"),
+            ("Lt" , "Lt"),
+            ("Maj" , "Maj"),
+            ("Capt" , "Capt"),
+            ("Lt Col" , "Lt Col"),
+        )
+    )
     unit=models.CharField(max_length=50)
     type=models.IntegerField(max_length=1, choices=(
             (1, "Driver"),
             (2, "Instructor")
-        ))
+        ), default=1)
 
     class Meta:
-        unique_together = ('course_id', 'unique_ref_id')
-
-
-    
+        unique_together = ('course', 'unique_ref_id')

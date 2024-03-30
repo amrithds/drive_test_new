@@ -6,3 +6,4 @@ from .obstacle_task_score import ObstacleTaskScore
 from .sensor_feed import SensorFeed
 from .track import Track
 from .user import User
+from .training import Training

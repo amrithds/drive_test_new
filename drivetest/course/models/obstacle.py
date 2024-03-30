@@ -10,6 +10,6 @@ class Obstacle(BaseModel):
     order = models.IntegerField()
     start_device_id = models.CharField(max_length=20, blank=False)
     end_device_id = models.CharField(max_length=20, blank=True)
-    audio_file= models.CharField(max_length=100)
+    audio_file= models.FileField(upload_to ='uploads/% Y/% m/% d/')
 
 
