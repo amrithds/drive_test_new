@@ -1,0 +1,25 @@
+from django.db import models
+from utils.model_util.base_model import BaseModel
+from .user import User
+
+class Session(BaseModel):
+    STATUS_IDEAL = 0
+    STATUS_IN_PROGRESS = 1
+    STATUS_COMPELETED = 2
+
+    MODE_CHOICES=(
+        (0, "Learning"),
+        (1, "Test")
+    )
+
+    id=models.AutoField(primary_key = True)
+    trainer_no = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='trainer_session_set')
+    trainee_no = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='trainee_session_set')
+    status=models.IntegerField(choices=(
+            (0, "Ideal"),
+            (1, "In progress"),
+            (2, "Completed"),
+        ), default=0)
+    mode=models.IntegerField(choices=MODE_CHOICES, default=0)
+
+    

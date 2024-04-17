@@ -24,10 +24,13 @@ class User(BaseModel):
         )
     )
     unit=models.CharField(max_length=50)
-    type=models.IntegerField(max_length=1, choices=(
+    type=models.IntegerField(choices=(
             (1, "Driver"),
             (2, "Instructor")
         ), default=1)
 
     class Meta:
         unique_together = ('course', 'unique_ref_id')
+    
+    def __str__(self) -> str:
+        return self.name

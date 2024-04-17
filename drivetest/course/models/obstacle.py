@@ -8,8 +8,11 @@ class Obstacle(BaseModel):
     name = models.CharField(max_length=100)
     is_mandatory = models.BooleanField(default=False)
     order = models.IntegerField()
-    start_device_id = models.CharField(max_length=20, blank=False)
-    end_device_id = models.CharField(max_length=20, blank=True)
-    audio_file= models.FileField(upload_to ='uploads/% Y/% m/% d/')
+    start_rf_id = models.CharField(max_length=20, blank=False)
+    end_rf_id = models.CharField(max_length=20, blank=True)
+    audio_file= models.FileField(upload_to ='uploads/', blank=True)
+
+    def __str__(self) -> str:
+        return f"{self.name} {self.track_id}"
 
 

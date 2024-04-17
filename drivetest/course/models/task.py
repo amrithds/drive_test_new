@@ -5,3 +5,6 @@ class Task(BaseModel):
     id = models.AutoField(primary_key = True)
     name = models.CharField(max_length=100,unique=True)
     sensor_id=models.IntegerField()
+
+    def __str__(self) -> str:
+        return self.name

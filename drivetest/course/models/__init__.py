@@ -7,3 +7,4 @@ from .sensor_feed import SensorFeed
 from .track import Track
 from .user import User
 from .training import Training
+from .session import Session

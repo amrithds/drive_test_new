@@ -10,7 +10,7 @@ class ObstacleTaskScore(BaseModel):
     name = models.CharField(max_length=100,unique=True)
     score= models.IntegerField(default=0)
     is_mandatory = models.BooleanField(default=False)
-    description = models.CharField(max_length=100)
-    order = models.IntegerField()
+    description = models.CharField(max_length=100, blank=True)
+    order = models.IntegerField(blank=True)
 
 
