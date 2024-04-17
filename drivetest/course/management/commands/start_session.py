@@ -6,15 +6,16 @@ from course.models.obstacle import Obstacle
 from course.models.sensor_feed import SensorFeed
 from course.models.user import User
 from course.helper import rf_id_helper
-from 
 
-import threading
+import concurrent.futures
+
+#global
+CURRENT_RF_ID=None
+COLLECT_SENSOR_INPUTS=False
 
 class Command(BaseCommand):
     help = 'Start a session, listen to inputs'
     # global variables
-    CURRENT_RF_ID=None
-    COLLECT_SENSOR_INPUTS=False
     
     def add_arguments(self, parser):
         parser.add_argument('trainer_no', type=int, help='trainer number of user in session')
@@ -28,10 +29,15 @@ class Command(BaseCommand):
         session_mode = int(kwargs['mode'])
  
         sessionObj = self.initialiseSession(trainerID,traineeID,session_mode)
-
-        readRFIDThread = threading.Thread(target=self.readRFIDInputs())
-        readSTMThread = threading.Thread(target=self.readSTMInputs())
-
+        
+        pool = concurrent.futures.ThreadPoolExecutor(max_workers=2)
+        
+        pool.submit(readRFIDInputs)
+        pool.submit(readSTMInputs)
+        
+        pool.shutdown(wait=True)
+        
+        print("Main thread continuing to run")
         # sessionWorkflowThread = threading.Thread(target=self.sessionWorkflow())
 
         #active obstacle
@@ -57,48 +63,59 @@ class Command(BaseCommand):
         trainer = User.objects.get(id=trainerID)
         trainee = User.objects.get(id=traineeID)
         #update session with in progress status
-        print(session_mode)
-        #sessionObj = Session.objects.create(trainer_no=trainer, trainee_no=trainee, mode=session_mode, status=Session.STATUS_IN_PROGRESS)
-        sessionObj = Session.objects.get(id=2)
+        sessionObj = Session.objects.create(trainer_no=trainer, trainee_no=trainee, mode=session_mode, status=Session.STATUS_IN_PROGRESS)
         return sessionObj
 
-    def readRFIDInputs(self):
-        """
-        reads RF ID contineously for changes and next RF ID
-        """
-        rfid = serial.Serial( 
-            port='/dev/ttyUSB0',
-            baudrate=115200,
-            parity=serial.PARITY_NONE,
-            stopbits=serial.STOPBITS_ONE,
-            bytesize=serial.EIGHTBITS,
-            timeout=.01
-        )
 
-        #get all obstacles
-        obstacleObjs = Obstacle.objects.all()
 
-        #map refID and Obstacle obj
-        rfIDObstacleMap = {}
-        for obstcaleObj in obstacleObjs:
-            rfIDObstacleMap[obstcaleObj.start_rf_id] = {'object': obstcaleObj, "collect_sessor": False}
-        
 
-        while(True):
-            readRFID = rf_id_helper.getInputFromRFID(rfid, "RADICAL")
-            if len(readRFID) == 16 and rfIDObstacleMap[readRFID]:
-                self.CURRENT_RF_ID = readRFID
-                self.COLLECT_SENSOR_INPUTS = True
+def readRFIDInputs(cls):
+    """
+    reads RF ID contineously for changes and next RF ID
+    """
+    global CURRENT_RF_ID
+    global COLLECT_SENSOR_INPUTS
 
-    def readSTMInputs(self):
-        """
-        reads STM for sensor inputs when READ_STM_FLAG is True
-        """
-        arduino = serial.Serial(port='/dev/ttyACM0',  baudrate=115200,parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=0.001 )
-        
-        while True:
-            if arduino.in_waiting and self.COLLECT_SENSOR_INPUTS:
-                data = arduino.readline().decode('utf-8').split(',')
-                print(data)
-                print('-------')
-                #SensorFeed.objects.create()
+    rfid = serial.Serial( 
+        port='/dev/ttyUSB0',
+        baudrate=115200,
+        parity=serial.PARITY_NONE,
+        stopbits=serial.STOPBITS_ONE,
+        bytesize=serial.EIGHTBITS,
+        timeout=.01
+    )
+
+    #get all obstacles
+    obstacleObjs = Obstacle.objects.all()
+
+    #map refID and Obstacle obj
+    rfIDObstacleMap = {}
+    for obstcaleObj in obstacleObjs:
+        rfIDObstacleMap[obstcaleObj.start_rf_id] = {'object': obstcaleObj, "collect_sessor": False}
+    
+
+    while(True):
+        readRFID = rf_id_helper.getInputFromRFID(rfid)
+        if len(readRFID) == 16 and rfIDObstacleMap[readRFID]:
+            CURRENT_RF_ID = readRFID
+            COLLECT_SENSOR_INPUTS = True
+
+    
+def readSTMInputs():
+    """
+    reads STM for sensor inputs when READ_STM_FLAG is True
+    """
+    global CURRENT_RF_ID
+    global COLLECT_SENSOR_INPUTS
+    print('port before')
+    arduino = serial.Serial(port='/dev/ttyACM0',  baudrate=115200,parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=0.001 )
+    once = True
+    print('port init')
+    while True:
+        if once:
+            print(CURRENT_RF_ID, COLLECT_SENSOR_INPUTS)
+            once=False
+        if arduino.in_waiting and COLLECT_SENSOR_INPUTS:
+            data = arduino.readline().decode('utf-8').split(',')
+            print(data)
+            print('-------')
