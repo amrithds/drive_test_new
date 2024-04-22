@@ -14,7 +14,7 @@ class Command(BaseCommand):
     # global variables
     CURRENT_RF_ID=None
     COLLECT_SENSOR_INPUTS=False
-
+    RF_ID_OBSTACLE_MAP = {}
     
     def add_arguments(self, parser):
         parser.add_argument('trainer_no', type=int, help='trainer number of user in session')
@@ -73,7 +73,7 @@ class Command(BaseCommand):
         for obstcaleObj in obstacleObjs:
             self.RF_ID_OBSTACLE_MAP[obstcaleObj.start_rf_id] = obstcaleObj
     
-
+        print(self.RF_ID_OBSTACLE_MAP)
         while(True):
             readRFID = rf_id_helper.getInputFromRFID(rfid)
             if len(readRFID) == 16 and self.RF_ID_OBSTACLE_MAP[readRFID]:
