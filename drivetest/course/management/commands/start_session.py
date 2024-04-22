@@ -92,15 +92,17 @@ class Command(BaseCommand):
         lastSensorFeed = []
 
         while True:
-            print('waiting for input')
             if arduino.in_waiting and self.COLLECT_SENSOR_INPUTS:
                 data = arduino.readline().decode('utf-8').split(',')
 
                 if data != lastSensorFeed:
                     ObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
-                    SensorFeed.objects.create(Obstacle=ObstacleObj, s1=data[1], s2=data[2], s3=data[3], s4=data[4],\
-                                              s5=data[5], s6=data[6], s7=data[7], s8=data[8], s9=data[9], s10=data[10],\
-                                            s11=data[11],s12=data[12], s13=data[13], s14=data[14], s15=data[15], s16=data[16],\
-                                            s17=data[17] )
+                    try:
+                        SensorFeed.objects.create(Obstacle=ObstacleObj, s1=data[1], s2=data[2], s3=data[3], s4=data[4],\
+                                                s5=data[5], s6=data[6], s7=data[7], s8=data[8], s9=data[9], s10=data[10],\
+                                                s11=data[11],s12=data[12], s13=data[13], s14=data[14], s15=data[15], s16=data[16],\
+                                                s17=data[17] )
+                    except Exception as e:
+                        print(e)
                     lastSensorFeed = data
 
