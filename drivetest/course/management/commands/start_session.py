@@ -92,6 +92,7 @@ class Command(BaseCommand):
         lastSensorFeed = []
 
         while True:
+            print('waiting for input')
             if arduino.in_waiting and self.COLLECT_SENSOR_INPUTS:
                 data = arduino.readline().decode('utf-8').split(',')
 
