@@ -10,7 +10,7 @@ class Task(BaseModel):
             (1 , "Parking"),
             (2 , "Speed"),
             (3 , "Curve")
-    ))
+    ), default= 0)
 
     def __str__(self) -> str:
         return self.name
