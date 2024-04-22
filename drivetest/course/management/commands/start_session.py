@@ -73,7 +73,7 @@ class Command(BaseCommand):
         for obstcaleObj in obstacleObjs:
             self.RF_ID_OBSTACLE_MAP[obstcaleObj.start_rf_id] = obstcaleObj
     
-        print(self.RF_ID_OBSTACLE_MAP)
+
         while(True):
             readRFID = rf_id_helper.getInputFromRFID(rfid)
             if len(readRFID) == 16 and self.RF_ID_OBSTACLE_MAP[readRFID]:
@@ -98,9 +98,9 @@ class Command(BaseCommand):
 
                 if data != lastSensorFeed:
                     ObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
-                    SensorFeed.objects.create(Obstacle=ObstacleObj, s1=data[0], s2=data[1], s3=data[2], s4=data[3],\
-                                              s5=data[4], s6=data[5], s7=data[6], s8=data[7], s9=data[8], s10=data[9],\
-                                            s11=data[10],s12=data[11], s13=data[12], s14=data[13], s15=data[14], s16=data[15],\
-                                            s17=data[16], s18=data[17], s19=data[18])
+                    SensorFeed.objects.create(Obstacle=ObstacleObj, s1=data[1], s2=data[2], s3=data[3], s4=data[4],\
+                                              s5=data[5], s6=data[6], s7=data[7], s8=data[8], s9=data[9], s10=data[10],\
+                                            s11=data[11],s12=data[12], s13=data[13], s14=data[14], s15=data[15], s16=data[16],\
+                                            s17=data[17] )
                     lastSensorFeed = data
 

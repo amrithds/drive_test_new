@@ -19,7 +19,5 @@ class SensorFeed(models.Model):
     s15 = models.CharField(max_length=1)
     s16 = models.CharField(max_length=1)
     s17 = models.CharField(max_length=1)
-    s18 = models.CharField(max_length=1)
-    s19 = models.CharField(max_length=8)
     created_at = models.DateTimeField(auto_now_add=True)
     
