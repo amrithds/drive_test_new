@@ -14,6 +14,7 @@ class Command(BaseCommand):
     # global variables
     CURRENT_RF_ID=None
     COLLECT_SENSOR_INPUTS=False
+
     
     def add_arguments(self, parser):
         parser.add_argument('trainer_no', type=int, help='trainer number of user in session')
@@ -36,32 +37,16 @@ class Command(BaseCommand):
         pool.shutdown(wait=True)
         
         print("Main thread continuing to run")
-        # sessionWorkflowThread = threading.Thread(target=self.sessionWorkflow())
 
-        #active obstacle
-        currentObstacle = None
-        # flag for start/stop collecting sessor inputs
-        collect_sessor = False
 
-        # #while(rfid.is_open == True):
-        
-        #         #if a start rfid is read
-        #         if rfIDObstacleMap[readRFID]:
-        #             currentObstacle = rfIDObstacleMap[readRFID]
-
-        #     #getInputFromRFID(rfid, "RADICAL")
-        
-            # print(currentObstacle)
-
-        
-        # time = timezone.now().strftime('%X')
-        # self.stdout.write("It's now %s" % time)
     
     def initialiseSession(self, trainerID, traineeID, session_mode ):
         trainer = User.objects.get(id=trainerID)
         trainee = User.objects.get(id=traineeID)
         #update session with in progress status
         sessionObj = Session.objects.create(trainer_no=trainer, trainee_no=trainee, mode=session_mode, status=Session.STATUS_IN_PROGRESS)
+        #clear sensor table
+        SensorFeed.objects.all().delete()
         return sessionObj
 
 
@@ -84,14 +69,14 @@ class Command(BaseCommand):
         obstacleObjs = Obstacle.objects.all()
 
         #map refID and Obstacle obj
-        rfIDObstacleMap = {}
+        
         for obstcaleObj in obstacleObjs:
-            rfIDObstacleMap[obstcaleObj.start_rf_id] = {'object': obstcaleObj, "collect_sessor": False}
+            self.RF_ID_OBSTACLE_MAP[obstcaleObj.start_rf_id] = obstcaleObj
     
 
         while(True):
             readRFID = rf_id_helper.getInputFromRFID(rfid)
-            if len(readRFID) == 16 and rfIDObstacleMap[readRFID]:
+            if len(readRFID) == 16 and self.RF_ID_OBSTACLE_MAP[readRFID]:
                 self.CURRENT_RF_ID = readRFID
                 self.COLLECT_SENSOR_INPUTS = True
 
@@ -104,11 +89,17 @@ class Command(BaseCommand):
         arduino = serial.Serial(port='/dev/ttyACM0',  baudrate=115200,parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=0.001 )
         once = True
         print('port init')
+        lastSensorFeed = []
+
         while True:
-            if once:
-                print(self.CURRENT_RF_ID, self.COLLECT_SENSOR_INPUTS)
-                once=False
             if arduino.in_waiting and self.COLLECT_SENSOR_INPUTS:
                 data = arduino.readline().decode('utf-8').split(',')
-                print(data)
-                print('-------')
+
+                if data != lastSensorFeed:
+                    ObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
+                    SensorFeed.objects.create(Obstacle=ObstacleObj, s1=data[0], s2=data[1], s3=data[2], s4=data[3],\
+                                              s5=data[4], s6=data[5], s7=data[6], s8=data[7], s9=data[8], s10=data[9],\
+                                            s11=data[10],s12=data[11], s13=data[12], s14=data[13], s15=data[14], s16=data[15],\
+                                            s17=data[16], s18=data[17], s19=data[18])
+                    lastSensorFeed = data
+

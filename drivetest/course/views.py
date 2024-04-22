@@ -5,8 +5,9 @@ from .serializers import CourseSerializer
 from rest_framework import viewsets
 from rest_framework.response import Response
 from django.shortcuts import render
-
-
+from django.core.management import call_command
+import sys
+from django.utils.six import StringIO
 # Create your views here.
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -52,3 +53,13 @@ class CourseViewSet(viewsets.ModelViewSet):
 
 def index(request):
     return render(request,'index.html')
+
+def start_session(request):
+    courseId = request.GET['courseId']
+    trainerId = request.GET['trainerId']
+    traineeId = request.GET['traineeId']
+
+    out = StringIO()
+    sys.stdout = out
+    call_command('start_session', trainerId, traineeId, courseId, stdout=out)
+    

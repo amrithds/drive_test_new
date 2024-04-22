@@ -1,10 +1,8 @@
 from django.db import models
-from .course import Course
+from .obstacle import Obstacle
 from .training import Training
 class SensorFeed(models.Model):
-    id = models.AutoField(primary_key = True)
-    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, default=None)
-    training = models.ForeignKey(Training, on_delete=models.DO_NOTHING, default=None)
+    Obstacle = models.ForeignKey(Obstacle, on_delete=models.DO_NOTHING, default=None)
     s1 = models.IntegerField()
     s2 = models.IntegerField()
     s3 = models.IntegerField()
@@ -24,6 +22,5 @@ class SensorFeed(models.Model):
     s17 = models.IntegerField()
     s18 = models.IntegerField()
     s19 = models.IntegerField()
-    device_time = models.DateTimeField(default=None)
     created_at = models.DateTimeField(auto_now_add=True)
     
