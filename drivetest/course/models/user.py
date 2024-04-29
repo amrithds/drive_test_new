@@ -20,7 +20,7 @@ class User(AbstractUser, BaseModel):
             ("Maj" , "Maj"),
             ("Capt" , "Capt"),
             ("Lt Col" , "Lt Col"),
-        ), default=None, blank=True, null=True
+        ), default='Rect', blank=True, null=True
     )
     unit=models.CharField(max_length=50, default=None, blank=True, null=True)
     type=models.IntegerField(choices=(
