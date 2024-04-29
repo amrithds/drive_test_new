@@ -4,7 +4,7 @@ from utils.model_util.base_model import BaseModel
 from django.contrib.auth.models import AbstractUser
 class User(AbstractUser, BaseModel):
     name=models.CharField(max_length=100, default=None)
-    unique_ref_id=models.CharField(max_length=100)
+    unique_ref_id=models.CharField(max_length=100, default='superuser')
     course=models.ForeignKey(Course, on_delete=models.CASCADE, blank=True, null=True)
     rank=models.CharField(max_length=50, choices=(
             ("Rect" , "Rect"),
@@ -20,13 +20,13 @@ class User(AbstractUser, BaseModel):
             ("Maj" , "Maj"),
             ("Capt" , "Capt"),
             ("Lt Col" , "Lt Col"),
-        )
+        ), default=None, blank=True, null=True
     )
-    unit=models.CharField(max_length=50)
+    unit=models.CharField(max_length=50, default=None, blank=True, null=True)
     type=models.IntegerField(choices=(
             (1, "Driver"),
             (2, "Instructor")
-        ), default=1)
+        ), default=2)
     
     REQUIRED_FIELDS = ['unique_ref_id']
     class Meta:
