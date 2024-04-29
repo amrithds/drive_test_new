@@ -22,7 +22,7 @@ class User(AbstractUser, BaseModel):
             ("Lt Col" , "Lt Col"),
         ), default='Rect', blank=True, null=True
     )
-    unit=models.CharField(max_length=50, default=None, blank=True, null=True)
+    unit=models.CharField(max_length=50, default='', blank=True, null=True)
     type=models.IntegerField(choices=(
             (1, "Driver"),
             (2, "Instructor")
