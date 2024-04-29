@@ -1,10 +1,13 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 from course.models import Course , Obstacle , Task , TaskMetrics, Track, \
     ObstacleTaskScore, User, Session
 
 # Register your models here.
-class UserAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name','unique_ref_id', "type"]
+    
+class UserAdmin(UserAdmin):
+    fieldsets = ((None, {'fields': ('username', 'password')}), ('Personal info', {'fields': ('name', 'unique_ref_id','rank', 'course', 'type')}), ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}), ('Important dates', {'fields': ('last_login', 'date_joined')}))
+    list_display = ['id', 'name', 'unique_ref_id','rank', 'course', 'type']
 
 class CourseAdmin(admin.ModelAdmin):
     list_display = ["name"]
@@ -13,11 +16,11 @@ class ObstableAdmin(admin.ModelAdmin):
     list_display = ['id', "track_id", 'is_mandatory', 'order', 'start_rf_id', 'end_rf_id', 'audio_file']
 
 class SessionAdmin(admin.ModelAdmin):
-    list_display = ['id', "trainer_id", 'trainee_id', 'status', 'mode', ]
+    list_display = ['id', 'trainer_no','trainee_no', 'status', 'mode' ]
 
 admin.site.register(User,UserAdmin)
 admin.site.register(Course,CourseAdmin)
 admin.site.register(Obstacle,ObstableAdmin)
-#admin.site.register(SessionAdmin,Session)
-admin.site.register([ Task , TaskMetrics,Track, ObstacleTaskScore, Session])
+admin.site.register(Session, SessionAdmin)
+admin.site.register([ Task , TaskMetrics,Track, ObstacleTaskScore])
 

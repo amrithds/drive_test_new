@@ -9,7 +9,7 @@ class Task(BaseModel):
             (0 , "Boolean"),
             (1 , "Parking"),
             (2 , "Speed"),
-            (3 , "Curve")
+            (3 , "Turning")
     ), default= 0)
 
     def __str__(self) -> str:

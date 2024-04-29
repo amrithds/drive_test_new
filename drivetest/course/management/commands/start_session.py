@@ -17,17 +17,22 @@ class Command(BaseCommand):
     RF_ID_OBSTACLE_MAP = {}
     
     def add_arguments(self, parser):
-        parser.add_argument('trainer_no', type=int, help='trainer number of user in session')
-        parser.add_argument('trainee_no', type=int, help='trainee number of user in session')
-        parser.add_argument('mode', type=int, help='session mode', choices=(0,1))
+        parser.add_argument('-i','--trainer_no', type=int, help='trainer number of user in session')
+        parser.add_argument('-s','--trainee_no', type=int, help='trainee number of user in session')
+        parser.add_argument('-m', '--mode', type=int, help='session mode', choices=(0,1))
+        parser.add_argument('-ses', '--session_id', type=int, help='session id')
+
 
     def handle(self, *args, **kwargs):
 
         trainerID = kwargs['trainer_no']
         traineeID = kwargs['trainee_no']
         session_mode = int(kwargs['mode'])
- 
-        sessionObj = self.initialiseSession(trainerID,traineeID,session_mode)
+        sessionObj = None
+        if kwargs["session_id"]:
+            sessionObj = Session.objects.get(id=kwargs["session_id"])
+        else:
+            sessionObj = self.initialiseSession(trainerID,traineeID,session_mode)
         
         pool = concurrent.futures.ThreadPoolExecutor(max_workers=2)
         
@@ -97,12 +102,10 @@ class Command(BaseCommand):
 
                 if data != lastSensorFeed:
                     ObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
-                    try:
-                        SensorFeed.objects.create(Obstacle=ObstacleObj, s1=data[1], s2=data[2], s3=data[3], s4=data[4],\
-                                                s5=data[5], s6=data[6], s7=data[7], s8=data[8], s9=data[9], s10=data[10],\
-                                                s11=data[11],s12=data[12], s13=data[13], s14=data[14], s15=data[15], s16=data[16],\
-                                                s17=data[17] )
-                    except Exception as e:
-                        print(e)
+                    
+                    SensorFeed.objects.create(Obstacle=ObstacleObj, s1=data[1], s2=data[2], s3=data[3], s4=data[4],\
+                                            s5=data[5], s6=data[6], s7=data[7], s8=data[8], s9=data[9], s10=data[10],\
+                                            s11=data[11],s12=data[12], s13=data[13], s14=data[14], s15=data[15], s16=data[16],\
+                                            s17=data[17] )
                     lastSensorFeed = data
 

@@ -19,9 +19,6 @@ cur_marks=0
 test_count=0
 pass_count=0
 
-import sys
-print('here')
-sys.exit()
 
 sql="select sdt_pid,ifnull(Marks,'N') marks from terminal"
 cursor.execute(sql)

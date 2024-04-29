@@ -1,6 +1,7 @@
 from django.db import models
 from utils.model_util.base_model import BaseModel
 from .user import User
+from .course import Course
 
 class Session(BaseModel):
     STATUS_IDEAL = 0
@@ -8,7 +9,7 @@ class Session(BaseModel):
     STATUS_COMPELETED = 2
 
     MODE_CHOICES=(
-        (0, "Learning"),
+        (0, "Evaluate"),
         (1, "Test")
     )
 
@@ -21,5 +22,6 @@ class Session(BaseModel):
             (2, "Completed"),
         ), default=0)
     mode=models.IntegerField(choices=MODE_CHOICES, default=0)
+    course=models.ForeignKey(Course, on_delete=models.DO_NOTHING, default=None)
 
     

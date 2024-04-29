@@ -1,6 +1,8 @@
-from django.urls import path, include
+from django.urls import path
 from . import views
 
-# urlpatterns = [
-#     path('user/', views.getUser),
+# courseUrlPatterns = [
+#     path('start_session/', views.start_session),
+#     path('/',views.index,name='home'),
+#     path('',views.index,name='index'),
 # ]

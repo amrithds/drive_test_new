@@ -1,0 +1,42 @@
+{% include 'base/base.html' %}
+<div class="center col-md-4 offset-md-4"> 
+{% if form.errors %}
+    <p>{{form.errors}}</p>
+{% endif %}
+
+{% if next %}
+    {% if user.is_authenticated %}
+      <p>Your account doesn't have access to this page. To proceed,
+      please login with an account that has access.</p>
+    {% else %}
+      <p>Please login to see this page.</p>
+    {% endif %}
+{% endif %}
+<form action="{% url 'login' %}" method="POST">
+    <!-- Email input -->
+    {% csrf_token %}
+    <div data-mdb-input-init class="form-outline mb-4">
+      <input type="text" id="username" name="username" class="form-control" />
+      <label class="form-label" for="username">Username</label>
+    </div>
+  
+    <!-- Password input -->
+    <div data-mdb-input-init class="form-outline mb-4">
+      <input type="password" id="password" name="password" class="form-control" />
+      <label class="form-label" for="password">Password</label>
+    </div>
+  
+    <!-- Submit button -->
+    <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4">Sign in</button>
+  </form>
+</div>
+{% include 'base/footer.html' %}
+<style>
+
+.center {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: auto;  
+  }
+</style>

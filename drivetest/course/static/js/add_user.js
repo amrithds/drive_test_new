@@ -32,7 +32,7 @@ $(document).ready(function(){
         var user_list_table = $('#user_list').DataTable();
         user_list_table.clear().draw();;
         $.ajax({
-            url: 'v1/user/?course_id='+course_id, // url where to submit the request
+            url: '/v1/user/?course_id='+course_id, // url where to submit the request
             type : "GET", // type of action POST || GET
             dataType : 'json', // data type
             success : function(results) {
@@ -49,7 +49,7 @@ $(document).ready(function(){
     }
 
     $.ajax({
-        url: 'v1/course/', // url where to submit the request
+        url: '/v1/course/', // url where to submit the request
         type : "GET", // type of action POST || GET
         dataType : 'json', // data type
         success : function(results) {
@@ -76,7 +76,7 @@ $(document).ready(function(){
         // send ajax
         $.ajax({
             enctype:'multipart/form-data',
-            url: 'v1/user/', // url where to submit the request
+            url: '/v1/user/', // url where to submit the request
             type : "POST", // type of action POST || GET
             dataType : 'json', // data type
             data : get_form_data(), // post data || get data
@@ -94,7 +94,7 @@ $(document).ready(function(){
     $('#user_list').on('click', '.delete_user_button', function (e) {
         if(confirm("Do you want to delete this user?")){
             $.ajax({
-                url: 'v1/user/'+$(this).attr('value'), // url where to submit the request
+                url: '/v1/user/'+$(this).attr('value'), // url where to submit the request
                 type : "DELETE", // type of action POST || GET
                 success : function(result) {
                     // you can see the result from the console

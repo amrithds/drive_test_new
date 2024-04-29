@@ -30,7 +30,11 @@ urlpatterns = [
     
     path('api-auth/', include('rest_framework.urls')),
     path('admin/', admin.site.urls),
+    path("accounts/", include("django.contrib.auth.urls")),
+    path('course/start_session/', views.start_session),
     path('v1/', include(router.urls)),
+    path('test/', views.test,name='test'),
+    # path('/',views.index,name='home'),
     path('',views.index,name='index'),
 ]
 

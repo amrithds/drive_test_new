@@ -9,7 +9,7 @@
                     <br/> <br/>
                     <section>
                 <label>Select Drive Mode:</label>
-                <select class="form-control" id="selDriveMode" name="driveMode">
+                <select class="form-control" id="driveMode" name="driveMode">
                 <option value="0">EVALUATE</option>
                 <option value="1">TRAINING</option></section>
             </select>
@@ -31,6 +31,8 @@
                     <label for="trainerRank">Rank:</label>
                     <select class="form-control" id="training_trainer_rank" name="training_trainer_rank" disabled>
                         <option value="Select one ">Select one </option>								
+                    <option value="Rect">Rect</option>
+                    <option value="SEP">SEP</option>
                     <option value="L Nk">L Nk</option>
                     <option value="Nk">Nk</option>
                     <option value="L Hav">L Hav</option>
@@ -55,7 +57,8 @@
             <div id="driver" class="form-group marginBottom">
                     <label for="traineeId">Army No:</label>
                     <input type="text" class="form-control" placeholder="Army No / Sl.no" name="training_trainee_unique_id" id="training_trainee_unique_id">
-            </div>
+                    <input type="hidden" name="training_trainee_id" id="training_trainee_id">
+                </div>
             <div class="form-group marginBottom">
                     <label for="traineeName">Name:</label>
                     <input type="text" class="form-control" placeholder="Name" name="training_trainee_name" id="training_trainee_name" disabled>
@@ -86,7 +89,7 @@
             </div>
             <br><br>   
             <div class="text-center">
-                <button type="button" class="btn btn-info customClassStartSession">Start Session</button>
+                <button type="button" id="start_session" class="btn btn-info customClassStartSession">Start Session</button>
             </div>
             
         </section> 
