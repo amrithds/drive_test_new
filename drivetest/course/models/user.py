@@ -3,7 +3,7 @@ from course.models import Course
 from utils.model_util.base_model import BaseModel
 from django.contrib.auth.models import AbstractUser
 class User(AbstractUser, BaseModel):
-    name=models.CharField(max_length=100, default=None)
+    name=models.CharField(max_length=100, default=None, blank=True, null=True)
     unique_ref_id=models.CharField(max_length=100, default='superuser')
     course=models.ForeignKey(Course, on_delete=models.CASCADE, blank=True, null=True)
     rank=models.CharField(max_length=50, choices=(
