@@ -9,4 +9,4 @@ class TaskMetrics(BaseModel):
     message = models.CharField(max_length=1024, default='')
 
     def __str__(self) -> str:
-        return f"{self.task_id} {self.value}"
+        return f"{self.task} {self.value}"
