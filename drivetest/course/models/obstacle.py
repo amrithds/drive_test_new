@@ -4,7 +4,7 @@ from utils.model_util.base_model import BaseModel
 
 class Obstacle(BaseModel):
     id = models.AutoField(primary_key = True)
-    track_id = models.ForeignKey(Track, on_delete=models.CASCADE)
+    track = models.ForeignKey(Track, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     is_mandatory = models.BooleanField(default=False)
     order = models.IntegerField()
