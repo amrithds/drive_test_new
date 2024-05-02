@@ -84,6 +84,8 @@ class Command(BaseCommand):
         OSTracker = None
         while(True):
             readRFID = rf_id_helper.getInputFromRFID(rfid)
+            #uppercase
+            readRFID = readRFID.upper()
             if len(readRFID) == 16:
                 if readRFID in self.RF_ID_OBSTACLE_MAP:
                     tempObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]

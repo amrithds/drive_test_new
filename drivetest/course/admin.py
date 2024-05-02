@@ -25,7 +25,7 @@ class TaskMetricsAdmin(admin.ModelAdmin):
     list_display = ['value', 'task_id', 'message' ]
 
 class ObstacleTaskScoreAdmin(admin.ModelAdmin):
-    list_display = ['obstacle_id', 'success_task_metrics', 'score', 'is_mandatory', 'description' ]
+    list_display = ['obstacle', 'success_task_metrics', 'score', 'is_mandatory', 'description' ]
 
 admin.site.register(User,UserAdmin)
 admin.site.register(Course,CourseAdmin)
