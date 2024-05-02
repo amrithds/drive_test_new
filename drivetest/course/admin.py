@@ -21,6 +21,9 @@ class SessionAdmin(admin.ModelAdmin):
 class TaskAdmin(admin.ModelAdmin):
     list_display = ['name', 'sensor_id', 'category' ]
 
+class TaskAdmin(admin.ModelAdmin):
+    list_display = ['value', 'task_id', 'message' ]
+
 admin.site.register(User,UserAdmin)
 admin.site.register(Course,CourseAdmin)
 admin.site.register(Obstacle,ObstableAdmin)

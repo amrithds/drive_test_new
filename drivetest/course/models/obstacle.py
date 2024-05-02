@@ -13,6 +13,6 @@ class Obstacle(BaseModel):
     audio_file= models.FileField(upload_to ='uploads/', blank=True)
 
     def __str__(self) -> str:
-        return f"{self.name} {self.track_id}"
+        return f"{self.name}"
 
 
