@@ -7,10 +7,8 @@ class ObstacleTaskScore(BaseModel):
     id = models.AutoField(primary_key = True)
     obstacle_id = models.ForeignKey(Obstacle, on_delete=models.CASCADE)
     task_id = models.ForeignKey(Task, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100,unique=True)
     score= models.IntegerField(default=0)
     is_mandatory = models.BooleanField(default=False)
-    description = models.CharField(max_length=100, blank=True)
-    order = models.IntegerField(blank=True)
+    description = models.CharField(max_length=100, blank=True, default='')
 
 

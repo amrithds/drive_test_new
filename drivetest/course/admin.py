@@ -24,11 +24,15 @@ class TaskAdmin(admin.ModelAdmin):
 class TaskMetricsAdmin(admin.ModelAdmin):
     list_display = ['value', 'task_id', 'message' ]
 
+class ObstacleTaskScoreAdmin(admin.ModelAdmin):
+    list_display = ['obstacle_id', 'task_id', 'score', 'is_mandatory', 'description' ]
+
 admin.site.register(User,UserAdmin)
 admin.site.register(Course,CourseAdmin)
 admin.site.register(Obstacle,ObstableAdmin)
 admin.site.register(Session, SessionAdmin)
 admin.site.register(Task, TaskAdmin)
 admin.site.register(TaskMetrics, TaskMetricsAdmin)
-admin.site.register([ Track, ObstacleTaskScore])
+admin.site.register(ObstacleTaskScore, ObstacleTaskScoreAdmin)
+admin.site.register([ Track])
 
