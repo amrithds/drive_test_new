@@ -18,9 +18,13 @@ class ObstableAdmin(admin.ModelAdmin):
 class SessionAdmin(admin.ModelAdmin):
     list_display = ['id', 'trainer_no','trainee_no', 'status', 'mode' ]
 
+class TaskAdmin(admin.ModelAdmin):
+    list_display = ['name', 'sensor_id', 'category' ]
+
 admin.site.register(User,UserAdmin)
 admin.site.register(Course,CourseAdmin)
 admin.site.register(Obstacle,ObstableAdmin)
 admin.site.register(Session, SessionAdmin)
-admin.site.register([ Task , TaskMetrics,Track, ObstacleTaskScore])
+admin.site.register(Task, TaskAdmin)
+admin.site.register([ TaskMetrics,Track, ObstacleTaskScore])
 
