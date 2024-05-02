@@ -8,4 +8,5 @@ class TaskMetrics(BaseModel):
     task_id = models.ForeignKey(Task, on_delete=models.CASCADE)
     message = models.CharField(max_length=1024, default='')
 
-    
+    def __str__(self) -> str:
+        return f"{self.task_id} {self.value}"
