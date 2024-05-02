@@ -30,5 +30,5 @@ admin.site.register(Obstacle,ObstableAdmin)
 admin.site.register(Session, SessionAdmin)
 admin.site.register(Task, TaskAdmin)
 admin.site.register(TaskMetrics, TaskMetricsAdmin)
-admin.site.register([ TaskMetrics,Track, ObstacleTaskScore])
+admin.site.register([ Track, ObstacleTaskScore])
 
