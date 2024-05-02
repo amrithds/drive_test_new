@@ -1,6 +1,7 @@
+from course.models.obstacle_session_tracker import ObstacleSessionTracker
 class ReportGenerator():
-    def __init__(self, Obstacle) -> None:
-        self.Obstacle = Obstacle
+    def __init__(self, OSTracker:ObstacleSessionTracker) -> None:
+        self.ObsSesTracker = OSTracker
 
     def __parkingTasksResult(leftSensor, rightSensor):
         pass

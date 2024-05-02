@@ -3,10 +3,10 @@ import serial
 from course.models.session import Session
 from course.models.obstacle import Obstacle
 from course.models.sensor_feed import SensorFeed
-from report.models.obstacle_session_tracker import ObstacleSessionTracker
+from drivetest.course.models.obstacle_session_tracker import ObstacleSessionTracker
 from helper import start_session_helper
 from course.helper import rf_id_helper
-import panda as pd
+from helper.report_generator import ReportGenerator
 
 import concurrent.futures
 
@@ -49,10 +49,14 @@ class Command(BaseCommand):
         """
             Generate temp reports.
         """
+        print('Report generator...')
+
         while True:
-            OSTracker = ObstacleSessionTracker.objects.filter(report_status = ObstacleSessionTracker.STATUS_IN_PROGRESS)\
-                        .values()
+            print('Report generator...')
+            # OSTracker = ObstacleSessionTracker.objects.filter(report_status = ObstacleSessionTracker.STATUS_IN_PROGRESS)\
+            #             .values()
             
+
         
 
     def readRFIDInputs(self):
@@ -82,15 +86,17 @@ class Command(BaseCommand):
             readRFID = rf_id_helper.getInputFromRFID(rfid)
             if len(readRFID) == 16:
                 if readRFID in self.RF_ID_OBSTACLE_MAP:
+                    tempObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
+
                     self.CURRENT_RF_ID = readRFID
                     self.COLLECT_SENSOR_INPUTS = True
                     #create ObstacleSessionTracker
-                    tempObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
                     OSTracker = ObstacleSessionTracker.objects.create(Obstacle=tempObstacleObj.id\
                                                                       ,session=self.SESSION)
                 elif self.CURRENT_RF_ID in self.RF_ID_OBSTACLE_MAP:
                     tempObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
                     if tempObstacleObj.end_rf_id == readRFID:
+                        self.COLLECT_SENSOR_INPUTS = False
                         OSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
 
     
