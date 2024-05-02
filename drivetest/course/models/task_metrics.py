@@ -7,7 +7,5 @@ class TaskMetrics(BaseModel):
     value = models.CharField(max_length=1024)
     task_id = models.ForeignKey(Task, on_delete=models.CASCADE)
     message = models.CharField(max_length=1024, default='')
-    created_at = models.DateField()
-    updated_at = models.DateField()
 
     
