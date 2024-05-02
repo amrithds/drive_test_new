@@ -1,11 +1,12 @@
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 import serial
 from course.models.session import Session
 from course.models.obstacle import Obstacle
 from course.models.sensor_feed import SensorFeed
-from course.models.user import User
+from report.models.obstacle_session_tracker import ObstacleSessionTracker
+from helper import start_session_helper
 from course.helper import rf_id_helper
+import panda as pd
 
 import concurrent.futures
 
@@ -15,6 +16,7 @@ class Command(BaseCommand):
     CURRENT_RF_ID=None
     COLLECT_SENSOR_INPUTS=False
     RF_ID_OBSTACLE_MAP = {}
+    SESSION = None
     
     def add_arguments(self, parser):
         parser.add_argument('-i','--trainer_no', type=int, help='trainer number of user in session')
@@ -28,40 +30,36 @@ class Command(BaseCommand):
         trainerID = kwargs['trainer_no']
         traineeID = kwargs['trainee_no']
         session_mode = int(kwargs['mode'])
-        sessionObj = None
-        if kwargs["session_id"]:
-            sessionObj = Session.objects.get(id=kwargs["session_id"])
-        else:
-            sessionObj = self.initialiseSession(trainerID,traineeID,session_mode)
         
-        pool = concurrent.futures.ThreadPoolExecutor(max_workers=2)
+        if kwargs["session_id"]:
+            self.SESSION = Session.objects.get(id=kwargs["session_id"])
+        else:
+            self.SESSION = start_session_helper.initialiseSession(trainerID,traineeID,session_mode)
+        
+        pool = concurrent.futures.ThreadPoolExecutor(max_workers=3)
         
         pool.submit(self.readRFIDInputs)
         pool.submit(self.readSTMInputs)
+        pool.submit(self.generateReport)
         
         pool.shutdown(wait=True)
+
+
+    def generateReport(self):
+        """
+            Generate temp reports.
+        """
+        while True:
+            OSTracker = ObstacleSessionTracker.objects.filter(report_status = ObstacleSessionTracker.STATUS_IN_PROGRESS)\
+                        .values()
+            
         
-        print("Main thread continuing to run")
-
-
-    
-    def initialiseSession(self, trainerID, traineeID, session_mode ):
-        trainer = User.objects.get(id=trainerID)
-        trainee = User.objects.get(id=traineeID)
-        #update session with in progress status
-        sessionObj = Session.objects.create(trainer_no=trainer, trainee_no=trainee, mode=session_mode, status=Session.STATUS_IN_PROGRESS)
-        #clear sensor table
-        SensorFeed.objects.all().delete()
-        return sessionObj
-
-
 
     def readRFIDInputs(self):
         """
         reads RF ID contineously for changes and next RF ID
         """
-
-        rfid = serial.Serial( 
+        rfid = serial.Serial(
             port='/dev/ttyUSB0',
             baudrate=115200,
             parity=serial.PARITY_NONE,
@@ -77,13 +75,23 @@ class Command(BaseCommand):
         
         for obstcaleObj in obstacleObjs:
             self.RF_ID_OBSTACLE_MAP[obstcaleObj.start_rf_id] = obstcaleObj
-    
 
+        #init 
+        OSTracker = None
         while(True):
             readRFID = rf_id_helper.getInputFromRFID(rfid)
-            if len(readRFID) == 16 and self.RF_ID_OBSTACLE_MAP[readRFID]:
-                self.CURRENT_RF_ID = readRFID
-                self.COLLECT_SENSOR_INPUTS = True
+            if len(readRFID) == 16:
+                if readRFID in self.RF_ID_OBSTACLE_MAP:
+                    self.CURRENT_RF_ID = readRFID
+                    self.COLLECT_SENSOR_INPUTS = True
+                    #create ObstacleSessionTracker
+                    tempObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
+                    OSTracker = ObstacleSessionTracker.objects.create(Obstacle=tempObstacleObj.id\
+                                                                      ,session=self.SESSION)
+                elif self.CURRENT_RF_ID in self.RF_ID_OBSTACLE_MAP:
+                    tempObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
+                    if tempObstacleObj.end_rf_id == readRFID:
+                        OSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
 
     
     def readSTMInputs(self):
