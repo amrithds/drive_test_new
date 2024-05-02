@@ -98,10 +98,14 @@ class Command(BaseCommand):
                 elif self.CURRENT_RF_ID in self.RF_ID_OBSTACLE_MAP:
 
                     tempObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
+                    print(readRFID, 101)
                     if tempObstacleObj.end_rf_id == readRFID:
                         self.COLLECT_SENSOR_INPUTS = False
+                        print(103)
                         OSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
+                        print(105)
                         OSTracker.save()
+                        print(107)
     
     def readSTMInputs(self):
         """
@@ -109,7 +113,7 @@ class Command(BaseCommand):
         """
         print('port before')
         arduino = serial.Serial(port='/dev/ttyACM0',  baudrate=115200,parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=0.001 )
-        once = True
+
         print('port init')
         lastSensorFeed = []
 
@@ -118,6 +122,7 @@ class Command(BaseCommand):
                 data = arduino.readline().decode('utf-8').split(',')
 
                 if data != lastSensorFeed:
+                    print(self.CURRENT_RF_ID, self.CURRENT_RF_ID)
                     ObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
                     
                     SensorFeed.objects.create(Obstacle=ObstacleObj, s1=data[1], s2=data[2], s3=data[3], s4=data[4],\
