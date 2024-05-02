@@ -11,10 +11,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='obstacletaskscore',
-            name='task_id',
-        ),
         migrations.AddField(
             model_name='obstacletaskscore',
             name='success_task_metrics',
