@@ -3,10 +3,10 @@ import serial
 from course.models.session import Session
 from course.models.obstacle import Obstacle
 from course.models.sensor_feed import SensorFeed
-from drivetest.course.models.obstacle_session_tracker import ObstacleSessionTracker
-from helper import start_session_helper
+from course.models.obstacle_session_tracker import ObstacleSessionTracker
+from course.helper import start_session_helper
 from course.helper import rf_id_helper
-from helper.report_generator import ReportGenerator
+from course.helper.report_generator import ReportGenerator
 
 import concurrent.futures
 
@@ -53,8 +53,8 @@ class Command(BaseCommand):
 
         while True:
             print('Report generator...')
-            # OSTracker = ObstacleSessionTracker.objects.filter(report_status = ObstacleSessionTracker.STATUS_IN_PROGRESS)\
-            #             .values()
+            OSTracker = ObstacleSessionTracker.objects.filter(report_status = ObstacleSessionTracker.STATUS_IN_PROGRESS)\
+                         .values()
             
 
         
@@ -92,13 +92,13 @@ class Command(BaseCommand):
                     self.COLLECT_SENSOR_INPUTS = True
                     #create ObstacleSessionTracker
                     OSTracker = ObstacleSessionTracker.objects.create(Obstacle=tempObstacleObj.id\
-                                                                      ,session=self.SESSION)
+                                                                       ,session=self.SESSION)
                 elif self.CURRENT_RF_ID in self.RF_ID_OBSTACLE_MAP:
                     tempObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
                     if tempObstacleObj.end_rf_id == readRFID:
                         self.COLLECT_SENSOR_INPUTS = False
                         OSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
-
+                        OSTracker.save()
     
     def readSTMInputs(self):
         """
