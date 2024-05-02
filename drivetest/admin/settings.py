@@ -94,7 +94,7 @@ DATABASES = {
     "ENGINE": "django.db.backends.mysql",
     "NAME": "driver_test",
     "USER":"root",
-    "PASSWORD":"F2s@btm2",
+    "PASSWORD":"rootpass",
     "HOST":"127.0.0.1",
     "PORT":"3306",
     }
