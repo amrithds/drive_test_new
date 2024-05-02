@@ -8,3 +8,4 @@ from .track import Track
 from .user import User
 from .training import Training
 from .session import Session
+from .obstacle_session_tracker import ObstacleSessionTracker

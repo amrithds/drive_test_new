@@ -79,7 +79,7 @@ class Command(BaseCommand):
         
         for obstcaleObj in obstacleObjs:
             self.RF_ID_OBSTACLE_MAP[obstcaleObj.start_rf_id] = obstcaleObj
-
+        
         #init 
         OSTracker = None
         while(True):
@@ -88,14 +88,15 @@ class Command(BaseCommand):
             readRFID = readRFID.upper()
             if len(readRFID) == 16:
                 if readRFID in self.RF_ID_OBSTACLE_MAP:
-                    tempObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
+                    tempObstacleObj = self.RF_ID_OBSTACLE_MAP[readRFID]
 
                     self.CURRENT_RF_ID = readRFID
                     self.COLLECT_SENSOR_INPUTS = True
                     #create ObstacleSessionTracker
-                    OSTracker = ObstacleSessionTracker.objects.create(Obstacle=tempObstacleObj.id\
+                    OSTracker = ObstacleSessionTracker.objects.create(obstacle=tempObstacleObj\
                                                                        ,session=self.SESSION)
                 elif self.CURRENT_RF_ID in self.RF_ID_OBSTACLE_MAP:
+
                     tempObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
                     if tempObstacleObj.end_rf_id == readRFID:
                         self.COLLECT_SENSOR_INPUTS = False
