@@ -1,6 +1,9 @@
 from django.db import models
 from .obstacle import Obstacle
 class SensorFeed(models.Model):
+    LEFT_DISTANCE_SENSOR = 's1'
+    RIGHT_DISTANCE_SENSOR = 's1'
+    
     Obstacle = models.ForeignKey(Obstacle, on_delete=models.DO_NOTHING, default=None)
     s1 = models.CharField(max_length=10)
     s2 = models.CharField(max_length=10)

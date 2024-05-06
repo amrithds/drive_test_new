@@ -4,6 +4,8 @@ from course.models.session import Session
 from course.models.obstacle import Obstacle
 from course.models.sensor_feed import SensorFeed
 from course.models.obstacle_session_tracker import ObstacleSessionTracker
+from course.models.obstacle_task_score import ObstacleTaskScore
+from report.models.session_report import SessionReport
 from course.helper import start_session_helper
 from course.helper import rf_id_helper
 from course.helper.report_generator import ReportGenerator
@@ -22,6 +24,7 @@ class Command(BaseCommand):
         parser.add_argument('-i','--trainer_no', type=int, help='trainer number of user in session')
         parser.add_argument('-s','--trainee_no', type=int, help='trainee number of user in session')
         parser.add_argument('-m', '--mode', type=int, help='session mode', choices=(0,1))
+        parser.add_argument('-c', '--course', type=str, help='course name EX: apr_2024' )
         parser.add_argument('-ses', '--session_id', type=int, help='session id')
 
 
@@ -30,19 +33,21 @@ class Command(BaseCommand):
         trainerID = kwargs['trainer_no']
         traineeID = kwargs['trainee_no']
         session_mode = int(kwargs['mode'])
+        course_id = kwargs['course']
         
         if kwargs["session_id"]:
             self.SESSION = Session.objects.get(id=kwargs["session_id"])
         else:
-            self.SESSION = start_session_helper.initialiseSession(trainerID,traineeID,session_mode)
+            self.SESSION = start_session_helper.initialiseSession(trainerID,traineeID,session_mode, course_id)
         
-        pool = concurrent.futures.ThreadPoolExecutor(max_workers=3)
+        self.generateReport()
+        # pool = concurrent.futures.ThreadPoolExecutor(max_workers=3)
         
-        pool.submit(self.readRFIDInputs)
-        pool.submit(self.readSTMInputs)
-        pool.submit(self.generateReport)
+        # pool.submit(self.readRFIDInputs)
+        # pool.submit(self.readSTMInputs)
+        # pool.submit(self.generateReport)
         
-        pool.shutdown(wait=True)
+        # pool.shutdown(wait=True)
 
 
     def generateReport(self):
@@ -50,11 +55,10 @@ class Command(BaseCommand):
             Generate temp reports.
         """
         print('Report generator...')
-
-        while True:
-            print('Report generator...')
-            OSTracker = ObstacleSessionTracker.objects.filter(report_status = ObstacleSessionTracker.STATUS_IN_PROGRESS)\
-                         .values()
+        #initialise session report
+        report_generotor = ReportGenerator(self.SESSION)
+        report_generotor.generateReport()
+                
             
 
         
@@ -113,7 +117,6 @@ class Command(BaseCommand):
         """
         print('port before')
         arduino = serial.Serial(port='/dev/ttyACM0',  baudrate=115200,parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=0.001 )
-
         print('port init')
         lastSensorFeed = []
 
