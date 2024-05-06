@@ -5,6 +5,8 @@ from report.models.session_report import SessionReport
 from course.models.session import Session
 from course.models.task import Task
 from course.models.sensor_feed import SensorFeed
+import logging
+logger = logging.getLogger("reportLog")
 @singleton
 class ReportGenerator():
     def __init__(self, session: Session) -> None:

@@ -12,6 +12,11 @@ from course.helper.report_generator import ReportGenerator
 
 import concurrent.futures
 
+import logging
+RF_logger = logging.getLogger("RFlog")
+
+sensor_logger = logging.getLogger("sensorLog")
+
 class Command(BaseCommand):
     help = 'Start a session, listen to inputs'
     # global variables
@@ -35,19 +40,19 @@ class Command(BaseCommand):
         session_mode = int(kwargs['mode'])
         course_id = kwargs['course']
         
+        #session_id is optional during debug
         if kwargs["session_id"]:
             self.SESSION = Session.objects.get(id=kwargs["session_id"])
         else:
             self.SESSION = start_session_helper.initialiseSession(trainerID,traineeID,session_mode, course_id)
         
-        self.generateReport()
-        # pool = concurrent.futures.ThreadPoolExecutor(max_workers=3)
+        pool = concurrent.futures.ThreadPoolExecutor(max_workers=3)
         
-        # pool.submit(self.readRFIDInputs)
-        # pool.submit(self.readSTMInputs)
-        # pool.submit(self.generateReport)
+        pool.submit(self.readRFIDInputs)
+        pool.submit(self.readSTMInputs)
+        pool.submit(self.generateReport)
         
-        # pool.shutdown(wait=True)
+        pool.shutdown(wait=True)
 
 
     def generateReport(self):
@@ -58,10 +63,6 @@ class Command(BaseCommand):
         #initialise session report
         report_generotor = ReportGenerator(self.SESSION)
         report_generotor.generateReport()
-                
-            
-
-        
 
     def readRFIDInputs(self):
         """
