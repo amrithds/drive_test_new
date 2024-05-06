@@ -50,7 +50,7 @@ class Command(BaseCommand):
         
         pool.submit(self.readRFIDInputs)
         pool.submit(self.readSTMInputs)
-        pool.submit(self.generateReport)
+        #pool.submit(self.generateReport)
         
         pool.shutdown(wait=True)
 
@@ -103,14 +103,10 @@ class Command(BaseCommand):
                 elif self.CURRENT_RF_ID in self.RF_ID_OBSTACLE_MAP:
 
                     tempObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
-                    print(readRFID, 101)
                     if tempObstacleObj.end_rf_id == readRFID:
                         self.COLLECT_SENSOR_INPUTS = False
-                        print(103)
                         OSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
-                        print(105)
                         OSTracker.save()
-                        print(107)
     
     def readSTMInputs(self):
         """
