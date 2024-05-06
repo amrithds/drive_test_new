@@ -18,5 +18,8 @@ class ObstacleSessionTracker(BaseModel):
             (STATUS_COMPLETED , "Completed")
     ), default= STATUS_IN_PROGRESS)
 
+    class Meta:
+        db_table = "course_obstacle_session_tracker"
     def __str__(self) -> str:
         return f"{self.session} {self.obstacle}"
+    

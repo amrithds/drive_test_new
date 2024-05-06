@@ -24,3 +24,5 @@ class SensorFeed(models.Model):
     s17 = models.CharField(max_length=10)
     created_at = models.DateTimeField(auto_now_add=True)
     
+    class Meta:
+        db_table = "course_sensor_feed"

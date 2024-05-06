@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -98,6 +99,79 @@ DATABASES = {
     "HOST":"127.0.0.1",
     "PORT":"3306",
     }
+}
+
+#LOG settings
+LOG_DIR = os.path.join(BASE_DIR, 'log')
+
+DEFAULT_LOG_FILE = '/log.log'
+RF_LOG_FILE = '/rfLog.log'
+SENSOR_LOG_FILE = '/sensor.log'
+REPORT_LOG_FILE = '/report.log'
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+    "standard": {
+        "format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+        },
+    },
+    "handlers": {
+        "default": {
+            "level":"DEBUG",
+            "class":"logging.handlers.RotatingFileHandler",
+            "filename": LOG_DIR + DEFAULT_LOG_FILE,
+            "maxBytes": 1024*1024*5, # 5 MB
+            "backupCount": 5,
+            "formatter":"standard",
+        },
+        "sensorLog": {
+            "level": "DEBUG",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": LOG_DIR + SENSOR_LOG_FILE,
+            "maxBytes": 1024*1024*5, # 5 MB
+            "backupCount": 5,
+            "formatter":"standard",
+        },
+        "reportLog": {
+            "level": "DEBUG",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": LOG_DIR + REPORT_LOG_FILE,
+            "maxBytes": 1024*1024*5, # 5 MB
+            "backupCount": 5,
+            "formatter":"standard",
+        },
+        "RFLog": {
+            "level": "DEBUG",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": LOG_DIR + RF_LOG_FILE,
+            "maxBytes": 1024*1024*5, # 5 MB
+            "backupCount": 5,
+            "formatter":"standard",
+        },
+    },
+    "loggers": {
+        "default": {
+            "handlers": ["default"],
+            "level": "ERROR",
+            "propagate": True
+        },
+        "sensorLog": {
+            "handlers": ["sensorLog"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+        "reportLog": {
+            "handlers": ["reportLog"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+        "RFLog": {
+            "handlers": ["RFLog"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+    },
 }
 
 

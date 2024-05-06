@@ -16,4 +16,7 @@ class SessionReport(BaseModel):
             (RESULT_FAIL , "Fail")
     ), default = RESULT_UNKNOWN)
     remark = models.CharField(max_length=100, default='')
+
+    class Meta:
+        db_table = "report_session_report"
     
