@@ -63,82 +63,91 @@ class Command(BaseCommand):
         """
         print('Report generator...')
         #initialise session report
-        report_generotor = ReportGenerator(self.SESSION)
-        report_generotor.generateReport()
+        try:
+            report_generotor = ReportGenerator(self.SESSION)
+            report_generotor.generateReport()
+        except Exception as e:
+            print(e)
 
     def readRFIDInputs(self):
         """
         reads RF ID contineously for changes and next RF ID
         """
-        rfid = serial.Serial(
-            port='/dev/ttyUSB0',
-            baudrate=115200,
-            parity=serial.PARITY_NONE,
-            stopbits=serial.STOPBITS_ONE,
-            bytesize=serial.EIGHTBITS,
-            timeout=.01
-        )
-        print('Init RFID reader')
-        #get all obstacles
-        obstacleObjs = Obstacle.objects.all()
+        try:
+            rfid = serial.Serial(
+                port='/dev/ttyUSB0',
+                baudrate=115200,
+                parity=serial.PARITY_NONE,
+                stopbits=serial.STOPBITS_ONE,
+                bytesize=serial.EIGHTBITS,
+                timeout=.01
+            )
+            print('Init RFID reader')
+            #get all obstacles
+            obstacleObjs = Obstacle.objects.all()
 
-        #map refID and Obstacle obj
-        for obstcaleObj in obstacleObjs:
-            self.RF_ID_OBSTACLE_MAP[obstcaleObj.start_rf_id] = obstcaleObj
-        
-        #init 
-        OSTracker = None
-        while(True):
-            readRFID = rf_id_helper.getInputFromRFID(rfid)
-            #uppercase
-            readRFID = readRFID.upper()
-            if len(readRFID) == 16:
-                if readRFID in self.RF_ID_OBSTACLE_MAP:
-                    print(readRFID)
-                    tempObstacleObj = self.RF_ID_OBSTACLE_MAP[readRFID]
+            #map refID and Obstacle obj
+            for obstcaleObj in obstacleObjs:
+                self.RF_ID_OBSTACLE_MAP[obstcaleObj.start_rf_id] = obstcaleObj
+            
+            #init 
+            OSTracker = None
+            while(True):
+                readRFID = rf_id_helper.getInputFromRFID(rfid)
+                #uppercase
+                readRFID = readRFID.upper()
+                if len(readRFID) == 16:
+                    if readRFID in self.RF_ID_OBSTACLE_MAP:
+                        print(readRFID)
+                        tempObstacleObj = self.RF_ID_OBSTACLE_MAP[readRFID]
 
-                    self.CURRENT_RF_ID = readRFID
-                    self.COLLECT_SENSOR_INPUTS = True
-                    #create ObstacleSessionTracker
-                    if OSTracker is None or OSTracker.obstacle_id != tempObstacleObj.id:
-                        previousOSTracker = copy.deepcopy(OSTracker)
-                        OSTracker = ObstacleSessionTracker.objects.create(obstacle=tempObstacleObj\
-                                                                       ,session=self.SESSION)
-                        
-                        #check if start RFID of next obstacle is read before reading previous
-                        #obstacles end RFID, then mark previous obstacle as completed
-                        if previousOSTracker is not None and previousOSTracker.status == ObstacleSessionTracker.STATUS_IN_PROGRESS:
-                            previousOSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
-                            previousOSTracker.save()
-                        
-                elif self.CURRENT_RF_ID in self.RF_ID_OBSTACLE_MAP:
-                    tempObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
-                    if tempObstacleObj.end_rf_id == readRFID:
-                        print("end", readRFID)
-                        self.COLLECT_SENSOR_INPUTS = False
-                        OSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
-                        OSTracker.save()
+                        self.CURRENT_RF_ID = readRFID
+                        self.COLLECT_SENSOR_INPUTS = True
+                        #create ObstacleSessionTracker
+                        if OSTracker is None or OSTracker.obstacle_id != tempObstacleObj.id:
+                            previousOSTracker = copy.deepcopy(OSTracker)
+                            OSTracker = ObstacleSessionTracker.objects.create(obstacle=tempObstacleObj\
+                                                                        ,session=self.SESSION)
+                            
+                            #check if start RFID of next obstacle is read before reading previous
+                            #obstacles end RFID, then mark previous obstacle as completed
+                            if previousOSTracker is not None and previousOSTracker.status == ObstacleSessionTracker.STATUS_IN_PROGRESS:
+                                previousOSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
+                                previousOSTracker.save()
+                            
+                    elif self.CURRENT_RF_ID in self.RF_ID_OBSTACLE_MAP:
+                        tempObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
+                        if tempObstacleObj.end_rf_id == readRFID:
+                            print("end", readRFID)
+                            self.COLLECT_SENSOR_INPUTS = False
+                            OSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
+                            OSTracker.save()
+        except Exception as e:
+            print(e)
     
     def readSTMInputs(self):
         """
         reads STM for sensor inputs when READ_STM_FLAG is True
         """
-        print('port before')
-        arduino = serial.Serial(port='/dev/ttyACM0',  baudrate=115200,parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=0.001 )
-        print('port init')
-        lastSensorFeed = []
+        try:
+            print('port before')
+            arduino = serial.Serial(port='/dev/ttyACM0',  baudrate=115200,parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=0.001 )
+            print('port init')
+            lastSensorFeed = []
 
-        while True:
-            if arduino.in_waiting and self.COLLECT_SENSOR_INPUTS:
-                data = arduino.readline().decode('utf-8').split(',')
+            while True:
+                if arduino.in_waiting and self.COLLECT_SENSOR_INPUTS:
+                    data = arduino.readline().decode('utf-8').split(',')
 
-                if data != lastSensorFeed:
-                    print(self.CURRENT_RF_ID, self.CURRENT_RF_ID)
-                    ObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
-                    
-                    SensorFeed.objects.create(Obstacle=ObstacleObj, s0=data[1], s1=data[2], s2=data[3], s3=data[4],\
-                                            s4=data[5], s5=data[6], s6=data[7], s7=data[8], s8=data[9], s9=data[10],\
-                                            s10=data[11],s11=data[12], s12=data[13], s13=data[14], s14=data[15], s15=data[16],\
-                                            s16=data[17] )
-                    lastSensorFeed = data
+                    if data != lastSensorFeed:
+                        print(self.CURRENT_RF_ID, self.CURRENT_RF_ID)
+                        ObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
+                        
+                        SensorFeed.objects.create(Obstacle=ObstacleObj, s0=data[1], s1=data[2], s2=data[3], s3=data[4],\
+                                                s4=data[5], s5=data[6], s6=data[7], s7=data[8], s8=data[9], s9=data[10],\
+                                                s10=data[11],s11=data[12], s12=data[13], s13=data[14], s14=data[15], s15=data[16],\
+                                                s16=data[17] )
+                        lastSensorFeed = data
+        except Exception as e:
+            print(e)
 
