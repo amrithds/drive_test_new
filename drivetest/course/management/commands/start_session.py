@@ -107,7 +107,7 @@ class Command(BaseCommand):
                         
                         #check if start RFID of next obstacle is read before reading previous
                         #obstacles end RFID, then mark previous obstacle as completed
-                        if previousOSTracker.status == ObstacleSessionTracker.STATUS_IN_PROGRESS:
+                        if previousOSTracker is not None and previousOSTracker.status == ObstacleSessionTracker.STATUS_IN_PROGRESS:
                             previousOSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
                             previousOSTracker.save()
                         
