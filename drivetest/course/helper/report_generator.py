@@ -53,6 +53,14 @@ class ReportGenerator():
             SessionReport.objects.create(obstacle_id=OTScore.obstacle_id, task_id=OTScore.task_id)
     
     def __getResult(self, ObsTaskScore: ObstacleTaskScore) -> bool:
+        """Gets task result in each obstacle based on Success task metrics
+
+        Args:
+            ObsTaskScore (ObstacleTaskScore): Obj
+
+        Returns:
+            bool: result (True : pass, False : Fail)
+        """
         task_category = ObsTaskScore.task.category
         result = False
         if task_category == Task.TASK_TYPE_BOOLEAN:

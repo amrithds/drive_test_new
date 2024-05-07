@@ -9,7 +9,7 @@ from report.models.session_report import SessionReport
 from course.helper import start_session_helper
 from course.helper import rf_id_helper
 from course.helper.report_generator import ReportGenerator
-
+import copy
 import concurrent.futures
 
 import logging
@@ -83,7 +83,6 @@ class Command(BaseCommand):
         obstacleObjs = Obstacle.objects.all()
 
         #map refID and Obstacle obj
-        
         for obstcaleObj in obstacleObjs:
             self.RF_ID_OBSTACLE_MAP[obstcaleObj.start_rf_id] = obstcaleObj
         
@@ -101,13 +100,21 @@ class Command(BaseCommand):
                     self.CURRENT_RF_ID = readRFID
                     self.COLLECT_SENSOR_INPUTS = True
                     #create ObstacleSessionTracker
-                    
-                    OSTracker = ObstacleSessionTracker.objects.create(obstacle=tempObstacleObj\
+                    if OSTracker is None or OSTracker.obstacle_id != tempObstacleObj.id:
+                        previousOSTracker = copy.deepcopy(OSTracker)
+                        OSTracker = ObstacleSessionTracker.objects.create(obstacle=tempObstacleObj\
                                                                        ,session=self.SESSION)
+                        
+                        #check if start RFID of next obstacle is read before reading previous
+                        #obstacles end RFID, then mark previous obstacle as completed
+                        if previousOSTracker.status == ObstacleSessionTracker.STATUS_IN_PROGRESS:
+                            previousOSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
+                            previousOSTracker.save()
+                        
                 elif self.CURRENT_RF_ID in self.RF_ID_OBSTACLE_MAP:
-                    print("end", readRFID)
                     tempObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
                     if tempObstacleObj.end_rf_id == readRFID:
+                        print("end", readRFID)
                         self.COLLECT_SENSOR_INPUTS = False
                         OSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
                         OSTracker.save()
