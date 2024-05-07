@@ -8,7 +8,7 @@ class Task(BaseModel):
     TASK_TYPE_TURNING = 3
     id = models.AutoField(primary_key = True)
     name = models.CharField(max_length=100,unique=True)
-    sensor_id=models.IntegerField()
+    sensor_id=models.CharField(max_length=100)
     category=models.IntegerField(choices=(
             (0 , "Boolean"),
             (1 , "Parking"),

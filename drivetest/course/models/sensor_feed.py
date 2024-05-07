@@ -4,7 +4,8 @@ class SensorFeed(models.Model):
     LEFT_DISTANCE_SENSOR = 's1'
     RIGHT_DISTANCE_SENSOR = 's1'
     
-    Obstacle = models.ForeignKey(Obstacle, on_delete=models.DO_NOTHING, default=None)
+    obstacle = models.ForeignKey(Obstacle, on_delete=models.DO_NOTHING, default=None)
+    s0 = models.CharField(max_length=10)
     s1 = models.CharField(max_length=10)
     s2 = models.CharField(max_length=10)
     s3 = models.CharField(max_length=10)
@@ -21,7 +22,6 @@ class SensorFeed(models.Model):
     s14 = models.CharField(max_length=10)
     s15 = models.CharField(max_length=10)
     s16 = models.CharField(max_length=10)
-    s17 = models.CharField(max_length=10)
     created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:

@@ -4,6 +4,7 @@ from course.models.session import Session
 from utils.model_util.base_model import BaseModel
 
 class ObstacleSessionTracker(BaseModel):
+    
     STATUS_IN_PROGRESS = 0
     STATUS_COMPLETED = 1
 

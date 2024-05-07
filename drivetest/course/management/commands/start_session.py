@@ -44,13 +44,17 @@ class Command(BaseCommand):
         if kwargs["session_id"]:
             self.SESSION = Session.objects.get(id=kwargs["session_id"])
         else:
-            self.SESSION = start_session_helper.initialiseSession(trainerID,traineeID,session_mode, course_id)
+            self.SESSION = start_session_helper.createSession(trainerID,traineeID,session_mode, course_id)
         
+        #clean data from last session
+        start_session_helper.initialiseSession()
+        
+        self.generateReport()
         pool = concurrent.futures.ThreadPoolExecutor(max_workers=3)
         
         pool.submit(self.readRFIDInputs)
         pool.submit(self.readSTMInputs)
-        #pool.submit(self.generateReport)
+        pool.submit(self.generateReport)
         
         pool.shutdown(wait=True)
 
@@ -125,9 +129,9 @@ class Command(BaseCommand):
                     print(self.CURRENT_RF_ID, self.CURRENT_RF_ID)
                     ObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
                     
-                    SensorFeed.objects.create(Obstacle=ObstacleObj, s1=data[1], s2=data[2], s3=data[3], s4=data[4],\
-                                            s5=data[5], s6=data[6], s7=data[7], s8=data[8], s9=data[9], s10=data[10],\
-                                            s11=data[11],s12=data[12], s13=data[13], s14=data[14], s15=data[15], s16=data[16],\
-                                            s17=data[17] )
+                    SensorFeed.objects.create(Obstacle=ObstacleObj, s0=data[1], s1=data[2], s2=data[3], s3=data[4],\
+                                            s4=data[5], s5=data[6], s6=data[7], s7=data[8], s8=data[9], s9=data[10],\
+                                            s10=data[11],s11=data[12], s12=data[13], s13=data[14], s14=data[15], s15=data[16],\
+                                            s16=data[17] )
                     lastSensorFeed = data
 
