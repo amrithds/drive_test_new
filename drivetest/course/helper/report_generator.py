@@ -41,9 +41,6 @@ class ReportGenerator():
                         sessionTaskReport.result = SessionReport.RESULT_PASS
                         sessionTaskReport.remark = ObsTaskScore.success_task_metrics.message
                         sessionTaskReport.save()
-                    else:
-                        sessionTaskReport.result = SessionReport.RESULT_FAIL
-                        sessionTaskReport.save()
 
 
     def __initializeSessionReport(self):
