@@ -27,13 +27,12 @@ router.register(r'course', views.CourseViewSet)
 # Additionally, we include login URLs for the browsable API.
 
 urlpatterns = [
-    
+    path('test/', views.test,name='test'),
     path('api-auth/', include('rest_framework.urls')),
     path('admin/', admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
     path('course/start_session/', views.start_session),
     path('v1/', include(router.urls)),
-    path('test/', views.test,name='test'),
     # path('/',views.index,name='home'),
     path('',views.index,name='index'),
 ]

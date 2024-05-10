@@ -4,10 +4,13 @@ from .serializers import UserSerializer
 from .serializers import CourseSerializer
 from rest_framework import viewsets
 from django.shortcuts import render
-from django.core.management import call_command
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from .models.session import Session
+from django.http import JsonResponse 
+import subprocess
+import psutil
+from course.helper.start_session_helper import createSession
 #from rest_framework.response import Response
 #from django.utils.six import StringIO
 # Create your views here.
@@ -59,20 +62,36 @@ def index(request):
     return render(request,'index/index.html')
 
 def test(request):
-    return render(request,'test.html')
+    import subprocess
+    subprocess.Popen(['python', 'manage.py', 'test'])
+    #a = call_command(f'test &')
+    from django.http import JsonResponse 
+    return JsonResponse({'error': 'Some error'}, status=200)
 
 def start_session(request):
-    courseId = request.GET['courseId']
-    trainerId = request.GET['trainerId']
-    traineeId = request.GET['traineeId']
+    course_id = request.GET['courseId']
+    trainer_id = request.GET['trainerId']
+    trainee_id = request.GET['traineeId']
     mode = request.GET['mode']
 
-    # #out = StringIO()
-    # #sys.stdout = out
-    course = Course.objects.get(name=courseId)
-    trainer = User.objects.get(id=trainerId)
-    trainee = User.objects.get(id=traineeId)
-    sessionObj,_ = Session.objects.get_or_create(trainee_no=trainee,trainer_no=trainer, course=course, 
-                                                 mode=mode, status=Session.STATUS_IDEAL
-                                                 )
-    call_command(f'start_session -i {trainerId} -s {traineeId} -ses {sessionObj.id} -m {mode}')
+    sessionObj = createSession( trainer_id, trainee_id, mode, course_id)
+    p = subprocess.Popen(['python', 'manage.py', f'start_session -i {trainer_id} -s {trainee_id} -ses {sessionObj.id} -m {mode}'])
+    sessionObj.pid = p.id
+    sessionObj.save()
+
+    return JsonResponse({'session_id': sessionObj.id}, status=200)
+
+
+def stop_session(request):
+    try:
+        session_id = request.GET['session_id']
+        sessionObj = Session.objects.get(id=session_id)
+
+        p = psutil.Process(sessionObj.pid)
+        p.terminate()
+
+        return JsonResponse({'session_id': sessionObj.id}, status=200)
+    except Exception as e:
+        return JsonResponse({'message': str(e)}, status=500)
+
+

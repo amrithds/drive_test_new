@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from course.models import Course , Obstacle , Task , TaskMetric, Track, \
     ObstacleTaskScore, User, Session
-
 # Register your models here.
     
 class UserAdmin(UserAdmin):
@@ -22,7 +21,7 @@ class TaskAdmin(admin.ModelAdmin):
     list_display = ['name', 'sensor_id', 'category' ]
 
 class TaskMetricAdmin(admin.ModelAdmin):
-    list_display = ['value', 'task_id', 'message' ]
+    list_display = [ 'task_id','value', 'range_1', "range_2", "distance", 'message' ]
 
 class ObstacleTaskScoreAdmin(admin.ModelAdmin):
     list_display = ['obstacle', 'success_task_metrics', 'score', 'is_mandatory', 'description' ]

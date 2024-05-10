@@ -23,5 +23,5 @@ class Session(BaseModel):
         ), default=0)
     mode=models.IntegerField(choices=MODE_CHOICES, default=0)
     course=models.ForeignKey(Course, on_delete=models.DO_NOTHING, default=None)
-
+    pid = models.IntegerField(default=None)
     
