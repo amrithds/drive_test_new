@@ -7,10 +7,11 @@ from course.models.session import Session
 from report.models.final_report import FinalReport 
 from course.models.task import Task
 from course.models.sensor_feed import SensorFeed
-from django.db.models import Q
+from django.db.models import Min, Q, Max
 import datetime
 import logging
 logger = logging.getLogger("reportLog")
+
 @singleton
 class ReportGenerator():
     def __init__(self, session: Session) -> None:
@@ -55,7 +56,7 @@ class ReportGenerator():
         obstacles = Obstacle.objects.all()
 
         for obstacle in obstacles:
-            final_report = FinalReport.objects.create(obstacle=obstacle, )
+            final_report = FinalReport.objects.create(obstacle=obstacle, data={})
             session_task_reports = SessionReport.objects.filter(obstacle_id=obstacle.obstacle_id)
 
 
@@ -93,8 +94,8 @@ class ReportGenerator():
         return result
         
     def __parkingTasksResult(self, ObsTaskScore:ObstacleTaskScore):
-        left_range = ObsTaskScore.success_task_metrics.range_1
-        right_range = ObsTaskScore.success_task_metrics.range_2
+        left_range = ObsTaskScore.success_task_metrics.min_range
+        right_range = ObsTaskScore.success_task_metrics.max_range
         sensor_ids = ObsTaskScore.task.sensor_id.split(",")
         left_sensor_id = sensor_ids[0]
         right_sensor_id = sensor_ids[1]
@@ -112,8 +113,11 @@ class ReportGenerator():
             _type_: _description_
         """
         filter_query = Q(**{"obstacle_id": ObsTaskScore.obstacle_id })
-        last_date = SensorFeed.objects.filter(filter_query).order_by('-created_at').first()
-        first_date = SensorFeed.objects.filter(filter_query).order_by('created_at').first()
+        
+        dates = SensorFeed.objects.filter(filter_query).aggregate(first_date=Min("created_at"),\
+                                    last_date=Max("created_at"))
+        first_date = dates.first_date
+        last_date = dates.last_date
         average_distance = ObsTaskScore.success_task_metrics.distance
         speed_limit = ObsTaskScore.success_task_metrics.value
         #date format from db

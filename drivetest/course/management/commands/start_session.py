@@ -1,13 +1,10 @@
 from django.core.management.base import BaseCommand
-import serial
 from course.models.session import Session
 from course.models.obstacle import Obstacle
 from course.models.sensor_feed import SensorFeed
 from course.models.obstacle_session_tracker import ObstacleSessionTracker
-from course.models.obstacle_task_score import ObstacleTaskScore
-from report.models.session_report import SessionReport
 from course.helper import start_session_helper
-from course.helper import rf_id_helper
+from course.helper.data_generator import DataGenerator
 from course.helper.report_generator import ReportGenerator
 import copy
 import concurrent.futures
@@ -16,6 +13,7 @@ import logging
 RF_logger = logging.getLogger("RFlog")
 
 sensor_logger = logging.getLogger("sensorLog")
+report_logger = logging.getLogger("reportLog")
 
 class Command(BaseCommand):
     help = 'Start a session, listen to inputs'
@@ -48,6 +46,7 @@ class Command(BaseCommand):
         
         #clean data from last session
         start_session_helper.initialiseSession()
+        
         pool = concurrent.futures.ThreadPoolExecutor(max_workers=3)
         
         pool.submit(self.readRFIDInputs)
@@ -67,33 +66,31 @@ class Command(BaseCommand):
             report_generotor = ReportGenerator(self.SESSION)
             report_generotor.generateReport()
         except Exception as e:
-            print(e)
+            report_logger.error("Error: "+str(e))
 
     def readRFIDInputs(self):
         """
         reads RF ID contineously for changes and next RF ID
         """
         try:
-            rfid = serial.Serial(
-                port='/dev/ttyUSB0',
-                baudrate=115200,
-                parity=serial.PARITY_NONE,
-                stopbits=serial.STOPBITS_ONE,
-                bytesize=serial.EIGHTBITS,
-                timeout=.01
-            )
+            
             print('Init RFID reader')
             #get all obstacles
             obstacleObjs = Obstacle.objects.all()
 
             #map refID and Obstacle obj
             for obstcaleObj in obstacleObjs:
-                self.RF_ID_OBSTACLE_MAP[obstcaleObj.start_rf_id] = obstcaleObj
+                self.RF_ID_OBSTACLE_MAP[obstcaleObj.start_rf_id.upper()] = obstcaleObj
             
-            #init 
+            #init
+            #RF_ID_reader = rf_id_helper.RFIDReader()
             OSTracker = None
+
+            rf_id_gen = DataGenerator.RFIDGenerator()
             while(True):
-                readRFID = rf_id_helper.getInputFromRFID(rfid)
+                #readRFID = RF_ID_reader.getInputFromRFID()
+                readRFID = next(rf_id_gen)
+                
                 #uppercase
                 readRFID = readRFID.upper()
                 if len(readRFID) == 16:
@@ -117,37 +114,43 @@ class Command(BaseCommand):
                             
                     elif self.CURRENT_RF_ID in self.RF_ID_OBSTACLE_MAP:
                         tempObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
-                        if tempObstacleObj.end_rf_id == readRFID:
+                        if tempObstacleObj.end_rf_id.upper() == readRFID:
                             print("end", readRFID)
                             self.COLLECT_SENSOR_INPUTS = False
                             OSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
                             OSTracker.save()
         except Exception as e:
-            print(e)
+            RF_logger.error("Error: "+str(e))
     
     def readSTMInputs(self):
         """
         reads STM for sensor inputs when READ_STM_FLAG is True
         """
         try:
-            print('port before')
-            arduino = serial.Serial(port='/dev/ttyACM0',  baudrate=115200,parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=0.001 )
-            print('port init')
+            print('Init STM reader')
+            #STMreader = STMReader()
+            STMreader =  DataGenerator.STMGenerator()
             lastSensorFeed = []
-
+            
             while True:
-                if arduino.in_waiting and self.COLLECT_SENSOR_INPUTS:
-                    data = arduino.readline().decode('utf-8').split(',')
+                print('here')
+                if self.COLLECT_SENSOR_INPUTS:
+                    data = next(STMreader)
+                    print(self.COLLECT_SENSOR_INPUTS)
+                    print(data)
+                #if STMreader.dataWaiting() and self.COLLECT_SENSOR_INPUTS:
+                #    data = STMreader.getSTMInput()
 
                     if data != lastSensorFeed:
-                        print(self.CURRENT_RF_ID, self.CURRENT_RF_ID)
+                        
                         ObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
                         
                         SensorFeed.objects.create(obstacle=ObstacleObj, s0=data[1], s1=data[2], s2=data[3], s3=data[4],\
                                                 s4=data[5], s5=data[6], s6=data[7], s7=data[8], s8=data[9], s9=data[10],\
                                                 s10=data[11],s11=data[12], s12=data[13], s13=data[14], s14=data[15], s15=data[16],\
                                                 s16=data[17] )
+                        
                         lastSensorFeed = data
         except Exception as e:
-            print(e)
+            sensor_logger.error('Error: '+str(e))
 
