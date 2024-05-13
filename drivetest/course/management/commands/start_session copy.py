@@ -6,11 +6,8 @@ from course.models.obstacle_session_tracker import ObstacleSessionTracker
 from course.helper import start_session_helper
 from course.helper.data_generator import DataGenerator
 from course.helper.report_generator import ReportGenerator
-from course.helper import rf_id_helper
-from course.helper.STM_helper import STMReader
 import copy
 import concurrent.futures
-
 
 import logging
 RF_logger = logging.getLogger("RFlog")
@@ -86,13 +83,13 @@ class Command(BaseCommand):
                 self.RF_ID_OBSTACLE_MAP[obstcaleObj.start_rf_id.upper()] = obstcaleObj
             
             #init
-            RF_ID_reader = rf_id_helper.RFIDReader()
+            #RF_ID_reader = rf_id_helper.RFIDReader()
             OSTracker = None
-            
-            #rf_id_gen = DataGenerator.RFIDGenerator()
+
+            rf_id_gen = DataGenerator.RFIDGenerator()
             while(True):
-                readRFID = RF_ID_reader.getInputFromRFID()
-                #readRFID = next(rf_id_gen)
+                #readRFID = RF_ID_reader.getInputFromRFID()
+                readRFID = next(rf_id_gen)
                 
                 #uppercase
                 readRFID = readRFID.upper()
@@ -131,17 +128,17 @@ class Command(BaseCommand):
         """
         try:
             print('Init STM reader')
-            STMreader = STMReader()
+            #STMreader = STMReader()
             STMreader =  DataGenerator.STMGenerator()
             lastSensorFeed = []
             
             while True:
-                #if self.COLLECT_SENSOR_INPUTS:
-                    # data = next(STMreader)
-                    # print(self.COLLECT_SENSOR_INPUTS)
-                    # print(data)
-                if STMreader.dataWaiting() and self.COLLECT_SENSOR_INPUTS:
-                    data = STMreader.getSTMInput()
+                if self.COLLECT_SENSOR_INPUTS:
+                    data = next(STMreader)
+                    print(self.COLLECT_SENSOR_INPUTS)
+                    print(data)
+                #if STMreader.dataWaiting() and self.COLLECT_SENSOR_INPUTS:
+                #    data = STMreader.getSTMInput()
 
                     if data != lastSensorFeed:
                         
