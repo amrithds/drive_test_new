@@ -131,8 +131,8 @@ class Command(BaseCommand):
         """
         try:
             print('Init STM reader')
-            STMreader = STMReader()
-            STMreader =  DataGenerator.STMGenerator()
+            STM_reader = STMReader()
+            #STMreader =  DataGenerator.STMGenerator()
             lastSensorFeed = []
             
             while True:
@@ -140,8 +140,8 @@ class Command(BaseCommand):
                     # data = next(STMreader)
                     # print(self.COLLECT_SENSOR_INPUTS)
                     # print(data)
-                if STMreader.dataWaiting() and self.COLLECT_SENSOR_INPUTS:
-                    data = STMreader.getSTMInput()
+                if STM_reader.dataWaiting() and self.COLLECT_SENSOR_INPUTS:
+                    data = STM_reader.getSTMInput()
 
                     if data != lastSensorFeed:
                         

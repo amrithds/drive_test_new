@@ -14,4 +14,4 @@ class STMReader():
         Returns:
             _type_: _description_
         """
-        return self.arduino.readline().decode('utf-8').split(',')
+        return self.arduino_port.readline().decode('utf-8').split(',')

@@ -1,8 +1,7 @@
 import binascii
 import serial
 from singleton_decorator import singleton
-from django.conf import settings
-from course.helper.data_generator import DataGenerator
+
 @singleton
 class RFIDReader():
     def __init__(self) -> None:
