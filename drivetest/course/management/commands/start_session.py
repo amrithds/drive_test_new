@@ -143,8 +143,8 @@ class Command(BaseCommand):
                 if STM_reader.dataWaiting() and self.COLLECT_SENSOR_INPUTS:
                     data = STM_reader.getSTMInput()
 
-                    if data != lastSensorFeed:
-                        
+                    if data != lastSensorFeed and self.CURRENT_RF_ID in self.RF_ID_OBSTACLE_MAP:
+
                         ObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
                         
                         SensorFeed.objects.create(obstacle=ObstacleObj, s0=data[1], s1=data[2], s2=data[3], s3=data[4],\
