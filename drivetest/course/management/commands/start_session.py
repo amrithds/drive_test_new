@@ -134,7 +134,7 @@ class Command(BaseCommand):
             STM_reader = STMReader()
             #STMreader =  DataGenerator.STMGenerator()
             lastSensorFeed = []
-            
+            data = []
             while True:
                 #if self.COLLECT_SENSOR_INPUTS:
                     # data = next(STMreader)
@@ -142,17 +142,23 @@ class Command(BaseCommand):
                     # print(data)
                 if STM_reader.dataWaiting() and self.COLLECT_SENSOR_INPUTS:
                     data = STM_reader.getSTMInput()
-
+                    print(data)
                     if data != lastSensorFeed and self.CURRENT_RF_ID in self.RF_ID_OBSTACLE_MAP:
 
                         ObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
-                        
-                        SensorFeed.objects.create(obstacle=ObstacleObj, s0=data[1], s1=data[2], s2=data[3], s3=data[4],\
-                                                s4=data[5], s5=data[6], s6=data[7], s7=data[8], s8=data[9], s9=data[10],\
-                                                s10=data[11],s11=data[12], s12=data[13], s13=data[14], s14=data[15], s15=data[16],\
-                                                #s16=data[17] )
-                                                s16=0 )
+                        if len(data) == 17:
+                            SensorFeed.objects.create(obstacle=ObstacleObj, s0=data[1], s1=data[2], s2=data[3], s3=data[4],\
+                                                    s4=data[5], s5=data[6], s6=data[7], s7=data[8], s8=data[9], s9=data[10],\
+                                                    s10=data[11],s11=data[12], s12=data[13], s13=data[14], s14=data[15], s15=data[16],\
+                                                    s16=0 )
+                        else:
+                            SensorFeed.objects.create(obstacle=ObstacleObj, s0=data[1], s1=data[2], s2=data[3], s3=data[4],\
+                                                    s4=data[5], s5=data[6], s6=data[7], s7=data[8], s8=data[9], s9=data[10],\
+                                                    s10=data[11],s11=data[12], s12=data[13], s13=data[14], s14=data[15], s15=data[16],\
+                                                    s16=data[17] )
+                                                    
                         
                         lastSensorFeed = data
         except Exception as e:
+            sensor_logger.exception(data)
             sensor_logger.exception('Error: '+str(e))
