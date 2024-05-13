@@ -8,6 +8,8 @@ class SessionReport(BaseModel):
     RESULT_PASS = 1
     RESULT_FAIL = 2
 
+    RESULTS = ['Unknown', 'Pass', 'Fail']
+
     obstacle = models.ForeignKey(Obstacle, on_delete=models.DO_NOTHING)
     task = models.ForeignKey(Task, on_delete=models.DO_NOTHING)
     result = models.IntegerField(choices=(

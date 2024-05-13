@@ -11,6 +11,7 @@ from django.http import JsonResponse
 import subprocess
 import psutil
 from course.helper.start_session_helper import createSession
+from course.helper.report_generator import ReportGenerator
 #from rest_framework.response import Response
 #from django.utils.six import StringIO
 # Create your views here.
@@ -68,6 +69,7 @@ def test(request):
     from django.http import JsonResponse 
     return JsonResponse({'error': 'Some error'}, status=200)
 
+@login_required
 def start_session(request):
     course_id = request.GET['courseId']
     trainer_id = request.GET['trainerId']
@@ -81,12 +83,12 @@ def start_session(request):
 
     return JsonResponse({'session_id': sessionObj.id}, status=200)
 
-
+@login_required
 def stop_session(request):
     try:
         session_id = request.GET['session_id']
         sessionObj = Session.objects.get(id=session_id)
-
+        ReportGenerator.generateFinalReport()
         p = psutil.Process(sessionObj.pid)
         p.terminate()
 

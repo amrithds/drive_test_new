@@ -40,16 +40,20 @@ class ReportGenerator():
                     
                     result = self.__getResult(ObsTaskScore)
                     
-                    
                     if result is True:
                         sessionTaskReport.result = SessionReport.RESULT_PASS
                     else:
                         sessionTaskReport.result = SessionReport.RESULT_FAIL
                     sessionTaskReport.remark = ObsTaskScore.success_task_metrics.message
                     sessionTaskReport.save()
+
+                #when task is complted then stop generating report 
+                if OSTracker.status == ObstacleSessionTracker.STATUS_COMPLETED:
+                    OSTracker.report_status = ObstacleSessionTracker.STATUS_COMPLETED
+                    OSTracker.save()
     
     @classmethod 
-    def generateFinalReport(self):
+    def generateFinalReport(cls):
         """
         Generate final report from session data feed
         """
@@ -57,8 +61,30 @@ class ReportGenerator():
 
         for obstacle in obstacles:
             final_report = FinalReport.objects.create(obstacle=obstacle, data={})
-            session_task_reports = SessionReport.objects.filter(obstacle_id=obstacle.obstacle_id)
+            session_task_reports = SessionReport.objects.filter(obstacle_id=obstacle.obstacle_id).order_by('obstacle_id', 'task_id')
+            #init obstacle level report
+            data = []
+            total_obs_score = 0
+            for session_task_report in session_task_reports:
+                task_report_json = {"task":session_task_report.task.name, "result" : SessionReport.RESULTS[session_task_report.result]\
+                               , "score": 0 }
+                
+                obs_task_score = ObstacleTaskScore.objects.get(obstacle_id=session_task_report.obstacle_id\
+                                                               , task_id=session_task_report.task_id)
+                
+                if session_task_report.result == SessionReport.RESULT_PASS:
+                    task_report_json.score = obs_task_score.score
+                    total_obs_score += obs_task_score.score
+                else:
+                    if obs_task_score.is_mandatory:
+                        final_report.result = FinalReport.RESULT_FAIL
+                        final_report.save()
 
+                data.append(task_report_json)
+            
+            final_report.score = total_obs_score
+            final_report.data = data
+            final_report.save()
 
 
 
