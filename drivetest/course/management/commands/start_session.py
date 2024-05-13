@@ -143,10 +143,11 @@ class Command(BaseCommand):
                 if STM_reader.dataWaiting() and self.COLLECT_SENSOR_INPUTS:
                     data = STM_reader.getSTMInput()
                     print(data)
-                    if data != lastSensorFeed and self.CURRENT_RF_ID in self.RF_ID_OBSTACLE_MAP:
+                    # conside data less than 19 as noise
+                    if len(data) == 19 and data != lastSensorFeed and self.CURRENT_RF_ID in self.RF_ID_OBSTACLE_MAP:
 
                         ObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
-                    
+
                         SensorFeed.objects.create(obstacle=ObstacleObj, s0=data[1], s1=data[2], s2=data[3], s3=data[4],\
                                                 s4=data[5], s5=data[6], s6=data[7], s7=data[8], s8=data[9], s9=data[10],\
                                                 s10=data[11],s11=data[12], s12=data[13], s13=data[14], s14=data[15], s15=data[16],\
