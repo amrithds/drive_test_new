@@ -134,7 +134,7 @@ class Command(BaseCommand):
             STM_reader = STMReader()
             #STMreader =  DataGenerator.STMGenerator()
             lastSensorFeed = []
-            data = ['a']
+            
             while True:
                 #if self.COLLECT_SENSOR_INPUTS:
                     # data = next(STMreader)
@@ -155,5 +155,4 @@ class Command(BaseCommand):
 
                         lastSensorFeed = data
         except Exception as e:
-            sensor_logger.exception(data)
             sensor_logger.exception('Error: '+str(e))

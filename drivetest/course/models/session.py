@@ -24,4 +24,7 @@ class Session(BaseModel):
     mode=models.IntegerField(choices=MODE_CHOICES, default=0)
     course=models.ForeignKey(Course, on_delete=models.DO_NOTHING, default=None)
     pid = models.IntegerField(default=None)
+
+    def __str__(self) -> str:
+        return f"{self.id} {self.course} {self.trainer_no} {self.trainee_no}"
     
