@@ -150,9 +150,9 @@ class Command(BaseCommand):
                         SensorFeed.objects.create(obstacle=ObstacleObj, s0=data[1], s1=data[2], s2=data[3], s3=data[4],\
                                                 s4=data[5], s5=data[6], s6=data[7], s7=data[8], s8=data[9], s9=data[10],\
                                                 s10=data[11],s11=data[12], s12=data[13], s13=data[14], s14=data[15], s15=data[16],\
-                                                s16=data[17] )
+                                                #s16=data[17] )
+                                                s16=0 )
                         
                         lastSensorFeed = data
         except Exception as e:
-            sensor_logger.error('Error: '+str(e))
-
+            sensor_logger.exception('Error: '+str(e))
