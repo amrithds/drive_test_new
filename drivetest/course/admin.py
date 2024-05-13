@@ -21,6 +21,7 @@ class TaskAdmin(admin.ModelAdmin):
     list_display = ['name', 'sensor_id', 'category' ]
 
 class TaskMetricAdmin(admin.ModelAdmin):
+    ordering = ['-task', 'value']
     list_display = [ 'task','value', 'min_range', "max_range", "distance", 'message' ]
 
 class ObstacleTaskScoreAdmin(admin.ModelAdmin):

@@ -133,7 +133,6 @@ class Command(BaseCommand):
             lastSensorFeed = []
             
             while True:
-                print('here')
                 if self.COLLECT_SENSOR_INPUTS:
                     data = next(STMreader)
                     print(self.COLLECT_SENSOR_INPUTS)
