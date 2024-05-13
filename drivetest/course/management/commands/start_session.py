@@ -134,7 +134,7 @@ class Command(BaseCommand):
             STM_reader = STMReader()
             #STMreader =  DataGenerator.STMGenerator()
             lastSensorFeed = []
-            data = []
+            data = ['a']
             while True:
                 #if self.COLLECT_SENSOR_INPUTS:
                     # data = next(STMreader)
