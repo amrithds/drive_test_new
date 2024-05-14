@@ -5,8 +5,10 @@ from utils.model_util.base_model import BaseModel
 class TaskMetric(BaseModel):
     id = models.AutoField(primary_key = True)
     value = models.CharField(max_length=1024, default=None, blank=True)
-    min_range = models.CharField(max_length=100, default=None, blank=True)
-    max_range = models.CharField(max_length=100, default=None, blank=True)
+    left_min_range = models.CharField(max_length=100, default=None, blank=True)
+    left_max_range = models.CharField(max_length=100, default=None, blank=True)
+    right_min_range = models.CharField(max_length=100, default=None, blank=True)
+    right_max_range = models.CharField(max_length=100, default=None, blank=True)
     distance = models.CharField(max_length=100, default=None, blank=True)
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     message = models.CharField(max_length=1024, default='')

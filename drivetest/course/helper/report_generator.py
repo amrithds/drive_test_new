@@ -8,12 +8,18 @@ from report.models.final_report import FinalReport
 from course.models.task import Task
 from course.models.sensor_feed import SensorFeed
 from django.db.models import Min, Q, Max
+from operator import or_
 import datetime
 import logging
+
 logger = logging.getLogger("reportLog")
 
 @singleton
 class ReportGenerator():
+    DISTANCE_SENSOR_LEFT_ONLY = 0
+    DISTANCE_SENSOR_RIGHT_ONLY = 1
+    DISTANCE_SENSOR_LEFT_RIGHT = 2
+
     def __init__(self, session: Session) -> None:
         """init
         Args:
@@ -112,23 +118,75 @@ class ReportGenerator():
         if task_category == Task.TASK_TYPE_BOOLEAN:
             result = self.__booleanTasksResult(ObsTaskScore)
         elif task_category == Task.TASK_TYPE_PARKING:
-            result = self.__parkingTasksResult(ObsTaskScore, )
+            result = self.__parkingTasksResult(ObsTaskScore )
         elif task_category == Task.TASK_TYPE_SPEED:
             result = self.__speedResult()
         elif task_category == Task.TASK_TYPE_TURNING:
-            result = self.__turningTasksResult()
+            result = self.__turningTasksResult(ObsTaskScore)
 
         return result
         
-    def __parkingTasksResult(self, ObsTaskScore:ObstacleTaskScore):
-        left_range = ObsTaskScore.success_task_metrics.min_range
-        right_range = ObsTaskScore.success_task_metrics.max_range
-        sensor_ids = ObsTaskScore.task.sensor_id.split(",")
+    def __parkingTasksResult(self, obs_task_score:ObstacleTaskScore):
+        
+        sensor_ids = obs_task_score.task.sensor_id.split(",")
+        reverse_sensor_id = sensor_ids[2]
+        park_light_sensor_id = sensor_ids[3]
+
+        task_obj = obs_task_score.task
+
+        #either parking light or hand brake is enabled
+        latest_sensor_feeds = SensorFeed.objects.filter(Q({"obstacle_id": obs_task_score.obstacle_id}),or_(~Q(**{"%s" % reverse_sensor_id: '0'}),\
+                                                           ~Q(**{"%s" % park_light_sensor_id: '0'})))\
+                                                           .order_by('-created_at')[:1]
+        result = False
+        if latest_sensor_feeds:
+            #choose which calculation logic to use
+            dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_RIGHT
+
+            if task_obj.category == Task.TASK_TYPE_LEFT_PARKING:
+                dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_ONLY
+            elif task_obj.category == Task.TASK_TYPE_RIGHT_PARKING:
+                dis_sensor_calculation = self.DISTANCE_SENSOR_RIGHT_ONLY
+            
+            result = self.__distance_sensor_result(dis_sensor_calculation, latest_sensor_feeds, obs_task_score)
+        return result
+    
+    def __distance_sensor_result(self, sensor_calculation: int, sensor_feeds: SensorFeed, obs_task_score:ObstacleTaskScore\
+                               , left_sensor_id: str, right_sensor_id: str) -> bool:
+        
+        left_min_range = int(obs_task_score.success_task_metrics.left_min_range)
+        left_max_range = int(obs_task_score.success_task_metrics.left_max_range)
+        right_min_range = int(obs_task_score.success_task_metrics.right_min_range)
+        right_max_range = int(obs_task_score.success_task_metrics.right_max_range)
+
+        sensor_ids = obs_task_score.task.sensor_id.split(",")
         left_sensor_id = sensor_ids[0]
         right_sensor_id = sensor_ids[1]
-        filter_query = Q(**{"%s__lt" % left_sensor_id: left_range, "%s__lt" % right_sensor_id: right_range,\
-                             "obstacle_id": ObsTaskScore.obstacle_id })
-        return not SensorFeed.objects.filter(filter_query).exists()
+
+        result = False
+        for sensor_feed in sensor_feeds:
+            if sensor_calculation == self.DISTANCE_SENSOR_LEFT_ONLY:
+                    left_sensor_val = int(getattr(sensor_feed, left_sensor_id))
+                    if  left_min_range <= left_sensor_val and left_sensor_val <= left_max_range:
+                        result = True
+            elif sensor_calculation == self.DISTANCE_SENSOR_RIGHT_ONLY:
+                right_sensor_val = int(getattr(sensor_feed, right_sensor_id))
+                if right_min_range <= right_sensor_val and right_sensor_val  <= right_max_range:
+                    result = True
+            elif sensor_calculation == self.DISTANCE_SENSOR_LEFT_RIGHT:
+                
+                left_sensor_val = int(getattr(sensor_feed, left_sensor_id))
+                right_sensor_val = int(getattr(sensor_feed, right_sensor_id))
+                
+                if  left_min_range <= left_sensor_val and left_sensor_val <= left_max_range and \
+                    right_min_range <= right_sensor_val and right_sensor_val  <= right_max_range:
+                    result = True
+            
+            #break if one result is failed
+            if result == False:
+                break
+
+        return result
     
     def __speedResult(self, ObsTaskScore:ObstacleTaskScore):
         """Check if speed is in limit
@@ -163,15 +221,30 @@ class ReportGenerator():
 
         return result
 
-    def __turningTasksResult(self, ObsTaskScore:ObstacleTaskScore):
-        left_range = ObsTaskScore.success_task_metrics.range_1
-        right_range = ObsTaskScore.success_task_metrics.range_2
-        sensor_ids = ObsTaskScore.task.sensor_id.split(",")
-        left_sensor_id = sensor_ids[0]
-        right_sensor_id = sensor_ids[1]
-        filter_query = Q(**{"%s__lt" % left_sensor_id: left_range, "%s__lt" % right_sensor_id: right_range,\
-                             "obstacle_id": ObsTaskScore.obstacle_id })
-        return not SensorFeed.objects.filter(filter_query).exists()
+    def __turningTasksResult(self, obs_task_score:ObstacleTaskScore)->bool:
+        """Turing result calculator
+
+        Args:
+            obs_task_score (ObstacleTaskScore): _description_
+
+        Returns:
+            Bool: Boolean
+        """
+        dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_RIGHT
+        
+        task_category = obs_task_score.task.category
+
+        dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_RIGHT
+        if task_category == Task.TASK_TYPE_LEFT_TURNING:
+            dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_ONLY
+        elif task_category == Task.TASK_TYPE_RIGHT_TURNING:
+            dis_sensor_calculation = self.DISTANCE_SENSOR_RIGHT_ONLY
+        
+        filter_query = Q(**{ "obstacle_id": obs_task_score.obstacle_id })
+        sensor_feed = SensorFeed.objects.filter(filter_query)
+        result = self.__distance_sensor_result(dis_sensor_calculation, sensor_feed, obs_task_score)
+        
+        return result
 
     def __booleanTasksResult(self, ObsTaskScore:ObstacleTaskScore) -> bool:
         success_value = ObsTaskScore.success_task_metrics.value

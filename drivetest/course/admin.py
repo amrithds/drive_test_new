@@ -22,7 +22,7 @@ class TaskAdmin(admin.ModelAdmin):
 
 class TaskMetricAdmin(admin.ModelAdmin):
     ordering = ['-task', 'value']
-    list_display = [ 'task','value', 'min_range', "max_range", "distance", 'message' ]
+    list_display = [ 'task','value', 'left_min_range', "left_max_range", 'right_min_range', "right_max_range", "distance", 'message' ]
 
 class ObstacleTaskScoreAdmin(admin.ModelAdmin):
     list_display = ['obstacle', 'success_task_metrics', 'score', 'is_mandatory', 'description' ]
