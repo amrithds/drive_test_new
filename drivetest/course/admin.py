@@ -25,6 +25,7 @@ class TaskMetricAdmin(admin.ModelAdmin):
     list_display = [ 'task','value', 'left_min_range', "left_max_range", 'right_min_range', "right_max_range", "distance", 'message' ]
 
 class ObstacleTaskScoreAdmin(admin.ModelAdmin):
+    ordering = ['obstacle', 'score', 'is_mandatory']
     list_display = ['obstacle', 'success_task_metrics', 'score', 'is_mandatory', 'description' ]
 
 class ObstacleSessionTrackerAdmin(admin.ModelAdmin):
