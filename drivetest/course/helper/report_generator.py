@@ -47,7 +47,8 @@ class ReportGenerator():
                     
                     result = self.__getResult(ObsTaskScore)
                     
-                    logger.info(ObsTaskScore.task.name + ' : '+ result)
+                    logger.info(ObsTaskScore.task.name )
+                    logger.info(result )
                     if result is True and sessionTaskReport.result != SessionReport.RESULT_PASS:
                         print('result', result, ObsTaskScore.obstacle, ObsTaskScore.task)
                         sessionTaskReport.result = SessionReport.RESULT_PASS
