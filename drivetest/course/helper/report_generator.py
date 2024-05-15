@@ -135,15 +135,16 @@ class ReportGenerator():
     def __parkingTasksResult(self, obs_task_score:ObstacleTaskScore):
         
         sensor_ids = obs_task_score.task.sensor_id.split(",")
-        reverse_sensor_id = sensor_ids[2]
+        hand_brake_sensor_id = sensor_ids[2]
         park_light_sensor_id = sensor_ids[3]
 
         task_obj = obs_task_score.task
 
         #either parking light or hand brake is enabled
-        latest_sensor_feeds = SensorFeed.objects.filter(Q({"obstacle_id": obs_task_score.obstacle_id}),or_(~Q(**{"%s" % reverse_sensor_id: '0'}),\
-                                                           ~Q(**{"%s" % park_light_sensor_id: '0'})))\
-                                                           .order_by('-created_at')[:1]
+        filter = Q(obstacle_id= obs_task_score.obstacle_id) & Q(~Q(**{"%s" % hand_brake_sensor_id: 0}) | ~Q(**{"%s" % park_light_sensor_id: 0}))
+        # ,or_(~Q(**{"%s" % reverse_sensor_id: '0'}),\
+        #                                                    ~Q(**{"%s" % park_light_sensor_id: '0'}))
+        latest_sensor_feeds = SensorFeed.objects.filter(filter).order_by('-created_at')[:1]
         result = False
         if latest_sensor_feeds:
             #choose which calculation logic to use
