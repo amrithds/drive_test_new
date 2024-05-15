@@ -95,9 +95,13 @@ DATABASES = {
     "ENGINE": "django.db.backends.mysql",
     "NAME": "driver_test",
     "USER":"root",
+    #"PASSWORD":"rootpass",
     "PASSWORD":"F2s@btm2",
     "HOST":"127.0.0.1",
     "PORT":"3306",
+    "OPTIONS" : {
+            "init_command": "SET foreign_key_checks = 0;",
+        }
     }
 }
 
@@ -221,3 +225,7 @@ LOGIN_REDIRECT_URL="index"
 APPEND_SLASH=True
 
 SESSION_COOKIE_SECURE=False
+LIST_PER_PAGE = 5
+PAGINATE_BY=5
+#get data from data generator
+ENABLE_DATA_GENERATOR = True
