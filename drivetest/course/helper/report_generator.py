@@ -44,10 +44,11 @@ class ReportGenerator():
                 for sessionTaskReport in sessionTaskReports:
                     task_metric = TaskMetric.objects.get(obstacle_id=sessionTaskReport.obstacle_id\
                                                       , task_id=sessionTaskReport.task_id)
-                    
+                    print(task_metric)
                     ObsTaskScore = ObstacleTaskScore.objects.get(obstacle_id=sessionTaskReport.obstacle_id\
                                                       , task_metric_id=task_metric.id)
-                    
+                    print(ObsTaskScore)
+                    print('here')
                     result = self.__getResult(ObsTaskScore)
                     
                     if result is True and sessionTaskReport.result != SessionReport.RESULT_PASS:
