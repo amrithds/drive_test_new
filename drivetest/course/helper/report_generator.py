@@ -42,8 +42,7 @@ class ReportGenerator():
                 sessionTaskReports = SessionReport.objects.filter(obstacle_id=OSTracker.obstacle_id)
                 
                 for sessionTaskReport in sessionTaskReports:
-                    task_metric = TaskMetric.objects.get(obstacle_id=sessionTaskReport.obstacle_id\
-                                                      , task_id=sessionTaskReport.task_id)
+                    task_metric = TaskMetric.objects.get(task_id=sessionTaskReport.task_id)
                     print(task_metric)
                     ObsTaskScore = ObstacleTaskScore.objects.get(obstacle_id=sessionTaskReport.obstacle_id\
                                                       , task_metric_id=task_metric.id)
