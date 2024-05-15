@@ -50,10 +50,10 @@ class ReportGenerator():
                     if result is True and sessionTaskReport.result != SessionReport.RESULT_PASS:
                         print('result', result, ObsTaskScore.obstacle, ObsTaskScore.task)
                         sessionTaskReport.result = SessionReport.RESULT_PASS
-                        sessionTaskReport.remark = ObsTaskScore.success_task_metrics.message
+                        sessionTaskReport.remark = ObsTaskScore.task_metrics.success_message
                     elif sessionTaskReport.result != SessionReport.RESULT_FAIL:
                         sessionTaskReport.result = SessionReport.RESULT_FAIL
-                        sessionTaskReport.remark = TaskM
+                        sessionTaskReport.remark = ObsTaskScore.task_metrics.failure_message
                     sessionTaskReport.save()
 
                 #when task is complted then stop generating report 
@@ -156,10 +156,10 @@ class ReportGenerator():
     def __distance_sensor_result(self, sensor_calculation: int, sensor_feeds: SensorFeed, obs_task_score:ObstacleTaskScore\
                                , left_sensor_id: str, right_sensor_id: str) -> bool:
         
-        left_min_range = int(obs_task_score.success_task_metrics.left_min_range)
-        left_max_range = int(obs_task_score.success_task_metrics.left_max_range)
-        right_min_range = int(obs_task_score.success_task_metrics.right_min_range)
-        right_max_range = int(obs_task_score.success_task_metrics.right_max_range)
+        left_min_range = int(obs_task_score.task_metrics.left_min_range)
+        left_max_range = int(obs_task_score.task_metrics.left_max_range)
+        right_min_range = int(obs_task_score.task_metrics.right_min_range)
+        right_max_range = int(obs_task_score.task_metrics.right_max_range)
 
         sensor_ids = obs_task_score.task.sensor_id.split(",")
         left_sensor_id = sensor_ids[0]
@@ -205,8 +205,8 @@ class ReportGenerator():
                                     last_date=Max("created_at"))
         first_date = dates.first_date
         last_date = dates.last_date
-        average_distance = ObsTaskScore.success_task_metrics.distance
-        speed_limit = ObsTaskScore.success_task_metrics.value
+        average_distance = ObsTaskScore.task_metrics.distance
+        speed_limit = ObsTaskScore.task_metrics.success_value
         #date format from db
         datetime_format = '%Y-%m-%dT%H:%M:%S.%f'
         #speed = distance / time taken
@@ -249,7 +249,7 @@ class ReportGenerator():
         return result
 
     def __booleanTasksResult(self, ObsTaskScore:ObstacleTaskScore) -> bool:
-        success_value = ObsTaskScore.success_task_metrics.value
+        success_value = ObsTaskScore.task_metrics.success_value
         sensor_id = ObsTaskScore.task.sensor_id
         filter_query = Q(**{"%s" % sensor_id: success_value, "obstacle_id": ObsTaskScore.obstacle_id })
         return SensorFeed.objects.filter(filter_query).exists()
