@@ -79,7 +79,7 @@ class ReportGenerator():
                                , "score": 0 }
                 
                 obs_task_score = ObstacleTaskScore.objects.get(obstacle_id=session_task_report.obstacle_id\
-                                                               , task_id=session_task_report.task_id)
+                                                               , task_id=session_task_report.task_metrics.task_id)
                 
                 if session_task_report.result == SessionReport.RESULT_PASS:
                     task_report_json.score = obs_task_score.score
@@ -104,7 +104,7 @@ class ReportGenerator():
         OTScores = ObstacleTaskScore.objects.all()
         
         for OTScore in OTScores:
-            SessionReport.objects.create(obstacle_id=OTScore.obstacle_id, task_id=OTScore.task_id)
+            SessionReport.objects.create(obstacle_id=OTScore.obstacle_id, task_id=OTScore.task_metrics.task_id)
     
     def __getResult(self, ObsTaskScore: ObstacleTaskScore) -> bool:
         """Gets task result in each obstacle based on Success task metrics
