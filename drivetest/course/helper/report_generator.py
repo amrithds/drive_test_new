@@ -160,10 +160,10 @@ class ReportGenerator():
     
     def __distance_sensor_result(self, sensor_calculation: int, sensor_feeds: SensorFeed, obs_task_score:ObstacleTaskScore) -> bool:
         
-        left_min_range = int(obs_task_score.task_metrics.left_min_range)
-        left_max_range = int(obs_task_score.task_metrics.left_max_range)
-        right_min_range = int(obs_task_score.task_metrics.right_min_range)
-        right_max_range = int(obs_task_score.task_metrics.right_max_range)
+        left_min_range = obs_task_score.task_metrics.left_min_range
+        left_max_range = obs_task_score.task_metrics.left_max_range
+        right_min_range = obs_task_score.task_metrics.right_min_range
+        right_max_range = obs_task_score.task_metrics.right_max_range
 
         sensor_ids = obs_task_score.task.sensor_id.split(",")
         left_sensor_id = sensor_ids[0]
@@ -171,18 +171,15 @@ class ReportGenerator():
 
         result = False
         for sensor_feed in sensor_feeds:
+            left_sensor_val = getattr(sensor_feed, left_sensor_id)
+            right_sensor_val = getattr(sensor_feed, right_sensor_id)
             if sensor_calculation == self.DISTANCE_SENSOR_LEFT_ONLY:
-                    left_sensor_val = int(getattr(sensor_feed, left_sensor_id))
                     if  left_min_range <= left_sensor_val and left_sensor_val <= left_max_range:
                         result = True
             elif sensor_calculation == self.DISTANCE_SENSOR_RIGHT_ONLY:
-                right_sensor_val = int(getattr(sensor_feed, right_sensor_id))
                 if right_min_range <= right_sensor_val and right_sensor_val  <= right_max_range:
                     result = True
             elif sensor_calculation == self.DISTANCE_SENSOR_LEFT_RIGHT:
-                
-                left_sensor_val = int(getattr(sensor_feed, left_sensor_id))
-                right_sensor_val = int(getattr(sensor_feed, right_sensor_id))
                 
                 if  left_min_range <= left_sensor_val and left_sensor_val <= left_max_range and \
                     right_min_range <= right_sensor_val and right_sensor_val  <= right_max_range:
