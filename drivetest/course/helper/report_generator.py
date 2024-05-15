@@ -42,8 +42,11 @@ class ReportGenerator():
                 sessionTaskReports = SessionReport.objects.filter(obstacle_id=OSTracker.obstacle_id)
                 
                 for sessionTaskReport in sessionTaskReports:
-                    ObsTaskScore = ObstacleTaskScore.objects.get(obstacle_id=sessionTaskReport.obstacle_id\
+                    task_metric = TaskMetric.objects.get(obstacle_id=sessionTaskReport.obstacle_id\
                                                       , task_id=sessionTaskReport.task_id)
+                    
+                    ObsTaskScore = ObstacleTaskScore.objects.get(obstacle_id=sessionTaskReport.obstacle_id\
+                                                      , task_metric_id=task_metric.id)
                     
                     result = self.__getResult(ObsTaskScore)
                     
@@ -79,7 +82,7 @@ class ReportGenerator():
                                , "score": 0 }
                 
                 obs_task_score = ObstacleTaskScore.objects.get(obstacle_id=session_task_report.obstacle_id\
-                                                               , task_id=session_task_report.task_metrics.task_id)
+                                                               , task_metric=session_task_report.task.task_metrics.id)
                 
                 if session_task_report.result == SessionReport.RESULT_PASS:
                     task_report_json.score = obs_task_score.score
