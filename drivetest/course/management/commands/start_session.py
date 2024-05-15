@@ -69,7 +69,7 @@ class Command(BaseCommand):
             report_generotor = ReportGenerator(self.SESSION)
             report_generotor.generateReport()
         except Exception as e:
-            report_logger.error("Error: "+str(e))
+            report_logger.exception("Error: "+str(e))
 
     def readRFIDInputs(self):
         """
