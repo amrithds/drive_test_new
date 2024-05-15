@@ -158,8 +158,7 @@ class ReportGenerator():
             result = self.__distance_sensor_result(dis_sensor_calculation, latest_sensor_feeds, obs_task_score)
         return result
     
-    def __distance_sensor_result(self, sensor_calculation: int, sensor_feeds: SensorFeed, obs_task_score:ObstacleTaskScore\
-                               , left_sensor_id: str, right_sensor_id: str) -> bool:
+    def __distance_sensor_result(self, sensor_calculation: int, sensor_feeds: SensorFeed, obs_task_score:ObstacleTaskScore) -> bool:
         
         left_min_range = int(obs_task_score.task_metrics.left_min_range)
         left_max_range = int(obs_task_score.task_metrics.left_max_range)
