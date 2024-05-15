@@ -4,6 +4,7 @@ from course.models.obstacle_task_score import ObstacleTaskScore
 from course.models.obstacle import Obstacle
 from report.models.session_report import SessionReport
 from course.models.session import Session
+from course.models.task_metrics import TaskMetric
 from report.models.final_report import FinalReport 
 from course.models.task import Task
 from course.models.sensor_feed import SensorFeed
@@ -46,12 +47,13 @@ class ReportGenerator():
                     
                     result = self.__getResult(ObsTaskScore)
                     
-                    if result is True:
+                    if result is True and sessionTaskReport.result != SessionReport.RESULT_PASS:
                         print('result', result, ObsTaskScore.obstacle, ObsTaskScore.task)
                         sessionTaskReport.result = SessionReport.RESULT_PASS
-                    else:
+                        sessionTaskReport.remark = ObsTaskScore.success_task_metrics.message
+                    elif sessionTaskReport.result != SessionReport.RESULT_FAIL:
                         sessionTaskReport.result = SessionReport.RESULT_FAIL
-                    sessionTaskReport.remark = ObsTaskScore.success_task_metrics.message
+                        sessionTaskReport.remark = TaskM
                     sessionTaskReport.save()
 
                 #when task is complted then stop generating report 

@@ -11,7 +11,8 @@ class TaskMetric(BaseModel):
     right_max_range = models.CharField(max_length=100, default=None, blank=True)
     distance = models.CharField(max_length=100, default=None, blank=True)
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
-    message = models.CharField(max_length=1024, default='')
+    success_message = models.CharField(max_length=1024, default='')
+    failure_message = models.CharField(max_length=1024, default='')
 
     class Meta:
         db_table = "course_task_metric"
