@@ -49,13 +49,13 @@ class ReportGenerator():
                     
                     logger.info(ObsTaskScore.task.name )
                     logger.info(result )
-                    if result is True and sessionTaskReport.result != SessionReport.RESULT_PASS:
+                    if result is True:
                         print('result', result, ObsTaskScore.obstacle, ObsTaskScore.task)
                         sessionTaskReport.result = SessionReport.RESULT_PASS
                         sessionTaskReport.remark = ObsTaskScore.task_metrics.success_message
                     else:
-                        if sessionTaskReport.task.name == "Seat Belt" and sessionTaskReport.result == SessionReport.RESULT_PASS:
-                            print(result, sessionTaskReport, ObsTaskScore)
+                        # if sessionTaskReport.task.name == "Seat Belt" and sessionTaskReport.result == SessionReport.RESULT_PASS:
+                        #     print(result, sessionTaskReport, ObsTaskScore)
                         sessionTaskReport.result = SessionReport.RESULT_FAIL
                         sessionTaskReport.remark = ObsTaskScore.task_metrics.failure_message
                     sessionTaskReport.save()
