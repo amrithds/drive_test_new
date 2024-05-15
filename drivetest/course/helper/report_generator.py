@@ -54,6 +54,8 @@ class ReportGenerator():
                         sessionTaskReport.result = SessionReport.RESULT_PASS
                         sessionTaskReport.remark = ObsTaskScore.task_metrics.success_message
                     elif sessionTaskReport.result != SessionReport.RESULT_FAIL:
+                        if sessionTaskReport.task.name == "Seat Belt" and sessionTaskReport.result == SessionReport.RESULT_PASS:
+                            print(result, sessionTaskReport, ObsTaskScore)
                         sessionTaskReport.result = SessionReport.RESULT_FAIL
                         sessionTaskReport.remark = ObsTaskScore.task_metrics.failure_message
                     sessionTaskReport.save()
