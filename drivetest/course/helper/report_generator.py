@@ -43,9 +43,9 @@ class ReportGenerator():
                 
                 for sessionTaskReport in sessionTaskReports:
                     task_metric = TaskMetric.objects.get(task_id=sessionTaskReport.task_id)
-                    print(task_metric)
+                    
                     ObsTaskScore = ObstacleTaskScore.objects.get(obstacle_id=sessionTaskReport.obstacle_id\
-                                                      , task_metric_id=task_metric.id)
+                                                      , task_metrics_id=task_metric.id)
                     print(ObsTaskScore)
                     print('here')
                     result = self.__getResult(ObsTaskScore)
@@ -81,8 +81,8 @@ class ReportGenerator():
                 task_report_json = {"task":session_task_report.task.name, "result" : SessionReport.RESULTS[session_task_report.result]\
                                , "score": 0 }
                 
-                obs_task_score = ObstacleTaskScore.objects.get(obstacle_id=session_task_report.obstacle_id\
-                                                               , task_metric=session_task_report.task.task_metrics.id)
+                obs_task_score = ObstacleTaskScore.objects.get(obstacle_id=session_task_report.obstacle_id)
+                                                              # , task_metric=session_task_report.task.task_metrics.id)
                 
                 if session_task_report.result == SessionReport.RESULT_PASS:
                     task_report_json.score = obs_task_score.score
