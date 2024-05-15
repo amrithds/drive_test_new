@@ -24,27 +24,47 @@ class Migration(migrations.Migration):
             name='success_value',
             field=models.IntegerField(blank=True, null=True),
         ),
-        migrations.AlterField(
+        migrations.RemoveField(
+            model_name='taskmetric',
+            name='distance',
+        ),
+        migrations.AddField(
             model_name='taskmetric',
             name='distance',
             field=models.IntegerField(blank=True, null=True),
         ),
-        migrations.AlterField(
+        migrations.RemoveField(
+            model_name='taskmetric',
+            name='left_max_range',
+        ),
+        migrations.AddField(
             model_name='taskmetric',
             name='left_max_range',
             field=models.IntegerField(blank=True, null=True),
         ),
-        migrations.AlterField(
+        migrations.RemoveField(
+            model_name='taskmetric',
+            name='left_min_range',
+        ),
+        migrations.AddField(
             model_name='taskmetric',
             name='left_min_range',
             field=models.IntegerField(blank=True, null=True),
         ),
-        migrations.AlterField(
+        migrations.RemoveField(
+            model_name='taskmetric',
+            name='right_max_range',
+        ),
+        migrations.AddField(
             model_name='taskmetric',
             name='right_max_range',
             field=models.IntegerField(blank=True, null=True),
         ),
-        migrations.AlterField(
+        migrations.RemoveField(
+            model_name='taskmetric',
+            name='right_min_range',
+        ),
+        migrations.AddField(
             model_name='taskmetric',
             name='right_min_range',
             field=models.IntegerField(blank=True, null=True),
