@@ -19,4 +19,4 @@ class TaskMetric(BaseModel):
         db_table = "course_task_metric"
     
     def __str__(self) -> str:
-        return f"{self.task} {self.value}"
+        return f"{self.task} : {self.success_value} - {self.failure_value}"
