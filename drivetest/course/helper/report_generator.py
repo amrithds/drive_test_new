@@ -64,9 +64,8 @@ class ReportGenerator():
                 if OSTracker.status == ObstacleSessionTracker.STATUS_COMPLETED:
                     OSTracker.report_status = ObstacleSessionTracker.STATUS_COMPLETED
                     OSTracker.save()
-    
-    @classmethod 
-    def generateFinalReport(cls):
+
+    def generateFinalReport(self):
         """
         Generate final report from session data feed
         """
@@ -74,7 +73,7 @@ class ReportGenerator():
 
         for obstacle in obstacles:
             final_report = FinalReport.objects.create(obstacle=obstacle, data={})
-            session_task_reports = SessionReport.objects.filter(obstacle_id=obstacle.obstacle_id).order_by('obstacle_id', 'task_id')
+            session_task_reports = SessionReport.objects.filter(obstacle_id=obstacle.id).order_by('obstacle_id', 'task_id')
             #init obstacle level report
             data = []
             total_obs_score = 0
@@ -86,7 +85,7 @@ class ReportGenerator():
                                                                , task_id=session_task_report.task_id)
                 
                 if session_task_report.result == SessionReport.RESULT_PASS:
-                    task_report_json.score = obs_task_score.score
+                    task_report_json['score'] = obs_task_score.score
                     total_obs_score += obs_task_score.score
                 else:
                     if obs_task_score.is_mandatory:

@@ -16,25 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework import routers
-from course import views
-
-router = routers.DefaultRouter()
-router.register(r'user', views.UserViewSet)
-router.register(r'course', views.CourseViewSet)
-
+from course.views import index
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 
 urlpatterns = [
-    path('test/', views.test,name='test'),
     path('api-auth/', include('rest_framework.urls')),
     path('admin/', admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
-    path('course/start_session/', views.start_session),
-    path('v1/', include(router.urls)),
-    # path('/',views.index,name='home'),
-    path('',views.index,name='index'),
+    path('v1/course/', include('course.urls')),
+    path('', index, name='home')
 ]
 
 admin.site.site_header = "Driving School Admin"

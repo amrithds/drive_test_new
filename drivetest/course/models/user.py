@@ -25,6 +25,7 @@ class User(AbstractUser, BaseModel):
         },
         default=random_name
     )
+    serial_no = models.IntegerField(default=None, null=True, blank=True)
     unique_ref_id=models.CharField(max_length=100, default='superuser')
     course=models.ForeignKey(Course, on_delete=models.CASCADE, blank=True, null=True)
     rank=models.CharField(max_length=50, choices=(
@@ -52,6 +53,7 @@ class User(AbstractUser, BaseModel):
     REQUIRED_FIELDS = ['unique_ref_id']
     class Meta:
         unique_together = ('course', 'unique_ref_id')
+        #unique_together = ('course', 'unique_ref_id')
     
     def __str__(self) -> str:
         return self.name

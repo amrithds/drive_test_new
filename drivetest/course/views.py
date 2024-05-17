@@ -38,19 +38,19 @@ class UserViewSet(viewsets.ModelViewSet):
         """
         queryset = User.objects.all()
         course_name = (self.request.query_params.get('course_id', None)).strip()
-        unique_ref_id = self.request.query_params.get('unique_ref_id', None)
+        search_id = self.request.query_params.get('search_id', None)
         user_type = self.request.query_params.get('type', None)
         course = None
         if course_name is not None and course_name != '':
             course = Course.objects.get(name=course_name)
-        if unique_ref_id is not None:
-            #ilike
-            queryset = queryset.filter(Q(unique_ref_id__contains=unique_ref_id))
+        if search_id is not None:
+            #ilike serial_no or unique_ref_id
+            queryset = queryset.filter(Q(unique_ref_id__contains=search_id) | Q(serial_no__contains=search_id))
         if user_type is not None:
             queryset = queryset.filter(type=user_type)
         if course is not None:
             queryset = queryset.filter(course_id=course.id)
-        print(queryset.query, unique_ref_id)
+        print(queryset.query, search_id)
         return queryset
         
 
@@ -76,10 +76,9 @@ def start_session(request):
     trainee_id = request.GET['traineeId']
     mode = request.GET['mode']
 
-    sessionObj = createSession( trainer_id, trainee_id, mode, course_id)
-    p = subprocess.Popen(['python', 'manage.py', f'start_session -i {trainer_id} -s {trainee_id} -ses {sessionObj.id} -m {mode}'])
-    sessionObj.pid = p.id
-    sessionObj.save()
+    #p = subprocess.Popen(['python', 'manage.py', f'start_session -i {trainer_id} -s {trainee_id} -ses {sessionObj.id} -m {mode}'])
+    p = subprocess.Popen(['python', 'manage.py', f'test'])
+    sessionObj = createSession( trainer_id, trainee_id, mode, course_id, p.pid)
 
     return JsonResponse({'session_id': sessionObj.id}, status=200)
 
@@ -88,7 +87,8 @@ def stop_session(request):
     try:
         session_id = request.GET['session_id']
         sessionObj = Session.objects.get(id=session_id)
-        ReportGenerator.generateFinalReport()
+        report_gen = ReportGenerator(sessionObj)
+        report_gen.generateFinalReport()
         p = psutil.Process(sessionObj.pid)
         p.terminate()
 
