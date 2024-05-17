@@ -36,11 +36,12 @@ class UserViewSet(viewsets.ModelViewSet):
         """
         """
         queryset = User.objects.all()
-        course_name = (self.request.query_params.get('course_id', None)).strip()
+        course_name = self.request.query_params.get('course_id', None)
         search_id = self.request.query_params.get('search_id', None)
         user_type = self.request.query_params.get('type', None)
         course = None
         if course_name is not None and course_name != '':
+            course_name = course_name.strip()
             course = Course.objects.get(name=course_name)
         if search_id is not None:
             #ilike serial_no or unique_ref_id
