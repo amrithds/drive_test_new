@@ -12,9 +12,8 @@ import subprocess
 import psutil
 from course.helper.start_session_helper import createSession
 from course.helper.report_generator import ReportGenerator
-#from rest_framework.response import Response
-#from django.utils.six import StringIO
-# Create your views here.
+import logging
+logger = logging.getLogger("default")
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-created_at')
@@ -71,16 +70,20 @@ def test(request):
 
 @login_required
 def start_session(request):
-    course_id = request.GET['courseId']
-    trainer_id = request.GET['trainerId']
-    trainee_id = request.GET['traineeId']
-    mode = request.GET['mode']
+    try:
+        course_id = request.GET['courseId']
+        trainer_id = request.GET['trainerId']
+        trainee_id = request.GET['traineeId']
+        mode = request.GET['mode']
 
-    #p = subprocess.Popen(['python', 'manage.py', f'start_session -i {trainer_id} -s {trainee_id} -ses {sessionObj.id} -m {mode}'])
-    p = subprocess.Popen(['python', 'manage.py', f'test'])
-    sessionObj = createSession( trainer_id, trainee_id, mode, course_id, p.pid)
+        #p = subprocess.Popen(['python', 'manage.py', f'start_session -i {trainer_id} -s {trainee_id} -ses {sessionObj.id} -m {mode}'])
+        p = subprocess.Popen(['python', 'manage.py', f'test'])
+        sessionObj = createSession( trainer_id, trainee_id, mode, course_id, p.pid)
 
-    return JsonResponse({'session_id': sessionObj.id}, status=200)
+        return JsonResponse({'session_id': sessionObj.id}, status=200)
+    except Exception as e:
+        logger.exception(e)
+        return JsonResponse({'message': str(e)}, status=500)
 
 @login_required
 def stop_session(request):
@@ -92,8 +95,12 @@ def stop_session(request):
         p = psutil.Process(sessionObj.pid)
         p.terminate()
 
+        sessionObj.status = Session.STATUS_COMPELETED
+        sessionObj.save()
+
         return JsonResponse({'session_id': sessionObj.id}, status=200)
     except Exception as e:
+        logger.exception(e)
         return JsonResponse({'message': str(e)}, status=500)
 
 
