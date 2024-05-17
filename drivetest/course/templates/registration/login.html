@@ -14,7 +14,6 @@
 {% endif %}
 <form action="{% url 'login' %}" method="POST">
     <!-- Email input -->
-    {% csrf_token %}
     <div data-mdb-input-init class="form-outline mb-4">
       <input type="text" id="username" name="username" class="form-control" />
       <label class="form-label" for="username">Username</label>

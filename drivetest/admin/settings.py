@@ -60,7 +60,8 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
+    'course.middleware.DisableCSRFMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -95,8 +96,8 @@ DATABASES = {
     "ENGINE": "django.db.backends.mysql",
     "NAME": "driver_test",
     "USER":"root",
-    #"PASSWORD":"rootpass",
-    "PASSWORD":"F2s@btm2",
+    "PASSWORD":"rootpass",
+    #"PASSWORD":"F2s@btm2",
     "HOST":"127.0.0.1",
     "PORT":"3306",
     "OPTIONS" : {
@@ -221,7 +222,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'course.User'
-LOGIN_REDIRECT_URL="index"
+LOGIN_REDIRECT_URL="/"
 APPEND_SLASH=True
 
 SESSION_COOKIE_SECURE=False
