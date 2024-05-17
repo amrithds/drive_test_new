@@ -54,6 +54,7 @@ class User(AbstractUser, BaseModel):
     class Meta:
         unique_together = ('course', 'unique_ref_id')
         #unique_together = ('course', 'unique_ref_id')
+        ordering = ['-created_at']
     
     def __str__(self) -> str:
         return self.name
