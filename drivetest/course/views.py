@@ -9,9 +9,13 @@ from django.db.models import Q
 from .models.session import Session
 from django.http import JsonResponse 
 import subprocess
-import psutil
+from course.helper import process_helper
 from course.helper.start_session_helper import createSession
 from course.helper.report_generator import ReportGenerator
+from django.contrib.auth import authenticate, login
+from django.http import HttpResponse, HttpResponseBadRequest
+from django.views.decorators.http import require_http_methods
+import json
 import logging
 logger = logging.getLogger("default")
 
@@ -58,6 +62,35 @@ class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all().order_by('-created_at')
     serializer_class = CourseSerializer
 
+@require_http_methods(["POST"])
+def user_login(request):
+    if request.method == 'POST':
+        
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '').strip()
+        print('here',password, username)
+        if username and password:
+            # Test username/password combination
+            user = authenticate(username=username, password=password)
+            # Found a match
+            if user is not None:
+                # User is active
+                if user.is_active:
+                    # Officially log the user in
+                    login(request, user)
+                    from django.forms.models import model_to_dict
+                    user_data = {'name': user.name}
+                    data = {'success': True, 'user': user_data}
+                else:
+                    data = {'success': False, 'error': 'User is not active'}
+            else:
+                data = {'success': False, 'error': 'Wrong username and/or password'}
+
+            return HttpResponse(json.dumps(data), content_type='application/json')
+
+    # Request method is not POST or one of username or password is missing
+    return HttpResponseBadRequest() 
+
 @login_required
 def index(request):
     return render(request,'index/index.html')
@@ -93,8 +126,8 @@ def stop_session(request):
         sessionObj = Session.objects.get(id=session_id)
         report_gen = ReportGenerator(sessionObj)
         report_gen.generateFinalReport()
-        p = psutil.Process(sessionObj.pid)
-        p.terminate()
+        
+        process_helper.stop_process(sessionObj.pid)
 
         sessionObj.status = Session.STATUS_COMPELETED
         sessionObj.save()
