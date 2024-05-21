@@ -6,6 +6,15 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.utils.translation import gettext_lazy as _
 import random
 import datetime
+from django.conf import settings
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from rest_framework.authtoken.models import Token
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
 
 class User(AbstractUser, BaseModel):
     username_validator = UnicodeUsernameValidator()
@@ -57,4 +66,4 @@ class User(AbstractUser, BaseModel):
         ordering = ['-created_at']
     
     def __str__(self) -> str:
-        return self.name
+        return f"{self.name}  {self.first_name} {self.last_name}"

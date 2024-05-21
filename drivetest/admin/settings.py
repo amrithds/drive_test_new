@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'rest_framework',
+    'rest_framework.authtoken',
+    'corsheaders',
     'course',
     'report'
 ]
@@ -47,14 +49,20 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ],
     'PAGE_SIZE': 10,
     
 }
+
+CORS_ALLOWED_ORIGINS = [
+   "http://localhost:4200",
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -65,6 +73,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'admin.urls'
@@ -96,8 +105,8 @@ DATABASES = {
     "ENGINE": "django.db.backends.mysql",
     "NAME": "driver_test",
     "USER":"root",
-    "PASSWORD":"rootpass",
-    #"PASSWORD":"F2s@btm2",
+    #"PASSWORD":"rootpass",
+    "PASSWORD":"F2s@btm2",
     "HOST":"127.0.0.1",
     "PORT":"3306",
     "OPTIONS" : {
@@ -222,11 +231,9 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'course.User'
-LOGIN_REDIRECT_URL="/"
+# LOGIN_REDIRECT_URL="/"
 APPEND_SLASH=True
 
 SESSION_COOKIE_SECURE=False
 LIST_PER_PAGE = 5
 PAGINATE_BY=5
-#get data from data generator
-ENABLE_DATA_GENERATOR = True

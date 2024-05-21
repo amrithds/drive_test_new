@@ -1,7 +1,9 @@
 from .models import User
 from .models import Course
+from .models import Obstacle
 from .serializers import UserSerializer
 from .serializers import CourseSerializer
+from .serializers import SessionSerializer
 from rest_framework import viewsets
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
@@ -15,6 +17,12 @@ from course.helper.report_generator import ReportGenerator
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_http_methods
+from django.utils.decorators import method_decorator
+from django.contrib.auth import logout
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 import json
 import logging
 logger = logging.getLogger("default")
@@ -22,7 +30,9 @@ logger = logging.getLogger("default")
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-created_at')
     serializer_class = UserSerializer
-
+    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    
     def create(self, request):
         request.data._mutable=True
         post_data = request.data
@@ -56,16 +66,39 @@ class UserViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(course_id=course.id)
         print(queryset.query, search_id)
         return queryset
-        
+
+class UserLogIn(ObtainAuthToken):
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token = Token.objects.get(user=user)
+        return HttpResponse(json.dumps({
+            'token': token.key,
+            'id': user.pk,
+            'username': user.username
+        }), content_type='application/json')
 
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all().order_by('-created_at')
     serializer_class = CourseSerializer
+    permission_classes = [IsAuthenticated]
+
+class ObstacleViewSet(viewsets.ModelViewSet):
+    queryset = Obstacle.objects.all().order_by('created_at')
+    serializer_class = CourseSerializer
+    permission_classes = [IsAuthenticated]
+
+class SessionViewSet(viewsets.ModelViewSet):
+    queryset = Session.objects.all().order_by('-created_at')
+    serializer_class = SessionSerializer
+    permission_classes = [IsAuthenticated]
 
 @require_http_methods(["POST"])
 def user_login(request):
     if request.method == 'POST':
-        
         username = request.POST.get('username', '').strip()
         password = request.POST.get('password', '').strip()
         print('here',password, username)
@@ -78,9 +111,9 @@ def user_login(request):
                 if user.is_active:
                     # Officially log the user in
                     login(request, user)
-                    from django.forms.models import model_to_dict
+                    
                     user_data = {'name': user.name}
-                    data = {'success': True, 'user': user_data}
+                    data = {'success': True, 'user': json.dumps(user_data)}
                 else:
                     data = {'success': False, 'error': 'User is not active'}
             else:
@@ -90,6 +123,12 @@ def user_login(request):
 
     # Request method is not POST or one of username or password is missing
     return HttpResponseBadRequest() 
+
+@login_required
+def user_logout(request):
+    logout(request)
+    data = {'success': True}
+    return HttpResponse(json.dumps(data), content_type='application/json')
 
 @login_required
 def index(request):
@@ -105,13 +144,13 @@ def test(request):
 @login_required
 def start_session(request):
     try:
-        course_id = request.GET['courseId']
-        trainer_id = request.GET['trainerId']
-        trainee_id = request.GET['traineeId']
+        course_id = request.GET['course_id']
+        trainer_id = request.GET['trainer_id']
+        trainee_id = request.GET['trainee_id']
         mode = request.GET['mode']
 
-        #p = subprocess.Popen(['python', 'manage.py', f'start_session -i {trainer_id} -s {trainee_id} -ses {sessionObj.id} -m {mode}'])
-        p = subprocess.Popen(['python', 'manage.py', f'test'])
+        p = subprocess.Popen(['python', 'manage.py', f'start_session -i {trainer_id} -s {trainee_id} -ses {sessionObj.id} -m {mode}'])
+        #p = subprocess.Popen(['python', 'manage.py', f'test'])
         sessionObj = createSession( trainer_id, trainee_id, mode, course_id, p.pid)
 
         return JsonResponse({'session_id': sessionObj.id}, status=200)
@@ -136,5 +175,3 @@ def stop_session(request):
     except Exception as e:
         logger.exception(e)
         return JsonResponse({'message': str(e)}, status=500)
-
-

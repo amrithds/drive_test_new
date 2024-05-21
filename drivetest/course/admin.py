@@ -2,7 +2,10 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from course.models import Course , Obstacle , Task , TaskMetric, Track, \
     ObstacleTaskScore, User, Session, ObstacleSessionTracker
+from rest_framework.authtoken.admin import TokenAdmin
+
 # Register your models here.
+TokenAdmin.raw_id_fields = ['user']
     
 class UserAdmin(UserAdmin):
     fieldsets = ((None, {'fields': ('username', 'password')}), ('Personal info', {'fields': ('name', 'unique_ref_id','rank', 'course', 'type')}), ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}), ('Important dates', {'fields': ('last_login', 'date_joined')}))
@@ -15,7 +18,7 @@ class ObstableAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', "track_id", 'is_mandatory', 'order', 'start_rf_id', 'end_rf_id', 'audio_file']
 
 class SessionAdmin(admin.ModelAdmin):
-    list_display = ['id', 'trainer_no','trainee_no', 'status', 'mode' ]
+    list_display = ['id', 'trainer','trainee', 'status', 'mode' ]
 
 class TaskAdmin(admin.ModelAdmin):
     list_display = ['name', 'sensor_id', 'category' ]

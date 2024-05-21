@@ -17,13 +17,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from course.views import index
+from rest_framework.authtoken import views
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 
 urlpatterns = [
-    path('api-auth/', include('rest_framework.urls')),
     path('admin/', admin.site.urls),
+    path('api-auth/', include('rest_framework.urls')),
     path("accounts/", include("django.contrib.auth.urls")),
+    path('v1/report/', include('report.urls')),
     path('v1/course/', include('course.urls')),
     path('', index, name='home')
 ]

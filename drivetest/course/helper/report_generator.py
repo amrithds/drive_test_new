@@ -39,11 +39,11 @@ class ReportGenerator():
             
             for OSTracker in OSTrackers:
                 #SessionReport
-                sessionTaskReports = SessionReport.objects.filter(obstacle_id=OSTracker.obstacle_id)
+                session_reports = SessionReport.objects.filter(obstacle_id=OSTracker.obstacle_id)
                 
-                for sessionTaskReport in sessionTaskReports:
-                    ObsTaskScore = ObstacleTaskScore.objects.get(obstacle_id=sessionTaskReport.obstacle_id\
-                                                      , task_id=sessionTaskReport.task_id)
+                for session_report in session_reports:
+                    ObsTaskScore = ObstacleTaskScore.objects.get(obstacle_id=session_report.obstacle_id\
+                                                      , task_id=session_report.task_id)
                     
                     result = self.__getResult(ObsTaskScore)
                     
@@ -51,14 +51,14 @@ class ReportGenerator():
                     logger.info(result )
                     if result is True:
                         print('result', result, ObsTaskScore.obstacle, ObsTaskScore.task)
-                        sessionTaskReport.result = SessionReport.RESULT_PASS
-                        sessionTaskReport.remark = ObsTaskScore.task_metrics.success_message
+                        session_report.result = SessionReport.RESULT_PASS
+                        session_report.remark = ObsTaskScore.task_metrics.success_message
                     else:
                         # if sessionTaskReport.task.name == "Seat Belt" and sessionTaskReport.result == SessionReport.RESULT_PASS:
                         #     print(result, sessionTaskReport, ObsTaskScore)
-                        sessionTaskReport.result = SessionReport.RESULT_FAIL
-                        sessionTaskReport.remark = ObsTaskScore.task_metrics.failure_message
-                    sessionTaskReport.save()
+                        session_report.result = SessionReport.RESULT_FAIL
+                        session_report.remark = ObsTaskScore.task_metrics.failure_message
+                    session_report.save()
 
                 #when task is complted then stop generating report 
                 if OSTracker.status == ObstacleSessionTracker.STATUS_COMPLETED:

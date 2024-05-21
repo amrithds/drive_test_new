@@ -13,14 +13,14 @@ def initialiseSession():
     #session report
     SessionReport.objects.all().delete()
 
-def createSession(trainerID, traineeID, session_mode, course_name, p_id = None):
+def createSession(trainer_id, trainee_id, session_mode, course_name, p_id = None):
     #create session object
-    trainer = User.objects.get(id=trainerID)
-    trainee = User.objects.get(id=traineeID)
+    trainer = User.objects.get(id=trainer_id)
+    trainee = User.objects.get(id=trainee_id)
     courseObj = Course.objects.get(name=course_name)
 
     #update session with in progress status
-    sessionObj = Session.objects.create(trainer_no=trainer, trainee_no=trainee, mode=session_mode\
+    sessionObj = Session.objects.create(trainer=trainer, trainee=trainee, mode=session_mode\
                                         , course=courseObj, status=Session.STATUS_IN_PROGRESS)
     print(sessionObj)
     if p_id:

@@ -14,8 +14,8 @@ class Session(BaseModel):
     )
 
     id=models.AutoField(primary_key = True)
-    trainer_no = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='trainer_session_set')
-    trainee_no = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='trainee_session_set')
+    trainer = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='trainer_session_set')
+    trainee = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='trainee_session_set')
     status=models.IntegerField(choices=(
             (0, "Ideal"),
             (1, "In progress"),
@@ -26,5 +26,5 @@ class Session(BaseModel):
     pid = models.IntegerField(default=None, null=True)
 
     def __str__(self) -> str:
-        return f"{self.id} {self.course} {self.trainer_no} {self.trainee_no}"
+        return f"{self.id} {self.course} {self.trainer} {self.trainee}"
     

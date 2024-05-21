@@ -27,8 +27,8 @@ class Command(BaseCommand):
     SESSION = None
     
     def add_arguments(self, parser):
-        parser.add_argument('-i','--trainer_no', type=int, help='trainer number of user in session')
-        parser.add_argument('-s','--trainee_no', type=int, help='trainee number of user in session')
+        parser.add_argument('-i','--trainer', type=int, help='trainer number of user in session')
+        parser.add_argument('-s','--trainee', type=int, help='trainee number of user in session')
         parser.add_argument('-m', '--mode', type=int, help='session mode', choices=(0,1))
         parser.add_argument('-c', '--course', type=str, help='course name EX: apr_2024' )
         parser.add_argument('-ses', '--session_id', type=int, help='session id')
@@ -36,8 +36,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
 
-        trainerID = kwargs['trainer_no']
-        traineeID = kwargs['trainee_no']
+        trainer_id = kwargs['trainer']
+        trainee_id = kwargs['trainee']
         session_mode = int(kwargs['mode'])
         course_id = kwargs['course']
         
@@ -45,7 +45,7 @@ class Command(BaseCommand):
         if kwargs["session_id"]:
             self.SESSION = Session.objects.get(id=kwargs["session_id"])
         else:
-            self.SESSION = start_session_helper.createSession(trainerID,traineeID,session_mode, course_id)
+            self.SESSION = start_session_helper.createSession(trainer_id, trainee_id,session_mode, course_id)
         
         #clean data from last session
         start_session_helper.initialiseSession()

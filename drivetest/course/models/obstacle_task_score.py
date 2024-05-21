@@ -15,4 +15,5 @@ class ObstacleTaskScore(BaseModel):
 
     class Meta:
         db_table = "course_obstacle_task_score"
+        unique_together = ('obstacle', 'task')
 
