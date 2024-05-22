@@ -8,11 +8,11 @@ import json
 from django.core import serializers
 # Create your views here.
 
-@login_required
+# @login_required
 def live_report(request):
     obs_session_trackers = ObstacleSessionTracker.objects.all()
 
-    data = []
+    data = {}
     for obs_session_tracker in obs_session_trackers:
 
         session_reports = SessionReport.objects.filter(obstacle_id=obs_session_tracker.obstacle_id)
@@ -41,7 +41,8 @@ def live_report(request):
         if obstacle_report["status"] == SessionReport.RESULT_UNKNOWN:
             obstacle_report["status"] = SessionReport.RESULT_FAIL
         
-        data.append(obstacle_report)
+        obstacle_report["obstacle_name"] = obs_session_tracker.obstacle.name
+        data[obs_session_tracker.obstacle_id] = obstacle_report
 
     # {"start": "tasks": [{name: , status, remarks, marks}, ]}
     return HttpResponse(json.dumps(data), status=200)

@@ -8,7 +8,7 @@ from rest_framework import viewsets
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from .models.session import Session
+from course.models.session import Session
 from django.http import JsonResponse 
 import subprocess
 from course.helper import process_helper
@@ -175,3 +175,10 @@ def stop_session(request):
     except Exception as e:
         logger.exception(e)
         return JsonResponse({'message': str(e)}, status=500)
+
+def session_in_progress(request):
+    session_obj = Session.objects.filter(status=3)[:1]
+    if session_obj:
+        return JsonResponse(session_obj[0].serialize(), status=200)
+    else:
+        return JsonResponse({}, status=200)

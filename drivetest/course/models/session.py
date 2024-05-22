@@ -28,3 +28,13 @@ class Session(BaseModel):
     def __str__(self) -> str:
         return f"{self.id} {self.course} {self.trainer} {self.trainee}"
     
+    def serialize(self):
+        return {
+            "id": self.id,
+            "trainer": self.trainer,
+            "trainee": self.trainee,
+            "status": self.status,
+            "mode" : self.mode,
+            "course": self.course,
+            "pid" : self.pid
+        }
