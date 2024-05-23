@@ -17,7 +17,6 @@ from course.helper.report_generator import ReportGenerator
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_http_methods
-from django.utils.decorators import method_decorator
 from django.contrib.auth import logout
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -176,9 +175,11 @@ def stop_session(request):
         logger.exception(e)
         return JsonResponse({'message': str(e)}, status=500)
 
+@login_required
 def session_in_progress(request):
     session_obj = Session.objects.filter(status=3)[:1]
     if session_obj:
         return JsonResponse(session_obj[0].serialize(), status=200)
     else:
         return JsonResponse({}, status=200)
+    

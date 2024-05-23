@@ -1,17 +1,37 @@
 from django.shortcuts import render
 from report.models.session_report import SessionReport
+from report.models.final_report import FinalReport
 from course.models.obstacle_session_tracker import ObstacleSessionTracker
+from course.models.session import Session
 from course.models.obstacle_task_score import ObstacleTaskScore
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse
 import json
-from django.core import serializers
+from report.serializers import FinalReportSerializer
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+
 # Create your views here.
 
-# @login_required
+@login_required
 def live_report(request):
+    """live summary of test
+
+    Args:
+        request (Request):
+
+    Returns:
+        _type_: _description_
+        
+    json format
+        {"1": "tasks": [{name: <task_name> , status: 1, remarks: '', total_marks: 0, obtained_marks:0}
+        , {name: <task_name_2> , status: 2, remarks: '', total_marks: 0, obtained_marks:0 ]
+        "2": "tasks": [{name: <task_name> , status: 1, remarks: '', total_marks: 0, obtained_marks:0}]
+        }
+    """
     obs_session_trackers = ObstacleSessionTracker.objects.all()
 
+    
     data = {}
     for obs_session_tracker in obs_session_trackers:
 
@@ -44,5 +64,9 @@ def live_report(request):
         obstacle_report["obstacle_name"] = obs_session_tracker.obstacle.name
         data[obs_session_tracker.obstacle_id] = obstacle_report
 
-    # {"start": "tasks": [{name: , status, remarks, marks}, ]}
     return HttpResponse(json.dumps(data), status=200)
+
+class FinalReportViewSet(viewsets.ModelViewSet):
+    queryset = FinalReport.objects.all()
+    serializer_class = FinalReportSerializer
+    permission_classes = [IsAuthenticated]
