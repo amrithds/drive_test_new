@@ -1,0 +1,148 @@
+/* You can add global styles to this file, and also import other style files */
+// Custom.scss
+// Option A: Include all of Bootstrap
+
+// Include any default variable overrides here (though functions won't be available)
+
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+// Then add additional custom code here
+// Custom.scss
+// Option B: Include parts of Bootstrap
+
+// 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
+@import "../node_modules/bootstrap/scss/functions";
+
+// 2. Include any default variable overrides here
+
+// 3. Include remainder of required Bootstrap stylesheets
+@import "../node_modules/bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/mixins";
+
+// 4. Include any optional Bootstrap components as you like
+@import "../node_modules/bootstrap/scss/root";
+@import "../node_modules/bootstrap/scss/reboot";
+@import "../node_modules/bootstrap/scss/type";
+@import "../node_modules/bootstrap/scss/images";
+@import "../node_modules/bootstrap/scss/containers";
+@import "../node_modules/bootstrap/scss/grid";
+
+
+// 5. Add additional custom code here
+
+
+.top_header {
+    display: flex;
+    min-width: 0;
+    justify-content: space-between;
+    font-size: 20px;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    margin-right: 25px;
+}
+
+.flex-container{
+    display:flex;
+    background-color: #ffffff;
+    border-radius: 5px;
+}
+
+.flex-container > div {
+    margin: 10px;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.menubar{
+    min-width: 0;
+    width: 10%;
+    box-shadow: 0px 0px 10px -2px #8e8e8e80;
+    align-items: center;
+}
+
+.right_sidebar{
+    width: 88%;
+    box-shadow: 0px 0px 10px -2px #8e8e8e80;
+}
+
+.btn{
+    position:relative;
+    width:auto;
+    height:35px;
+    padding:0 40px !important;
+}
+.btn-square-md {
+    background-color: #32a2c7;
+    cursor: pointer;
+    width: 75px !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    height: 75px !important;
+    text-align: center;
+    padding: 5px 10px;
+    font-size:10px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    border: none;
+    color: white;
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19); 
+    font-weight: bold; 
+}
+
+.btn-square-md:hover {
+    background-color: #3B71CA; /* Dark blue background on hover */
+    transform: scale(1.1); /* Scale up on hover */
+    color: white;
+} 
+
+.btn-primary{
+    background-color: #32a2c7;
+    border: none;
+    white-space: nowrap;
+}
+
+.btn-primary:hover {
+    background-color: #3B71CA; /* Dark blue background on hover */
+    color: white;
+}
+
+.d-flex{
+    min-width: 0;
+    border-radius: 5px;
+    font-size: 18px;
+    margin-right: 25%;
+    margin-left: 20%;
+    background-color: #f1f1f1;
+}
+
+.required:after{
+    content:" *";
+    color: red;
+}
+.autocomplete-container {
+    position: relative;
+    width: 100%;
+  }
+  
+  .autocomplete-items {
+    position: absolute;
+    border: 1px solid #d4d4d4;
+    border-top: none;
+    z-index: 99;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  .autocomplete-item {
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .autocomplete-item:hover {
+    background-color: #e9e9e9;
+  }
+  

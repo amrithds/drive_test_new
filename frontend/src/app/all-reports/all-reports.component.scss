@@ -1,0 +1,30 @@
+.d-flex{
+    padding:30px;
+}
+
+.final_report{
+    display: flex;
+    background-color: #ffffff;
+    width:100%;
+    box-shadow: 0px 0px 10px -2px #8e8e8e80;
+    height: calc(100vh - 100px);
+    flex-direction: column;
+}
+
+.back_button{
+    width: 30px;
+    cursor:pointer;
+    margin-right: 35%;
+
+}
+.print_out{
+    width: 30px;
+    cursor:pointer;
+    float: right;
+}
+
+.min_tb{
+    margin-bottom: -5px;
+    margin-left: -4px;
+    margin-right: -4px;
+}

@@ -1,0 +1,466 @@
+<div *ngIf="!all_reports"class="row">
+    <app-header></app-header>
+</div>
+<div class="flex-container">
+    <div *ngIf="!all_reports" class="menubar">
+      <app-menubar></app-menubar>
+    </div>
+    <div *ngIf="!all_reports" class="right_sidebar">
+        <div class="top_header">
+            <label>Vehicle BA No: </label>
+            <label style="text-align: right;">{{getDatetime}}</label>
+        </div>
+        <div class="d-flex flex-column">
+            <form [formGroup]="form">
+                <div class="col-12">
+                    <label>Course ID: </label>
+                    <input type="text" placeholder="Enter course id" class="form-control mb-2" formControlName="course_id">
+                    <label>From Date:</label>
+                    <input type="Date" class="form-control mb-2" formControlName="course_id">
+                    <label>To Date:</label>
+                    <input type="date" class="form-control mb-3" formControlName="course_id">
+                    <button type="submit" class="btn btn-primary" (click)="all_reports=true">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div *ngIf="all_reports" class="final_report">
+        <div>
+            <img src="./assets/images/back_button.png" class="back_button" (click)="all_reports=false;">
+            <img src="./assets/images/printout.png" class="print_out" (click)="generatePDF()">
+        </div>
+        <div style="text-align: center;">
+            <label class="col-12">SMART SKILL DRIVING TEST CONDUCT ON</label>
+            <label class="col-4">COURSE- 11 NAME- 11 FROM TO- 11</label>
+        </div>
+        <div>
+            <table class="table table-sm table-bordered table-hover" style="font-size: xx-small;" id="viewReportTable">
+                <thead class="table_column">
+                    <tr>
+                        <th>Sl.no</th>
+                        <th>Army No.</th>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th>Unit</th>
+                        <th class="col-2 min_tb">S/POINT & F/POINT 01 MARKS FOR EACH PT.6 
+                            MARKS MI REQUISTE TO PASS THE TEST MAX 
+                            MARKS 10
+                            <table class="table table-bordered min_tb">
+                                <thead>
+                                  <tr>
+                                    <th>1</th>
+                                    <th>2</th>
+                                    <th>3</th>
+                                    <th>4</th>
+                                    <th>5</th>
+                                    <th>6</th>
+                                    <th>7</th>
+                                    <th>8</th>
+                                    <th>9</th>
+                                    <th>10</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>1</th>
+                                        <th>1</th>
+                                        <th>1</th>
+                                        <th>1</th>
+                                        <th>1</th>
+                                        <th>1</th>
+                                        <th>1</th>
+                                        <th>1</th>
+                                        <th>1</th>
+                                        <th>1</th>
+                                      </tr>
+                                </tbody>
+                              </table>
+                        </th>
+                        <th>Total Marks
+                        <th>
+                            <table class="table table-bordered min_tb">
+                                <thead>
+                                    <tr>
+                                        <th  colspan="14">14 Obstacles Marks</th>
+                                        <th  colspan="1">OBS Marks</th>
+                                        <th  colspan="1">Time Marks</th>
+                                        <th  colspan="1">Total Marks</th>
+                                        <th  colspan="1">Remarks</th>
+                                    </tr>
+                                  <tr>
+                                    <th>A</th>
+                                    <th>B</th>
+                                    <th>C</th>
+                                    <th>D</th>
+                                    <th>E</th>
+                                    <th>F</th>
+                                    <th>G</th>
+                                    <th>H</th>
+                                    <th>I</th>
+                                    <th>J</th>
+                                    <th>K</th>
+                                    <th>L</th>
+                                    <th>M</th>
+                                    <th>N</th>
+                                    <th>N</th>
+                                    <th>N</th>
+                                    <th>N</th>
+                                    <th>N</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>1</th>
+                                        <th>1</th>
+                                        <th>1</th>
+                                        <th>1</th>
+                                        <th>1</th>
+                                        <th>1</th>
+                                        <th>1</th>
+                                        <th>1</th>
+                                        <th>1</th>
+                                        <th>1</th>
+                                        <th>1</th>
+                                        <th>1</th>
+                                        <th>1</th>
+                                        <th>1</th>
+                                      </tr>
+                                </tbody>
+                              </table>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="col-1">1</td>
+                        <td>Maria Anders</td>
+                        <td>Germany</td>
+                        <td>Alfreds Futterkiste</td>
+                        <td>Maria Anders</td>
+                        <td>View Report</td>
+                        
+                    </tr>
+                    <!-- Add more rows as needed -->
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <table style="font-size: xx-small;" class="table table-sm table-bordered table-hover">
+                    <thead class="table_column">
+                        <tr>
+                            <th style="text-align: center;" colspan="2">STARTING POINT</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-1">1</td>
+                            <td>Maria Anders</td>
+                        </tr>
+                        <tr>
+                            <td class="col-1">2</td>
+                            <td>Maria Anders</td>
+                        </tr>
+                        <tr>
+                            <td class="col-1">3</td>
+                            <td>SEAT BELT ON</td>
+                        </tr>
+                        <tr>
+                            <td class="col-1">4</td>
+                            <td>NEUTRAL POSITION</td>
+                        </tr>
+                        <tr>
+                            <td class="col-1">5</td>
+                            <td>ENG START & PANEL BOARD CHECK</td>
+                        </tr>
+                        <tr>
+                            <td class="col-1">6</td>
+                            <td>HAND BREAK RELEASE</td>
+                        </tr>
+                        <tr>
+                            <th style="text-align: center;" colspan="2">CHECKED FINISHING POINT</th>
+                        </tr>
+                        <tr>
+                            <td class="col-1">7</td>
+                            <td>HAND BREAK ON</td>
+                        </tr>
+                        <tr>
+                            <td class="col-1">8</td>
+                            <td>Maria Anders</td>
+                        </tr>
+                        <tr>
+                            <td class="col-1">9</td>
+                            <td>ENG OFF</td>
+                        </tr>
+                        <tr>
+                            <td class="col-1">10</td>
+                            <td>Maria Anders</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-5">
+                <table class="table table-sm table-bordered table-hover">
+                    <thead class="table_column">
+                        <tr>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let cont of center_content; let i = index">
+                            <tr style="font-size: xx-small;" *ngIf="i < 7">
+                                <td>{{ cont.id }}</td>
+                                <td>{{ cont.name }}</td>
+                                <td *ngIf="center_content[i + 7]">
+                                    {{ center_content[i + 7].id }}
+                                </td>
+                                <td *ngIf="center_content[i + 7]">
+                                    {{ center_content[i + 7].name }}
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-3">
+                <table style="font-size: xx-small;" class="table table-sm table-bordered table-hover">
+                    <thead class="table_column">
+                        <tr>
+                            <th style="text-align: center;" colspan="6">FINAL RESULT SHEET</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="3">MARKS</td>
+                            <td colspan="3">GRADING</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">ABOVE 60</td>
+                            <td colspan="3">PASS</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">BELOW 60</td>
+                            <td colspan="3">RETEST</td>
+                        </tr>
+                        
+                        <tr>
+                            <th style="text-align: center;" colspan="6">TIMING MARKS</th>
+                        </tr>
+                        <tr>
+                            <td colspan="2">TIME MIN</td>
+                            <td colspan="2">MARKS</td>
+                            <td colspan="2">MARKS</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">BELOW 16</td>
+                            <td colspan="2">0</td>
+                            <td colspan="2">0</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">16 TO 20</td>
+                            <td colspan="2">10</td>
+                            <td colspan="2">10</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">20 TO 24</td>
+                            <td colspan="2">0</td>
+                            <td colspan="2">0</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">24 to 28</td>
+                            <td colspan="2">0</td>
+                            <td colspan="2">0</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">ABOVE 28</td>
+                            <td colspan="2">0</td>
+                            <td colspan="2">0</td>
+                        </tr>
+                        <!-- Add more rows as needed -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+  </div>
+
+
+  <div class="final_report" id="reportContent" style="position: absolute; left: -9999px;">
+    <div class="row" style="border-bottom: 1px solid rgb(178, 177, 177);">
+        <app-header></app-header>
+    </div>
+    <div class="top_header">
+        <label>Vehicle BA No: </label>
+        <label style="text-align: right;">{{getDatetime}}</label>
+    </div>
+    <div>
+        <label>SMART SKILL DRIVING TEST CONDUCT ON</label>
+        <label>COURSE NAME FROM TO</label>
+        <table class="table table-sm table-bordered table-hover" style="font-size: xx-small;" id="viewReportTable">
+            <thead class="table_column">
+                <tr>
+                    <th>Sl.no</th>
+                    <th>Army No.</th>
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Unit</th>
+                    <th>marks</th>
+                    <th>Total Marks</th>
+                    <th>14 Obstacles Marks</th>
+                    <th>ooo Marks</th>
+                    <th>Time Marks</th>
+                    <th>Total Marks</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-1">1</td>
+                    <td>Maria Anders</td>
+                    <td>Germany</td>
+                    <td>Alfreds Futterkiste</td>
+                    <td>Maria Anders</td>
+                    <td>View Report</td>
+                </tr>
+                <!-- Add more rows as needed -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row">
+        <div class="col-4">
+            <table style="font-size: xx-small;" class="table table-sm table-bordered table-hover">
+                <thead class="table_column">
+                    <tr>
+                        <th style="text-align: center;" colspan="2">STARTING POINT</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="col-1">1</td>
+                        <td>Maria Anders</td>
+                    </tr>
+                    <tr>
+                        <td class="col-1">2</td>
+                        <td>Maria Anders</td>
+                    </tr>
+                    <tr>
+                        <td class="col-1">3</td>
+                        <td>SEAT BELT ON</td>
+                    </tr>
+                    <tr>
+                        <td class="col-1">4</td>
+                        <td>NEUTRAL POSITION</td>
+                    </tr>
+                    <tr>
+                        <td class="col-1">5</td>
+                        <td>ENG START & PANEL BOARD CHECK</td>
+                    </tr>
+                    <tr>
+                        <td class="col-1">6</td>
+                        <td>HAND BREAK RELEASE</td>
+                    </tr>
+                    <tr>
+                        <th style="text-align: center;" colspan="2">CHECKED FINISHING POINT</th>
+                    </tr>
+                    <tr>
+                        <td class="col-1">7</td>
+                        <td>HAND BREAK ON</td>
+                    </tr>
+                    <tr>
+                        <td class="col-1">8</td>
+                        <td>Maria Anders</td>
+                    </tr>
+                    <tr>
+                        <td class="col-1">9</td>
+                        <td>ENG OFF</td>
+                    </tr>
+                    <tr>
+                        <td class="col-1">10</td>
+                        <td>Maria Anders</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-5">
+            <table class="table table-sm table-bordered table-hover">
+                <thead class="table_column">
+                    <tr>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let cont of center_content; let i = index">
+                        <tr style="font-size: xx-small;" *ngIf="i < 7">
+                            <td>{{ cont.id }}</td>
+                            <td>{{ cont.name }}</td>
+                            <td *ngIf="center_content[i + 7]">
+                                {{ center_content[i + 7].id }}
+                            </td>
+                            <td *ngIf="center_content[i + 7]">
+                                {{ center_content[i + 7].name }}
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-3">
+            <table style="font-size: xx-small;" class="table table-sm table-bordered table-hover">
+                <thead class="table_column">
+                    <tr>
+                        <th style="text-align: center;" colspan="6">FINAL RESULT SHEET</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="3">MARKS</td>
+                        <td colspan="3">GRADING</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">ABOVE 60</td>
+                        <td colspan="3">PASS</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">BELOW 60</td>
+                        <td colspan="3">RETEST</td>
+                    </tr>
+                    
+                    <tr>
+                        <th style="text-align: center;" colspan="6">TIMING MARKS</th>
+                    </tr>
+                    <tr>
+                        <td colspan="2">TIME MIN</td>
+                        <td colspan="2">MARKS</td>
+                        <td colspan="2">MARKS</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">BELOW 16</td>
+                        <td colspan="2">0</td>
+                        <td colspan="2">0</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">16 TO 20</td>
+                        <td colspan="2">10</td>
+                        <td colspan="2">10</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">20 TO 24</td>
+                        <td colspan="2">0</td>
+                        <td colspan="2">0</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">24 to 28</td>
+                        <td colspan="2">0</td>
+                        <td colspan="2">0</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">ABOVE 28</td>
+                        <td colspan="2">0</td>
+                        <td colspan="2">0</td>
+                    </tr>
+                    <!-- Add more rows as needed -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

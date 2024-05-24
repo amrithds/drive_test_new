@@ -1,0 +1,157 @@
+<div class="row">
+    <app-header></app-header>
+</div>
+<div class="flex-container">
+    <div class="menubar">
+      <app-menubar></app-menubar>
+    </div>
+    <div class="right_sidebar">
+        <div class="top_header">
+            <label>Vehicle BA No: </label>
+            <label>{{getDatetime}}</label>
+        </div>
+        <div *ngIf="!enabletable && !enablereport" class="d-flex flex-column">
+            <form [formGroup]="form">
+                <div class="row">
+                    <div class="col-12">
+                        <label class="form-label">Trainee ID: </label>
+                        <input type="text" placeholder="Enter trainee id" class="form-control" formControlName="course_id">
+                    </div>
+                    <div class="py-3">
+                        <button type="submit" class="btn btn-primary" (click)="getreports()">Submit</button>
+                    </div>
+                </div>
+            </form>         
+        </div>
+        <div *ngIf="enabletable && !enablereport">
+            <div>
+                <img src="./assets/images/back_button.png" class="back_button" (click)="enabletable=false;">
+            </div>
+            <div class="row py-3">
+                <table class="table table-bordered table-hover" id="viewReportTable">
+                    <thead class="table_column">
+                          <tr>
+                            <th>Sl.no</th>
+                            <th>Date</th>
+                            <th>Report ID</th>
+                            <th>Trainee Id</th>
+                            <th>Name</th>
+                            <th>Action</th>
+                          </tr>	
+                          <tr>
+                            <td>1</td>
+                            <td>Maria Anders</td>
+                            <td>Germany</td>
+                            <td>Alfreds Futterkiste</td>
+                            <td>Maria Anders</td>
+                            <td><button type="button" class="btn btn-primary" (click)="enablereport=true;enabletable=false">View Report</button></td>
+                          </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div *ngIf="!enabletable && enablereport">
+            <div>
+                <img src="./assets/images/back_button.png" class="back_button" (click)="enabletable=true;enablereport=false">
+                <label style="text-align: center;">Report ID: 111</label>
+                <img src="./assets/images/printout.png" class="print_out" (click)="generatePDF()">
+            </div>
+            <div>
+                <label style="font-size: 20px;color: red;">Trainee:</label>
+                <div class="label_align">
+                    <label>Army No: 111111</label>
+                    <label>Rank: 111</label>
+                    <label>Name: 1111</label>
+                    <label>Unit: 111</label>
+                    <label>Course ID: 111</label>
+                    <label>Time Taken: 111</label>
+                </div>  
+                <label style="font-size: 20px;color: red;">Instructor:</label>
+                <div class="label_align">
+                    <label>Army No: 1111</label>
+                    <label>Rank: 111</label>
+                    <label>Name: 1111</label>
+                    <label>Unit: 111</label>
+                </div>  
+                <div class="row py-3">
+                    <table class="table table-striped" id="tableDataID">
+                        <thead class="table_column">
+                            <tr>
+                                <th>Sl.no</th>
+                                <th>Obstacle Name</th>
+                                <th>Result</th>
+                                <th>Remarks</th>
+                                <th>Marks</th> 
+                            </tr>	
+                            <tr>
+                                <td>1</td>
+                                <td>Maria Anders</td>
+                                <td>Germany</td>
+                                <td>Alfreds</td>
+                                <td>Maria Anders</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <div id="reportContent" style="position: absolute; left: -9999px;">
+    <div class="row" style="border-bottom: 1px solid rgb(178, 177, 177);">
+        <app-header></app-header>
+    </div>
+    <div class="top_header mt-2" style="margin-left: 20px;">
+        <label>Vehicle BA No: </label>
+        <label style="text-align: center;">Report ID: 111</label>
+        <label>{{getDatetime}}</label>
+    </div>
+    <div>
+        <div style="margin-left: 20px;">
+            <label style="font-size: 20px;font-weight: 600;">Trainee:</label>
+            <div class="label_align">
+                <label>Army No: 111111</label>
+                <label>Rank: 111</label>
+                <label>Name: 1111</label>
+                <label>Unit: 111</label>
+                <label>Course ID: 111</label>
+                <label>Time Taken: 111</label>
+            </div>  
+            <label style="font-size: 20px;font-weight: 600;">Instructor:</label>
+            <div class="label_align">
+                <label>Army No: 1111</label>
+                <label>Rank: 111</label>
+                <label>Name: 1111</label>
+                <label>Unit: 111</label>
+            </div>  
+            <div class="row py-3">
+                <table class="table table-striped" id="tableDataID">
+                    <thead class="table_column">
+                        <tr style="font-size: 17px;">
+                            <th>S.no</th>
+                            <th>Obstacle Name</th>
+                            <th>Result</th>
+                            <th>Remarks</th>
+                            <th>Marks</th> 
+                        </tr>	
+                        <tr>
+                            <td>1</td>
+                            <td>Maria Anders</td>
+                            <td>Germany</td>
+                            <td>Alfreds</td>
+                            <td>Maria Anders</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+  </div>

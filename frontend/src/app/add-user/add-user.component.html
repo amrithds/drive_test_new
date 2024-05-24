@@ -1,0 +1,105 @@
+<div class="row">
+    <app-header></app-header>
+</div>
+<div class="flex-container">
+    <div class="menubar">
+      <app-menubar></app-menubar>
+    </div>
+    <div class="right_sidebar">
+        <div class="top_header">
+            <label>Vehicle BA No: </label>
+            <label style="text-align: right;">{{getDatetime}}</label>
+        </div>
+        <form [formGroup]="form">
+            <div class="row">
+                <div class="col-3">
+                    <label>Select Mode: </label>
+                    <select class="form-select" formControlName="type" (change)="handleChange($event)">
+                        <option value="1">Driver</option>
+                        <option value="2">Instructor</option>
+                    </select>
+                </div>
+                <div class="col-3">
+                    <label>Course ID: </label>
+                    <input type="text" placeholder="Course ID" (input)="onSearchChange()" class="form-control" formControlName="course"/>
+                    <div class="autocomplete-container">
+                      <div class="autocomplete-items" *ngIf="filteredOptions.length">
+                        <div class="autocomplete-item" *ngFor="let option of filteredOptions" (click)="selectOption(option.name)">
+                          {{ option.name }}
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row py-3">
+                <table class="table table-bordered table-hover" id="viewReportTable">
+                    <thead class="table_column">
+                        <tr>
+                            <th class="col-1">Sl.no</th>
+                            <th class="col-2">Army No.</th>
+                            <th class="col-2">Name</th>
+                            <th class="col-2">Rank</th>
+                            <th class="col-2">Unit</th>
+                            <th class="col-2">Action</th>
+                        </tr>	
+                    </thead>
+                    <tbody>
+                        <tr >
+                            <td>
+                                <input type="text" class="form-control" formControlName="id">
+                            </td>
+                            <td>                            
+                                <input type="text" class="form-control" formControlName="unique_ref_id">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" formControlName="name">
+                            </td>
+                            <td>
+                                <select class="form-select" formControlName="rank">
+                                    <option disabled selected>Select one</option>
+                                    <option *ngFor="let rank of ranks" [value]="rank">{{ rank }}</option>
+                                    </select>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" formControlName="unit">
+                            </td>
+                            <td>
+                                <button type="submit" class="btn btn-primary" (click)="addUser()">+ Add User</button>
+                            </td>
+                        </tr>               
+                        <tr *ngFor="let user of users;let i=index" [formGroup]="editUserForm">
+                            <ng-container *ngIf="editIndex !== i; else editMode">
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.unique_ref_id }}</td>
+                                <td>{{ user.name }}</td>
+                                <td>{{ user.rank }}</td>
+                                <td>{{ user.unit }}</td>
+                                <td>
+                                    <img src="./assets/images/edit_icon.png" class="action_button" (click)="editUser(i,user);">
+                                    <img src="./assets/images/delete_icon.png" class="action_button" (click)="removeUser(i)">
+                                </td>
+                              </ng-container>
+                              <ng-template #editMode>
+                                <td><input type="text" class="form-control" formControlName="id"></td>
+                                <td><input type="text" class="form-control" formControlName="unique_ref_id"></td>
+                                <td><input type="text" class="form-control" formControlName="name"></td>
+                                <td>
+                                  <select class="form-select" formControlName="rank">
+                                    <option disabled selected>Select one</option>
+                                    <option *ngFor="let rank of ranks" [value]="rank">{{ rank }}</option>
+                                  </select>
+                                </td>
+                                <td><input type="text" class="form-control" formControlName="unit"></td>
+                                <td>
+                                    <img src="./assets/images/tick.png" class="action_button" (click)="saveUser()">
+                                    <img src="./assets/images/cross.png" class="action_button" (click)="cancelEdit()">
+                                </td>
+                              </ng-template>
+                        </tr>
+                    </tbody>
+                </table>   
+            </div>
+        </form>
+    </div>
+  </div>
+  

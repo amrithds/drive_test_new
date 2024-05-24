@@ -1,0 +1,162 @@
+<div class="row">
+    <app-header></app-header>
+</div>
+<div class="flex-container">
+  <div class="menubar">
+    <app-menubar></app-menubar>
+  </div>
+  <div class="right_sidebar">
+    <div class="top_header">
+        <label>Vehicle BA No: </label>
+        <label style="text-align: right;">{{getDatetime}}</label>
+    </div>
+    <div *ngIf="!startsession">
+        <form [formGroup]="ins_form">
+            <div class="row py-2">
+                <div class="col-3">
+                    <label>Course ID: </label>
+                    <input type="text" placeholder="Course ID" (input)="onSearchChange()" class="form-control" formControlName="course"/>
+                    <div class="autocomplete-container">
+                      <div class="autocomplete-items" *ngIf="filteredOptions.length">
+                        <div class="autocomplete-item" *ngFor="let option of filteredOptions" (click)="selectOption(option.name)">
+                          {{ option.name }}
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <label>Select Drive Mode: </label>
+                    <select class="form-select" formControlName="mode">
+                        <option value="0">Evaluate</option>
+                        <option value="1">Training</option>
+                    </select>             
+                </div>
+            </div>
+            <div class="row py-2">
+                <label style="font-size: 25px;">Instructor</label>
+                <div class="col-3">
+                    <label>Army No: </label>
+                    <input type="text" placeholder="Army no / Sl.no" class="form-control" formControlName="unique_ref_id" (input)="onSearchChangeIns()">
+                    <div class="autocomplete-container">
+                      <div class="autocomplete-items" *ngIf="filteredInsOptions.length">
+                        <div class="autocomplete-item" *ngFor="let option of filteredInsOptions" (click)="selectOptionIns(option.unique_ref_id)">
+                          {{ option.unique_ref_id }}
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <label>Name: </label>
+                    <input type="text" placeholder="Name" class="form-control" style="background-color: #eeeef3;" formControlName="name" readonly>
+                </div>
+                <div class="col-3">
+                    <label>Rank: </label>
+                    <select class="form-select" formControlName="rank" style="background-color: #eeeef3;pointer-events: none;">
+                        <option value="" disabled selected hidden>Rank</option>
+                        <option *ngFor="let rank of ranks" [value]="rank">{{ rank }}</option>
+                      </select>
+                </div>
+                <div class="col-3">
+                    <label>Unit: </label>
+                    <input type="select" placeholder="Unit" class="form-control" style="background-color: #eeeef3;" formControlName="unit" readonly>
+                </div>     
+            </div>
+            <div class="row py-2"  [formGroup]="driver_form">
+                <label style="font-size: 25px;">Driver</label>
+                <div class="col-3">
+                    <label>Army No: </label>
+                    <input type="text" placeholder="Army no / Sl.no" class="form-control" formControlName="unique_ref_id" (input)="onSearchChangeDri()">
+                    <div class="autocomplete-container">
+                      <div class="autocomplete-items" *ngIf="filteredDriOptions.length">
+                        <div class="autocomplete-item" *ngFor="let option of filteredDriOptions" (click)="selectOptionDri(option.unique_ref_id)">
+                          {{ option.unique_ref_id }}
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <label>Name: </label>
+                    <input type="text" placeholder="Name" class="form-control" style="background-color: #eeeef3;" formControlName="name" readonly>
+                </div>
+                <div class="col-3">
+                    <label>Rank: </label>
+                    <select class="form-select" formControlName="rank" style="background-color: #eeeef3;pointer-events: none;">
+                        <option value="" disabled selected hidden>Rank</option>
+                        <option *ngFor="let rank of ranks" [value]="rank">{{ rank }}</option>
+                      </select>
+                </div>
+                <div class="col-3">
+                    <label>Unit: </label>
+                    <input type="select" placeholder="Unit" class="form-control" style="background-color: #eeeef3;" formControlName="unit" readonly>
+                </div>     
+            </div>
+            <div class="col-12 text-center py-4">
+                <button type="submit" class="btn btn-primary" (click)="fetchObstacle()">Ready</button>
+            </div>   
+        </form>
+    </div>
+    <div *ngIf="startsession">
+        <div class="mb-2">
+            <img src="./assets/images/back_button.png" class="back_button" (click)="startsession=false">
+            <!-- <label style="text-align: center;">Report ID: 111</label> -->
+            <img src="./assets/images/printout.png" id="reportContent" class="print_out">
+        </div>
+        <label style="font-size: 20px;color: red;">Trainee:</label>
+        <div class="label_align">
+            <label>Army No: {{driver_form.value['unique_ref_id']}}</label>
+            <label>Rank: {{driver_form.value['rank']}}</label>
+            <label>Name: {{driver_form.value['name']}}</label>
+            <label>Unit: {{driver_form.value['unit']}}</label>
+            <label>Course ID: {{ins_form.value['type']}}</label>
+            <label>Time Taken: 111</label>
+        </div>  
+        <label style="font-size: 20px;color: red;">Instructor:</label>
+        <div class="label_align">
+            <label>Army No: {{ins_form.value['unique_ref_id']}}</label>
+            <label>Rank: {{ins_form.value['rank']}}</label>
+            <label>Name: {{ins_form.value['name']}}</label>
+            <label>Unit: {{ins_form.value['unit']}}</label>
+        </div>  
+        <div class="row mt-3">
+            <div *ngIf="!stop_test" class="col-12 text-center">
+                <button type="submit" class="btn btn-success" (click)="stop_test=true;fetchLiveReport();">Start</button>
+            </div>
+            <div *ngIf="stop_test" class="col-12 text-center">
+                <button type="submit" class="btn btn-danger" (click)="stopTest()">Stop</button>
+            </div>
+        </div>
+        <div class="row py-3">
+            <table class="table table-striped" id="tableDataID">
+                <thead class="table_column">
+                    <tr>
+                      <th>Sl.no</th>
+                      <th>Obstacle Name</th>
+                      <th>Result</th>
+                      <th>Remarks</th>
+                      <th>Marks</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngFor="let item of obstacles; let i=index">
+                        <!-- Row for the obstacle name -->
+                        <tr>
+                          <td>{{ i + 1 }}</td>
+                          <td>{{ item.name }}</td>
+                          <ng-container *ngFor="let item of report;">
+                            <ng-container *ngIf="i + 1 === item.id">
+                              <!-- Loop through the tasks of the matching obstacle -->
+                              <ng-container *ngFor="let task of item.tasks;">
+                                <td>{{ task.result }}</td>
+                              </ng-container>
+                            </ng-container>
+                          </ng-container>
+
+                        </tr>
+                      </ng-container>
+                  </tbody>
+            </table>
+        </div>
+        
+    </div>
+  </div>
+</div>
