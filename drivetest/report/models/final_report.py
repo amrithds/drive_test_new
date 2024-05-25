@@ -11,7 +11,8 @@ class FinalReport(BaseModel):
     session = models.ForeignKey(Session, on_delete=models.DO_NOTHING)
     obstacle = models.ForeignKey(Obstacle, on_delete=models.DO_NOTHING)
     data = models.JSONField(default=None)
-    score = models.IntegerField(default=0)
+    total_score = models.IntegerField(default=0)
+    obtained_score = models.IntegerField(default=0)
     result = models.IntegerField(choices=(
             (RESULT_PASS , "Pass"),
             (RESULT_FAIL , "Fail")

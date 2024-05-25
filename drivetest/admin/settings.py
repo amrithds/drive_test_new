@@ -41,9 +41,10 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
     'rest_framework.authtoken',
+    'django_filters',
     'corsheaders',
     'course',
-    'report'
+    'report',
 ]
 
 REST_FRAMEWORK = {
@@ -56,6 +57,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'PAGE_SIZE': 10,
     
 }
@@ -109,9 +111,9 @@ DATABASES = {
     "PASSWORD":"F2s@btm2",
     "HOST":"127.0.0.1",
     "PORT":"3306",
-    "OPTIONS" : {
-            "init_command": "SET foreign_key_checks = 0;",
-        }
+    # "OPTIONS" : {
+    #         "init_command": "SET foreign_key_checks = 0;",
+    #     }
     }
 }
 
@@ -217,7 +219,7 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

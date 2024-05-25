@@ -1,5 +1,5 @@
 from django.contrib import admin
-from report.models import SessionReport
+from report.models.session_report import SessionReport
 
 # Register your models here.
     
