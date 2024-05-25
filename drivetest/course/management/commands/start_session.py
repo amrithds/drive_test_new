@@ -1,10 +1,9 @@
 from django.core.management.base import BaseCommand
 from course.models.session import Session
 from course.models.obstacle import Obstacle
-from course.models.sensor_feed import SensorFeed
+from drivetest.report.models.sensor_feed import SensorFeed
 from course.models.obstacle_session_tracker import ObstacleSessionTracker
 from course.helper import start_session_helper
-from course.helper.data_generator import DataGenerator
 from course.helper.report_generator import ReportGenerator
 from course.helper import rf_id_helper
 from course.helper.STM_helper import STMReader
@@ -32,6 +31,7 @@ class Command(BaseCommand):
         parser.add_argument('-m', '--mode', type=int, help='session mode', choices=(0,1))
         parser.add_argument('-c', '--course', type=str, help='course name EX: apr_2024' )
         parser.add_argument('-ses', '--session_id', type=int, help='session id')
+        parser.add_argument('-r', '--resume', type=int, help='resume interupted process? 0/1', default=0)
 
 
     def handle(self, *args, **kwargs):
@@ -40,6 +40,7 @@ class Command(BaseCommand):
         trainee_id = kwargs['trainee']
         session_mode = int(kwargs['mode'])
         course_id = kwargs['course']
+        resume = kwargs['resume']
         
         #session_id is optional during debug
         if kwargs["session_id"]:
@@ -47,8 +48,9 @@ class Command(BaseCommand):
         else:
             self.SESSION = start_session_helper.createSession(trainer_id, trainee_id,session_mode, course_id)
         
-        #clean data from last session
-        start_session_helper.initialiseSession()
+        if not resume:
+            #clean data from last session
+            start_session_helper.initialiseSession()
         
         pool = concurrent.futures.ThreadPoolExecutor(max_workers=3)
         

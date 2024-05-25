@@ -3,7 +3,6 @@ from .obstacle import Obstacle
 from .task import Task
 from .task_metrics import TaskMetric
 from .obstacle_task_score import ObstacleTaskScore
-from .sensor_feed import SensorFeed
 from .track import Track
 from .user import User
 from .training import Training

@@ -24,6 +24,8 @@ class ObstacleSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class SessionSerializer(serializers.HyperlinkedModelSerializer):
+    trainee = UserSerializer()
+    trainer = UserSerializer()
     class Meta:
         model = Session
         fields = '__all__'

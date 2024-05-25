@@ -1,6 +1,6 @@
 from course.models.session import Session
 from course.models.obstacle_session_tracker import ObstacleSessionTracker
-from course.models.sensor_feed import SensorFeed
+from report.models.sensor_feed import SensorFeed
 from course.models.user import User
 from course.models.course import Course
 from report.models.session_report import SessionReport

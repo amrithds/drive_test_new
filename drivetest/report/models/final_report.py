@@ -16,6 +16,7 @@ class FinalReport(BaseModel):
             (RESULT_PASS , "Pass"),
             (RESULT_FAIL , "Fail")
     ), default = RESULT_PASS)
+    duration = models.IntegerField(default=0)
 
     class Meta:
         db_table = "report_final_report"

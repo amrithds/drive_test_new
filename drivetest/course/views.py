@@ -21,7 +21,8 @@ from django.contrib.auth import logout
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import api_view, permission_classes
 import json
 import logging
 logger = logging.getLogger("default")
@@ -29,7 +30,7 @@ logger = logging.getLogger("default")
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-created_at')
     serializer_class = UserSerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+    authentication_classes = [ TokenAuthentication]
     permission_classes = [IsAuthenticated]
     
     def create(self, request):
@@ -67,7 +68,11 @@ class UserViewSet(viewsets.ModelViewSet):
         return queryset
 
 class UserLogIn(ObtainAuthToken):
+    """Token based login
 
+    Args:
+        ObtainAuthToken (_type_): _description_
+    """
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data,
                                            context={'request': request})
@@ -95,7 +100,28 @@ class SessionViewSet(viewsets.ModelViewSet):
     serializer_class = SessionSerializer
     permission_classes = [IsAuthenticated]
 
-@require_http_methods(["POST"])
+    def get_queryset(self):
+        """filter sessions using search field
+        search can be serial_no or unique_ref_id
+
+        Returns:
+            queryset: 
+        """
+        queryset = super(SessionViewSet, self).get_queryset()
+
+        search = self.request.query_params.get('search', None)
+        if search:
+            #if search is string then don't search serial_no(throws error)
+            if search.isdigit():
+                filter = Q(trainee__unique_ref_id = search) | Q(trainee__serial_no= search)
+            else:
+                filter = Q(trainee__unique_ref_id = search)
+            
+            queryset = queryset.filter(filter)
+        queryset = queryset.select_related('trainee')
+        return queryset
+
+@api_view(['GET'])
 def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username', '').strip()
@@ -123,24 +149,8 @@ def user_login(request):
     # Request method is not POST or one of username or password is missing
     return HttpResponseBadRequest() 
 
-@login_required
-def user_logout(request):
-    logout(request)
-    data = {'success': True}
-    return HttpResponse(json.dumps(data), content_type='application/json')
-
-@login_required
-def index(request):
-    return render(request,'index/index.html')
-
-def test(request):
-    import subprocess
-    subprocess.Popen(['python', 'manage.py', 'test'])
-    #a = call_command(f'test &')
-    from django.http import JsonResponse 
-    return JsonResponse({'error': 'Some error'}, status=200)
-
-@login_required
+@api_view(['GET'])
+@permission_classes((IsAuthenticated, ))
 def start_session(request):
     try:
         course_id = request.GET['course_id']
@@ -157,7 +167,8 @@ def start_session(request):
         logger.exception(e)
         return JsonResponse({'message': str(e)}, status=500)
 
-@login_required
+@api_view(['GET'])
+@permission_classes((IsAuthenticated, ))
 def stop_session(request):
     try:
         session_id = request.GET['session_id']
@@ -175,11 +186,29 @@ def stop_session(request):
         logger.exception(e)
         return JsonResponse({'message': str(e)}, status=500)
 
-@login_required
+@api_view(['GET'])
+@permission_classes((IsAuthenticated, ))
 def session_in_progress(request):
-    session_obj = Session.objects.filter(status=3)[:1]
+    session_obj = Session.objects.filter(status=Session.STATUS_IN_PROGRESS)[:1]
     if session_obj:
         return JsonResponse(session_obj[0].serialize(), status=200)
     else:
         return JsonResponse({}, status=200)
     
+@login_required
+def index(request):
+    return render(request,'index/index.html')
+
+def test(request):
+    import subprocess
+    subprocess.Popen(['python', 'manage.py', 'test'])
+    #a = call_command(f'test &')
+    from django.http import JsonResponse 
+    return JsonResponse({'error': 'Some error'}, status=200)
+
+# @api_view(['GET'])
+# @permission_classes((IsAuthenticated, ))
+# def user_logout(request):
+#     logout(request)
+#     data = {'success': True}
+#     return HttpResponse(json.dumps(data), content_type='application/json')

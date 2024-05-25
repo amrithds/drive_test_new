@@ -4,12 +4,11 @@ from course.models.obstacle_task_score import ObstacleTaskScore
 from course.models.obstacle import Obstacle
 from report.models.session_report import SessionReport
 from course.models.session import Session
-from course.models.task_metrics import TaskMetric
 from report.models.final_report import FinalReport 
 from course.models.task import Task
-from course.models.sensor_feed import SensorFeed
+from report.models.sensor_feed import SensorFeed
 from django.db.models import Min, Q, Max
-from operator import or_
+from report.helper import report_helper
 import datetime
 import logging
 
@@ -21,18 +20,21 @@ class ReportGenerator():
     DISTANCE_SENSOR_RIGHT_ONLY = 1
     DISTANCE_SENSOR_LEFT_RIGHT = 2
 
-    def __init__(self, session: Session) -> None:
+    def __init__(self, session: Session, resume: int) -> None:
         """init
         Args:
             session (Session): session object
         """
         self.session = session
+        self.resume = resume
        
     def generateReport(self):
         """
         Generate report from session data feed
         """
-        self.__initializeSessionReport()
+        if not self.resume:
+            self.__initializeSessionReport()
+
         while True:
             OSTrackers = ObstacleSessionTracker.objects.filter(session = self.session\
                         , report_status = ObstacleSessionTracker.STATUS_IN_PROGRESS)
@@ -44,18 +46,14 @@ class ReportGenerator():
                 for session_report in session_reports:
                     ObsTaskScore = ObstacleTaskScore.objects.get(obstacle_id=session_report.obstacle_id\
                                                       , task_id=session_report.task_id)
-                    
+
                     result = self.__getResult(ObsTaskScore)
-                    
-                    logger.info(ObsTaskScore.task.name )
-                    logger.info(result )
+
                     if result is True:
                         print('result', result, ObsTaskScore.obstacle, ObsTaskScore.task)
                         session_report.result = SessionReport.RESULT_PASS
                         session_report.remark = ObsTaskScore.task_metrics.success_message
                     else:
-                        # if sessionTaskReport.task.name == "Seat Belt" and sessionTaskReport.result == SessionReport.RESULT_PASS:
-                        #     print(result, sessionTaskReport, ObsTaskScore)
                         session_report.result = SessionReport.RESULT_FAIL
                         session_report.remark = ObsTaskScore.task_metrics.failure_message
                     session_report.save()
@@ -96,6 +94,7 @@ class ReportGenerator():
             
             final_report.score = total_obs_score
             final_report.data = data
+            final_report.duration = report_helper.get_obstacle_duration(obstacle.id)
             final_report.save()
 
     def __initializeSessionReport(self):

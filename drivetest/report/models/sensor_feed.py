@@ -1,5 +1,6 @@
 from django.db import models
-from .obstacle import Obstacle
+from course.models.obstacle import Obstacle
+from utils.model_util.custom_date_time import DateTimeWithoutTZField as DateTimeField
 class SensorFeed(models.Model):
     LEFT_DISTANCE_SENSOR = 's1'
     RIGHT_DISTANCE_SENSOR = 's1'
@@ -22,7 +23,7 @@ class SensorFeed(models.Model):
     s14 = models.IntegerField(blank=True, null=True)
     s15 = models.IntegerField(blank=True, null=True)
     s16 = models.IntegerField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = DateTimeField(auto_now_add=True)
     
     class Meta:
-        db_table = "course_sensor_feed"
+        db_table = "report_sensor_feed"

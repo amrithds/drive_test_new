@@ -18,7 +18,7 @@ export class AddUserComponent {
   public form!: FormGroup;
   public editUserForm !: FormGroup;
   public environment = environment;
-  ranks: string[] = ['L Nk', 'Nk', 'L Hav', 'Hav', 'Nb Sub', 'Sub', 'Sub Maj', 'Lt', 'Maj', 'Capt', 'Lt Col'];
+  ranks: string[] = ['Rect', 'SEP', 'L Nk', 'Nk', 'L Hav', 'Hav', 'Nb Sub', 'Sub', 'Sub Maj', 'Lt', 'Maj', 'Capt', 'Lt Col'];
   editIndex: number = -1;
   public users:any=[];
   filteredOptions: any = [];
