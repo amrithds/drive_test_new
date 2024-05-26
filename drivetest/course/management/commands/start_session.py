@@ -27,6 +27,7 @@ class Command(BaseCommand):
     RF_ID_OBSTACLE_MAP = {}
     SESSION = None
     AUDIO_LOCATION = str(settings.BASE_DIR)+'/uploads/'
+    RESUME=False
     
     def add_arguments(self, parser):
         parser.add_argument('-i','--trainer', type=int, help='trainer number of user in session')
@@ -43,7 +44,7 @@ class Command(BaseCommand):
         trainee_id = kwargs['trainee']
         session_mode = int(kwargs['mode'])
         course_id = kwargs['course']
-        resume = kwargs['resume']
+        self.RESUME = kwargs['resume']
         
         #session_id is optional during debug
         if kwargs["session_id"]:
@@ -57,7 +58,7 @@ class Command(BaseCommand):
         else:
             report_logger.error('Bluetooth unable to connect')
 
-        if not resume:
+        if not self.RESUME:
             #clean data from last session
             start_session_helper.initialiseSession()
         
@@ -77,7 +78,7 @@ class Command(BaseCommand):
         print('Report generator...')
         #initialise session report
         try:
-            report_generotor = ReportGenerator(self.SESSION)
+            report_generotor = ReportGenerator(self.SESSION, self.RESUME)
             report_generotor.generateReport()
         except Exception as e:
             report_logger.exception("Error: "+str(e))
