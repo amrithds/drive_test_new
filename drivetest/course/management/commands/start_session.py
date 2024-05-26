@@ -11,6 +11,7 @@ import copy
 import concurrent.futures
 from playsound import playsound
 from django.conf import settings
+from app_config.helper import bluetooth_speaker_helper
 
 import logging
 RF_logger = logging.getLogger("RFlog")
@@ -50,6 +51,8 @@ class Command(BaseCommand):
         else:
             self.SESSION = start_session_helper.createSession(trainer_id, trainee_id,session_mode, course_id)
         
+        # connect bluetooth
+        bluetooth_speaker_helper.connect_bluetooth()
         if not resume:
             #clean data from last session
             start_session_helper.initialiseSession()
@@ -112,6 +115,7 @@ class Command(BaseCommand):
                             #play training audio
                             if self.SESSION.mode == Session.MODE_TRAINING:
                                 playsound(self.AUDIO_LOCATION+tempObstacleObj.audio_file)
+                            
                             previousOSTracker = copy.deepcopy(OSTracker)
                             OSTracker = ObstacleSessionTracker.objects.create(obstacle=tempObstacleObj\
                                                                         ,session=self.SESSION)
