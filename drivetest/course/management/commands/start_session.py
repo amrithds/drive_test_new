@@ -52,7 +52,11 @@ class Command(BaseCommand):
             self.SESSION = start_session_helper.createSession(trainer_id, trainee_id,session_mode, course_id)
         
         # connect bluetooth
-        bluetooth_speaker_helper.connect_bluetooth()
+        if bluetooth_speaker_helper.connect_bluetooth():
+            report_logger.info('Bluetooth connected')
+        else:
+            report_logger.error('Bluetooth unable to connect')
+
         if not resume:
             #clean data from last session
             start_session_helper.initialiseSession()
