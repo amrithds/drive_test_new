@@ -8,9 +8,12 @@ class Session(BaseModel):
     STATUS_IN_PROGRESS = 1
     STATUS_COMPELETED = 2
 
+    MODE_EVALUATE = 0
+    MODE_TRAINING = 1
+
     MODE_CHOICES=(
-        (0, "Evaluate"),
-        (1, "Test")
+        (MODE_EVALUATE, "Evaluate"),
+        (MODE_TRAINING, "Training")
     )
 
     id=models.AutoField(primary_key = True)

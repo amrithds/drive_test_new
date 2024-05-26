@@ -9,7 +9,8 @@ from course.helper import rf_id_helper
 from course.helper.STM_helper import STMReader
 import copy
 import concurrent.futures
-
+from playsound import playsound
+from django.conf import settings
 
 import logging
 RF_logger = logging.getLogger("RFlog")
@@ -24,6 +25,7 @@ class Command(BaseCommand):
     COLLECT_SENSOR_INPUTS=False
     RF_ID_OBSTACLE_MAP = {}
     SESSION = None
+    AUDIO_LOCATION = settings.BASE_DIR+'/uploads/'
     
     def add_arguments(self, parser):
         parser.add_argument('-i','--trainer', type=int, help='trainer number of user in session')
@@ -107,6 +109,9 @@ class Command(BaseCommand):
                         self.COLLECT_SENSOR_INPUTS = True
                         #create ObstacleSessionTracker
                         if OSTracker is None or OSTracker.obstacle_id != tempObstacleObj.id:
+                            #play training audio
+                            if self.SESSION.mode == Session.MODE_TRAINING:
+                                playsound(self.AUDIO_LOCATION+tempObstacleObj.audio_file)
                             previousOSTracker = copy.deepcopy(OSTracker)
                             OSTracker = ObstacleSessionTracker.objects.create(obstacle=tempObstacleObj\
                                                                         ,session=self.SESSION)
