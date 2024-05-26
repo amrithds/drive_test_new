@@ -26,7 +26,7 @@ class Command(BaseCommand):
     COLLECT_SENSOR_INPUTS=False
     RF_ID_OBSTACLE_MAP = {}
     SESSION = None
-    AUDIO_LOCATION = settings.BASE_DIR+'/uploads/'
+    AUDIO_LOCATION = str(settings.BASE_DIR)+'/uploads/'
     
     def add_arguments(self, parser):
         parser.add_argument('-i','--trainer', type=int, help='trainer number of user in session')
