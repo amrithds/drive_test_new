@@ -1,5 +1,9 @@
 import os
 from app_config.models import Config
-def connect_bluetooth():
-    config_obj = Config.objects.get(name='bluetooth speaker')
-    os.system('bluetoothctl power on |   bluetoothctl connect '+ config_obj.value)
+def connect_bluetooth() -> bool:
+    config_obj = Config.objects.filter(name='bluetooth speaker').first()
+    if config_obj:
+        os.system('bluetoothctl power on |   bluetoothctl connect '+ config_obj.value)
+        return True
+
+    return False
