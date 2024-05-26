@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'course',
     'report',
+    'app_config'
 ]
 
 REST_FRAMEWORK = {
