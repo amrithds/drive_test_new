@@ -26,7 +26,7 @@ class Command(BaseCommand):
     COLLECT_SENSOR_INPUTS=False
     RF_ID_OBSTACLE_MAP = {}
     SESSION = None
-    AUDIO_LOCATION = str(settings.BASE_DIR)+'/uploads/'
+    AUDIO_LOCATION = str(settings.BASE_DIR)+'/'
     RESUME=False
     
     def add_arguments(self, parser):
@@ -119,7 +119,7 @@ class Command(BaseCommand):
                         if OSTracker is None or OSTracker.obstacle_id != tempObstacleObj.id:
                             #play training audio
                             if self.SESSION.mode == Session.MODE_TRAINING:
-                                playsound(self.AUDIO_LOCATION+tempObstacleObj.audio_file)
+                                playsound(self.AUDIO_LOCATION+str(tempObstacleObj.audio_file))
                             
                             previousOSTracker = copy.deepcopy(OSTracker)
                             OSTracker = ObstacleSessionTracker.objects.create(obstacle=tempObstacleObj\
