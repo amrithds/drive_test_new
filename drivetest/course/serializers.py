@@ -28,4 +28,4 @@ class SessionSerializer(serializers.HyperlinkedModelSerializer):
     trainer = UserSerializer()
     class Meta:
         model = Session
-        fields = '__all__'
+        fields = ['id', 'url', 'trainer', 'trainee', 'status', 'mode', 'course', 'created_at']
