@@ -70,7 +70,7 @@ class ReportGenerator():
         obstacles = Obstacle.objects.all()
 
         for obstacle in obstacles:
-            final_report = FinalReport.objects.create(obstacle=obstacle, data={})
+            final_report = FinalReport.objects.create(session=self.session, obstacle=obstacle, data={})
             session_task_reports = SessionReport.objects.filter(obstacle_id=obstacle.id).order_by('obstacle_id', 'task_id')
             #init obstacle level report
             data = []
