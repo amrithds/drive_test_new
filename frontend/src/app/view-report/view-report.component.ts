@@ -22,6 +22,7 @@ export class ViewReportComponent {
   public enablereport: boolean = false;
   public showpdf: boolean = false;
   public environment=environment;
+  public individual_report:any=[];
 
 
 
@@ -41,7 +42,8 @@ export class ViewReportComponent {
     this.enabletable = true;
     this.http.get(this.environment.apiUrl + 'v1/course/session/?search='+'111').subscribe(
       (data: any) => {
-        console.log(data)
+        console.log(data.results)
+        this.individual_report = data.results
         // this.obstacles = data.results
       },
       (error: any) => {
