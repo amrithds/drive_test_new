@@ -275,25 +275,6 @@ export class TrainingComponent {
     );
   }
 
-  stopTest(){
-    window.alert('Test ended successfully');
-    clearInterval(this.intervalId);
-    this.stop_test = false;
-  }
-
-  fetchSessionID(){
-    this.mode = this.ins_form.value['mode']
-    this.startsession=true;
-    this.http.get(this.environment.apiUrl + 'v1/course/start_session/?course_id='+this.course_id+'&trainee_id='+this.trainee_id+'&trainer_id='+this.trainer_id+'&mode='+this.mode).subscribe(
-      (data: any) => {
-        console.log("Fetched session id",data.results);
-      },
-      (error: any) => {
-        console.error('Error fetching data:', error);
-      }
-    );
-  }
-
   fetchObstacle(){
     if(this.ins_form.valid && this.driver_form.valid){
       this.startsession=true;
@@ -315,6 +296,20 @@ export class TrainingComponent {
         window.alert("Enter the trainee ID")
       }
     }   
+  }
+
+  fetchSessionID(){
+    this.mode = this.ins_form.value['mode']
+    this.startsession=true;
+    this.http.get(this.environment.apiUrl + 'v1/course/start_session/?course_id='+this.course_id+'&trainee_id='+this.trainee_id+'&trainer_id='+this.trainer_id+'&mode='+this.mode).subscribe(
+      (data: any) => {
+        this.stop_test=true;
+        console.log("Fetched session id",data.results);
+      },
+      (error: any) => {
+        console.error('Error fetching data:', error);
+      }
+    );
   }
 
   fetchLiveReport(){
@@ -339,5 +334,11 @@ export class TrainingComponent {
       }
     );  
 
+  }
+
+  stopTest(){
+    window.alert('Test ended successfully');
+    clearInterval(this.intervalId);
+    this.stop_test = false;
   }
 }

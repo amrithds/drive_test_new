@@ -157,11 +157,12 @@ def start_session(request):
         trainer_id = request.GET['trainer_id']
         trainee_id = request.GET['trainee_id']
         mode = request.GET['mode']
-
+        
+        sessionObj = createSession( trainer_id, trainee_id, mode, course_id)
         p = subprocess.Popen(['python', 'manage.py', f'start_session -i {trainer_id} -s {trainee_id} -ses {sessionObj.id} -m {mode}'])
         #p = subprocess.Popen(['python', 'manage.py', f'test'])
-        sessionObj = createSession( trainer_id, trainee_id, mode, course_id, p.pid)
-
+        sessionObj.pid = p.pid
+        sessionObj.save()
         return JsonResponse({'session_id': sessionObj.id}, status=200)
     except Exception as e:
         logger.exception(e)

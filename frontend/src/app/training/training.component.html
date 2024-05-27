@@ -119,7 +119,7 @@
         </div>  
         <div class="row mt-3">
             <div *ngIf="!stop_test" class="col-12 text-center">
-                <button type="submit" class="btn btn-success" (click)="stop_test=true;fetchLiveReport();">Start</button>
+                <button type="submit" class="btn btn-success" (click)="fetchSessionID();">Start</button>
             </div>
             <div *ngIf="stop_test" class="col-12 text-center">
                 <button type="submit" class="btn btn-danger" (click)="stopTest()">Stop</button>

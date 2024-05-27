@@ -33,17 +33,17 @@
                           <tr>
                             <th>Sl.no</th>
                             <th>Date</th>
-                            <th>Report ID</th>
+                            <th>Report Id</th>
                             <th>Trainee Id</th>
                             <th>Name</th>
                             <th>Action</th>
                           </tr>	
-                          <tr>
-                            <td>1</td>
-                            <td>Maria Anders</td>
-                            <td>Germany</td>
-                            <td>Alfreds Futterkiste</td>
-                            <td>Maria Anders</td>
+                          <tr *ngFor="let item of individual_report;let i=index;">
+                            <td>{{i+1}}.</td>
+                            <td>{{ item.created_at | date:'mediumDate' }}</td>
+                            <td></td>
+                            <td>{{item.trainee.unique_ref_id}}</td>
+                            <td>{{item.trainee.name}}</td>
                             <td><button type="button" class="btn btn-primary" (click)="enablereport=true;enabletable=false">View Report</button></td>
                           </tr>
                     </thead>
