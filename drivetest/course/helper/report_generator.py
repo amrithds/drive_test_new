@@ -20,7 +20,7 @@ class ReportGenerator():
     DISTANCE_SENSOR_RIGHT_ONLY = 1
     DISTANCE_SENSOR_LEFT_RIGHT = 2
 
-    def __init__(self, session: Session, resume: int) -> None:
+    def __init__(self, session: Session, resume: int=False) -> None:
         """init
         Args:
             session (Session): session object
