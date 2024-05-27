@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'course',
-    'report'
+    'report',
+    'app_config'
 ]
 
 REST_FRAMEWORK = {
@@ -62,6 +63,7 @@ REST_FRAMEWORK = {
 
 CORS_ALLOWED_ORIGINS = [
    "http://localhost:4200",
+   "app.smartskill.com",
 ]
 
 MIDDLEWARE = [
