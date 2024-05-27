@@ -150,7 +150,7 @@
                           </ng-container>
                           <ng-container *ngFor="let item of report;let in=index">
                             <ng-container *ngIf="i + 1 === item.id">
-                              <td [style.color]="item.status === 1 ? 'green' : 'red'">{{item.status == 1 ? 'Pass' : 'Fail'}}</td>
+                              <td [style.color]="item.result === 1 ? 'green' : 'red'">{{item.status == 1 ? 'Pass' : 'Fail'}}</td>
                               <td>
                                 <ng-container *ngFor="let data of item.tasks;">
                                   <div [style.color]="data.result === 0 ? 'grey' : (data.result === 1 ? 'green' : (data.result === 2 ? 'red' : 'green'))">{{data.name}}</div>
