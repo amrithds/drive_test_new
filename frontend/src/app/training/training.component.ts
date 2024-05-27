@@ -37,6 +37,7 @@ export class TrainingComponent {
   public obstacles:any=[]
   public report:any;
   private intervalId: any;
+  public session_id:any;
   public items=[
     {
       'ob_name':'STARTING POINT'
@@ -303,8 +304,12 @@ export class TrainingComponent {
     this.startsession=true;
     this.http.get(this.environment.apiUrl + 'v1/course/start_session/?course_id='+this.course_id+'&trainee_id='+this.trainee_id+'&trainer_id='+this.trainer_id+'&mode='+this.mode).subscribe(
       (data: any) => {
+        console.log("Fetched session id",data);
         this.stop_test=true;
-        console.log("Fetched session id",data.results);
+        this.session_id = data.session_id
+        if(this.session_id){
+          this.fetchLiveReport();
+        }
       },
       (error: any) => {
         console.error('Error fetching data:', error);
@@ -318,27 +323,91 @@ export class TrainingComponent {
     }, 5000);
   }
 
-  livereport(){
+  livereport() {
     this.http.get(this.environment.apiUrl + 'v1/report/live_report/').subscribe(
       (data: any) => {
-        // this.obstacles = data.results
-        this.report = [{"tasks": [{"name": "Head Light", "score": 10, "result": 1, "remark": "Head light on"}, {"name": "Head Light",
-        "score": 0, "result": 0, "remark": ""}], "status": 1, "total_marks": 20, "obtained_marks": 10, "name":
-        "start","id":1}, {"tasks": [{"name": "Parking", "score": 0, "result": 2, "remark": "Parking Success"}, {"name": "Parking",
-        "score": 0, "result": 0, "remark": ""}, {"name": "Hand brake", "score": 0, "result": 0, "remark": ""}], "status": 2,
-        "total_marks": 35, "obtained_marks": 0, "name": "Left Parking","id":2}]
-        console.log("Fetched report",this.report);
+        this.report = [
+          {
+              "tasks": [
+                  {
+                      "name": "Head Light",
+                      "score": 10,
+                      "result": 1,
+                      "remark": "Head light on",
+                  },
+                  {
+                      "name": "Seat belt",
+                      "score": 0,
+                      "result": 2,
+                      "remark": "",
+                  }
+              ],
+              "status": 1,
+              "total_marks": 20,
+              "obtained_marks": 10,
+              "name": "start",
+              "id": 1
+          },
+          {
+              "tasks": [
+                  {
+                      "name": "Parking",
+                      "score": 0,
+                      "result": 2,
+                      "remark": "Parking Success",
+                      "status": 2,
+                      "total_marks": 35,
+                      "obtained_marks": 0,
+                      "id": 2
+                  },
+                  {
+                      "name": "Seat belt",
+                      "score": 0,
+                      "result": 0,
+                      "remark": "",
+                      "status": 2,
+                      "total_marks": 35,
+                      "obtained_marks": 0,
+                      "id": 2
+                  },
+                  {
+                      "name": "Hand brake",
+                      "score": 0,
+                      "result": 0,
+                      "remark": "",
+                      "status": 2,
+                      "total_marks": 35,
+                      "obtained_marks": 0,
+                      "id": 2
+                  }
+              ],
+              "status": 2,
+              "total_marks": 35,
+              "obtained_marks": 0,
+              "name": "Left Parking",
+              "id": 2
+          }
+      ]
       },
       (error: any) => {
         console.error('Error fetching data:', error);
       }
-    );  
-
+    );
   }
 
   stopTest(){
-    window.alert('Test ended successfully');
-    clearInterval(this.intervalId);
-    this.stop_test = false;
+    this.http.get(this.environment.apiUrl + 'v1/course/stop_session/?session_id='+this.session_id).subscribe(
+      (data: any) => {
+        console.log("Fetched session id",data);
+        this.stop_test=false;
+        window.alert('Test ended successfully');
+        clearInterval(this.intervalId);
+      },
+      (error: any) => {
+        console.error('Error fetching data:', error);
+      }
+    );
   }
+
+  
 }
