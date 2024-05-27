@@ -4,6 +4,9 @@ import { DatePipe, formatDate } from '@angular/common';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { Component, ElementRef, ViewChild } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environment/environment';
+
 
 @Component({
   selector: 'app-view-report',
@@ -18,9 +21,15 @@ export class ViewReportComponent {
   public enabletable: boolean = false;
   public enablereport: boolean = false;
   public showpdf: boolean = false;
+  public environment=environment;
 
 
-  constructor(private fb: FormBuilder) {
+
+  constructor(
+    private fb: FormBuilder,
+    private http: HttpClient,
+
+  ) {
     this.getDatetime = formatDate(this.today, 'dd-MM-yyyy hh:mm a', 'en-US', '+0530');
   }
 
@@ -30,6 +39,15 @@ export class ViewReportComponent {
 
   getreports() {
     this.enabletable = true;
+    this.http.get(this.environment.apiUrl + 'v1/course/session/?search='+'111').subscribe(
+      (data: any) => {
+        console.log(data)
+        // this.obstacles = data.results
+      },
+      (error: any) => {
+        console.error('Error fetching data:', error);
+      }
+    );  
   }
 
   generatePDF() {
