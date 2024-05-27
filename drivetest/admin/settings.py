@@ -41,11 +41,9 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
     'rest_framework.authtoken',
-    'django_filters',
     'corsheaders',
     'course',
-    'report',
-    'app_config'
+    'report'
 ]
 
 REST_FRAMEWORK = {
@@ -58,7 +56,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'PAGE_SIZE': 10,
     
 }
@@ -108,13 +105,13 @@ DATABASES = {
     "ENGINE": "django.db.backends.mysql",
     "NAME": "driver_test",
     "USER":"root",
-    #"PASSWORD":"rootpass",
-    "PASSWORD":"F2s@btm2",
+    "PASSWORD":"rootpass",
+    #"PASSWORD":"F2s@btm2",
     "HOST":"127.0.0.1",
     "PORT":"3306",
-    # "OPTIONS" : {
-    #         "init_command": "SET foreign_key_checks = 0;",
-    #     }
+    "OPTIONS" : {
+            "init_command": "SET foreign_key_checks = 0;",
+        }
     }
 }
 
@@ -220,7 +217,7 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_TZ = False
+USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
@@ -240,3 +237,10 @@ APPEND_SLASH=True
 SESSION_COOKIE_SECURE=False
 LIST_PER_PAGE = 5
 PAGINATE_BY=5
+#get data from data generator
+# ENABLE_DATA_GENERATOR = True
+CORS_ORIGIN_ALLOW_ALL = DEBUG
+# CORS_ALLOWED_ORIGIN = [
+#     "http://localhost:4200",
+#     "http://127.0.0.1:4200",
+# ]
