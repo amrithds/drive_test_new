@@ -1,0 +1,18 @@
+[Unit]
+Description=Gunicorn instance to serve the django app
+After=network.target
+
+[Service]
+# Replace with your system user
+User=root
+
+# Replace with your system group
+Group=root
+
+WorkingDirectory=/home/admin/Desktop/app/drive_test/drivetest
+#ExecStart=path to gunicorn_config.py admin.wsgi:application
+ExecStart=/home/admin/Desktop/app/drive_test/server/gunicorn/gunicorn_start.sh
+
+[Install]
+WantedBy=multi-user.target
+#This is the systemd file, which can be called: gunicorn.service
