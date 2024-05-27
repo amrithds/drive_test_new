@@ -11,13 +11,13 @@ class FinalReport(BaseModel):
     session = models.ForeignKey(Session, on_delete=models.DO_NOTHING)
     obstacle = models.ForeignKey(Obstacle, on_delete=models.DO_NOTHING)
     data = models.JSONField(default=None)
-    total_score = models.IntegerField(default=0)
-    obtained_score = models.IntegerField(default=0)
+    total_score = models.IntegerField(default=0, null=True, blank=True)
+    obtained_score = models.IntegerField(default=0, null=True, blank=True)
     result = models.IntegerField(choices=(
             (RESULT_PASS , "Pass"),
             (RESULT_FAIL , "Fail")
     ), default = RESULT_PASS)
-    duration = models.IntegerField(default=0)
+    duration = models.IntegerField(default=0, null=True, blank=True)
 
     class Meta:
         db_table = "report_final_report"
