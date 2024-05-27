@@ -11,6 +11,7 @@ from django.db.models import Q
 from course.models.session import Session
 from django.http import JsonResponse 
 import subprocess
+import shlex
 from course.helper import process_helper
 from course.helper.start_session_helper import createSession
 from course.helper.report_generator import ReportGenerator
@@ -159,7 +160,8 @@ def start_session(request):
         mode = request.GET['mode']
         
         sessionObj = createSession( trainer_id, trainee_id, mode, course_id)
-        p = subprocess.Popen(['python', 'manage.py', f'start_session -i {trainer_id} -s {trainee_id} -ses {sessionObj.id} -m {mode}'])
+        command = shlex.split(f'python manage.py start_session -i {trainer_id} -s {trainee_id} -ses {sessionObj.id} -m {mode}')
+        p = subprocess.Popen(command)
         #p = subprocess.Popen(['python', 'manage.py', f'test'])
         sessionObj.pid = p.pid
         sessionObj.save()
