@@ -74,8 +74,10 @@ class Command(BaseCommand):
 
     def playAudio(self):
         last_played = None
-        if self.AUDIO_FILE != last_played:
-            playsound(self.AUDIO_FILE)
+        while True:
+            if self.AUDIO_FILE != last_played:
+                last_played = self.AUDIO_FILE
+                playsound(self.AUDIO_FILE)
 
     def generateReport(self):
         """
@@ -128,7 +130,7 @@ class Command(BaseCommand):
                                 self.AUDIO_FILE = self.AUDIO_LOCATION+str(tempObstacleObj.audio_file)
                             
                             previousOSTracker = copy.deepcopy(OSTracker)
-                            OSTracker = ObstacleSessionTracker.objects.create(obstacle=tempObstacleObj\
+                            OSTracker,_ = ObstacleSessionTracker.objects.get_or_create(obstacle=tempObstacleObj\
                                                                         ,session=self.SESSION)
                             
                             #check if start RFID of next obstacle is read before reading previous
