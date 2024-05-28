@@ -18,7 +18,8 @@ logger = logging.getLogger("reportLog")
 class ReportGenerator():
     DISTANCE_SENSOR_LEFT_ONLY = 0
     DISTANCE_SENSOR_RIGHT_ONLY = 1
-    DISTANCE_SENSOR_LEFT_RIGHT = 2
+    DISTANCE_SENSOR_LEFT_AND_RIGHT = 2
+    DISTANCE_SENSOR_LEFT_AND_RIGHT_ZIG_ZAG = 3
 
     def __init__(self, session: Session, resume: int=False) -> None:
         """init
@@ -147,7 +148,7 @@ class ReportGenerator():
         result = False
         if latest_sensor_feeds:
             #choose which calculation logic to use
-            dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_RIGHT
+            dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_AND_RIGHT
 
             if task_obj.category == Task.TASK_TYPE_LEFT_PARKING:
                 dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_ONLY
@@ -171,6 +172,8 @@ class ReportGenerator():
         result = False
         total_valid_count = 0
         REQUIRED_VALID_COUNT = 4
+        ZIG_ZAG_LEFT_RESULT = 0
+        ZIG_ZAG_RIGHT_RESULT = 0
         for sensor_feed in sensor_feeds:
             left_sensor_val = getattr(sensor_feed, left_sensor_id)
             right_sensor_val = getattr(sensor_feed, right_sensor_id)
@@ -184,7 +187,7 @@ class ReportGenerator():
                     total_valid_count += 1
                 else:
                     total_valid_count = 0
-            elif sensor_calculation == self.DISTANCE_SENSOR_LEFT_RIGHT:
+            elif sensor_calculation == self.DISTANCE_SENSOR_LEFT_AND_RIGHT:
                 
                 if  left_min_range <= left_sensor_val and left_sensor_val <= left_max_range and \
                     right_min_range <= right_sensor_val and right_sensor_val  <= right_max_range:
@@ -192,10 +195,23 @@ class ReportGenerator():
                     total_valid_count += 1
                 else:
                     total_valid_count = 0
+            elif sensor_calculation == self.DISTANCE_SENSOR_LEFT_AND_RIGHT_ZIG_ZAG:
+                
+
+                if  left_min_range <= left_sensor_val and left_sensor_val <= left_max_range:
+                    ZIG_ZAG_LEFT_RESULT += 1
+                elif ZIG_ZAG_LEFT_RESULT < REQUIRED_VALID_COUNT:
+                    ZIG_ZAG_LEFT_RESULT = 0
+                
+                if right_min_range <= right_sensor_val and right_sensor_val  <= right_max_range:
+                    ZIG_ZAG_RIGHT_RESULT += 1
+                elif ZIG_ZAG_RIGHT_RESULT < REQUIRED_VALID_COUNT:
+                    ZIG_ZAG_RIGHT_RESULT = 0
             
             
             #break if REQUIRED_VALID_COUNT is reached
-            if REQUIRED_VALID_COUNT == total_valid_count:
+            if (REQUIRED_VALID_COUNT == total_valid_count or (ZIG_ZAG_RIGHT_RESULT == REQUIRED_VALID_COUNT \
+                                                             and ZIG_ZAG_RIGHT_RESULT == REQUIRED_VALID_COUNT)):
                 result = True
                 break
 
@@ -243,17 +259,19 @@ class ReportGenerator():
         Returns:
             Bool: Boolean
         """
-        dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_RIGHT
+        dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_AND_RIGHT
         
         task_category = obs_task_score.task.category
 
-        dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_RIGHT
+        dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_AND_RIGHT
         if task_category == Task.TASK_TYPE_LEFT_TURNING:
             dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_ONLY
         elif task_category == Task.TASK_TYPE_RIGHT_TURNING:
             dis_sensor_calculation = self.DISTANCE_SENSOR_RIGHT_ONLY
         elif task_category == Task.TASK_TYPE_DUAL_SENSOR_TURNING:
-            dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_RIGHT
+            dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_AND_RIGHT
+        elif task_category == Task.TASK_TYPE_DUAL_SENSOR_TURNING_ZIG_ZAG:
+            dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_AND_RIGHT_ZIG_ZAG
         
         filter_query = Q(**{ "obstacle_id": obs_task_score.obstacle_id })
         sensor_feed = SensorFeed.objects.filter(filter_query).order_by('created_dt')

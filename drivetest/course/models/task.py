@@ -10,9 +10,10 @@ class Task(BaseModel):
     TASK_TYPE_DUAL_SENSOR_TURNING = 3
     TASK_TYPE_LEFT_TURNING = 6
     TASK_TYPE_RIGHT_TURNING = 7
+    TASK_TYPE_DUAL_SENSOR_TURNING_ZIG_ZAG = 8
 
     PARKING_TYPES = (TASK_TYPE_PARKING, TASK_TYPE_LEFT_PARKING, TASK_TYPE_RIGHT_PARKING)
-    TURNING_TYPES = (TASK_TYPE_DUAL_SENSOR_TURNING, TASK_TYPE_LEFT_TURNING, TASK_TYPE_RIGHT_TURNING)
+    TURNING_TYPES = (TASK_TYPE_DUAL_SENSOR_TURNING, TASK_TYPE_LEFT_TURNING, TASK_TYPE_RIGHT_TURNING, TASK_TYPE_DUAL_SENSOR_TURNING_ZIG_ZAG)
     
     
 
@@ -20,12 +21,15 @@ class Task(BaseModel):
     name = models.CharField(max_length=100,unique=True)
     sensor_id=models.CharField(max_length=100)
     category=models.IntegerField(choices=(
-            (0 , "Boolean"),
-            (1 , "Parking"),
-            (2 , "Speed"),
-            (3 , "Turning"),
-            (4 , "Left Parking"),
-            (5 , "Right Parking"),
+            (TASK_TYPE_BOOLEAN , "Boolean"),
+            (TASK_TYPE_PARKING , "Parking"),
+            (TASK_TYPE_LEFT_PARKING , "Left Parking"),
+            (TASK_TYPE_RIGHT_PARKING , "Right Parking"),
+            (TASK_TYPE_SPEED , "Speed"),
+            (TASK_TYPE_DUAL_SENSOR_TURNING , "Turning"),
+            (TASK_TYPE_LEFT_TURNING , "Left Turning"),
+            (TASK_TYPE_RIGHT_TURNING , "Right Turning"),
+            (TASK_TYPE_DUAL_SENSOR_TURNING_ZIG_ZAG , "Zig-zag Turning"),
     ), default= 0)
 
     def __str__(self) -> str:
