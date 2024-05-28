@@ -14,7 +14,7 @@
         <form [formGroup]="ins_form">
             <div class="row py-2">
                 <div class="col-3">
-                    <label>Course ID: </label>
+                    <label class="required">Course ID</label>
                     <input type="text" placeholder="Course ID" (input)="onSearchChange()" class="form-control" formControlName="course"/>
                     <div class="autocomplete-container">
                       <div class="autocomplete-items" *ngIf="filteredOptions.length">
@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class="col-3">
-                    <label>Select Drive Mode: </label>
+                    <label class="required">Select Drive Mode</label>
                     <select class="form-select" formControlName="mode">
                         <option value="0">Evaluate</option>
                         <option value="1">Training</option>
@@ -35,7 +35,7 @@
             <div class="row py-2">
                 <label style="font-size: 25px;">Instructor</label>
                 <div class="col-3">
-                    <label>Army No: </label>
+                    <label class="required">Army No</label>
                     <input type="text" placeholder="Army no / Sl.no" class="form-control" formControlName="unique_ref_id" (input)="onSearchChangeIns()">
                     <div class="autocomplete-container">
                       <div class="autocomplete-items" *ngIf="filteredInsOptions.length">
@@ -46,25 +46,25 @@
                     </div>
                 </div>
                 <div class="col-3">
-                    <label>Name: </label>
+                    <label>Name</label>
                     <input type="text" placeholder="Name" class="form-control" style="background-color: #eeeef3;" formControlName="name" readonly>
                 </div>
                 <div class="col-3">
-                    <label>Rank: </label>
+                    <label>Rank</label>
                     <select class="form-select" formControlName="rank" style="background-color: #eeeef3;pointer-events: none;">
                         <option value="" disabled selected hidden>Rank</option>
                         <option *ngFor="let rank of ranks" [value]="rank">{{ rank }}</option>
                       </select>
                 </div>
                 <div class="col-3">
-                    <label>Unit: </label>
+                    <label>Unit</label>
                     <input type="select" placeholder="Unit" class="form-control" style="background-color: #eeeef3;" formControlName="unit" readonly>
                 </div>     
             </div>
             <div class="row py-2"  [formGroup]="driver_form">
                 <label style="font-size: 25px;">Driver</label>
                 <div class="col-3">
-                    <label>Army No: </label>
+                    <label class="required">Army No</label>
                     <input type="text" placeholder="Army no / Sl.no" class="form-control" formControlName="unique_ref_id" (input)="onSearchChangeDri()">
                     <div class="autocomplete-container">
                       <div class="autocomplete-items" *ngIf="filteredDriOptions.length">
@@ -75,18 +75,18 @@
                     </div>
                 </div>
                 <div class="col-3">
-                    <label>Name: </label>
+                    <label>Name</label>
                     <input type="text" placeholder="Name" class="form-control" style="background-color: #eeeef3;" formControlName="name" readonly>
                 </div>
                 <div class="col-3">
-                    <label>Rank: </label>
+                    <label>Rank</label>
                     <select class="form-select" formControlName="rank" style="background-color: #eeeef3;pointer-events: none;">
                         <option value="" disabled selected hidden>Rank</option>
                         <option *ngFor="let rank of ranks" [value]="rank">{{ rank }}</option>
                       </select>
                 </div>
                 <div class="col-3">
-                    <label>Unit: </label>
+                    <label>Unit</label>
                     <input type="select" placeholder="Unit" class="form-control" style="background-color: #eeeef3;" formControlName="unit" readonly>
                 </div>     
             </div>
@@ -142,15 +142,15 @@
                         <tr>
                           <td>{{ i + 1 }}.</td>
                           <td>{{ item.name }}</td>
-                          <ng-container *ngIf="!stop_test">
+                          <ng-container *ngIf="report.length==0">
                             <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
                           </ng-container>
-                          <ng-container *ngFor="let item of report;let in=index">
+                          <ng-container *ngFor="let item of report">
                             <ng-container *ngIf="i + 1 === item.id">
-                              <td [style.color]="item.status === 1 ? 'green' : 'red'">{{item.status == 1 ? 'Pass' : 'Fail'}}</td>
+                              <td [style.color]="item.result === 1 ? 'green' : 'red'">{{item.result == 1 ? 'Pass' : 'Fail'}}</td>
                               <td>
                                 <ng-container *ngFor="let data of item.tasks;">
                                   <div [style.color]="data.result === 0 ? 'grey' : (data.result === 1 ? 'green' : (data.result === 2 ? 'red' : 'green'))">{{data.name}}</div>
@@ -162,12 +162,22 @@
                                 </ng-container>
                               </td>
                               <td>{{item.obtained_marks}} / {{item.total_marks}}</td>                          
-                            </ng-container>
+                            </ng-container>                           
+                          </ng-container>
+                          <ng-container *ngIf="report.length != 0 && !hasDataForReportItem(i + 1)">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                           </ng-container>
                         </tr>
                       </ng-container>
                   </tbody>
             </table>
+            <div>
+              <label style="margin-left: 12%;">Total Marks</label>
+              <label style="float: right;margin-right: 7%;">70</label>
+            </div>
         </div>
         
     </div>

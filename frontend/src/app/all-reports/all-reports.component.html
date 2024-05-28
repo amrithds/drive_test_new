@@ -13,11 +13,11 @@
         <div class="d-flex flex-column">
             <form [formGroup]="form">
                 <div class="col-12">
-                    <label>Course ID: </label>
+                    <label class="required">Course ID</label>
                     <input type="text" placeholder="Enter course id" class="form-control mb-2" formControlName="course_id">
-                    <label>From Date:</label>
+                    <label class="required">From Date</label>
                     <input type="Date" class="form-control mb-2" formControlName="course_id">
-                    <label>To Date:</label>
+                    <label class="required">To Date</label>
                     <input type="date" class="form-control mb-3" formControlName="course_id">
                     <button type="submit" class="btn btn-primary" (click)="all_reports=true">Submit</button>
                 </div>
