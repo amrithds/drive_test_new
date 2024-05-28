@@ -10,7 +10,7 @@ USER=root
 # Replace with your system group
 GROUP=root
 
-WORKERS=2
+WORKERS=1
 
 #bind to port 8000
 BIND=127.0.0.1:8000
