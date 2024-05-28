@@ -22,6 +22,7 @@ import { AuthInterceptor } from './auth.interceptor';
 import { AuthGuard } from './auth.guard';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { LiveDashboardComponent } from './live-dashboard/live-dashboard.component';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { LiveDashboardComponent } from './live-dashboard/live-dashboard.componen
     BrowserAnimationsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    NgxPaginationModule
   ],
   providers: [
     AuthService,

@@ -13,7 +13,7 @@ import { AuthService } from '../auth.service';
   styleUrl: './training.component.scss'
 })
 export class TrainingComponent {
-  courses:any;
+  public courses:any;
   public today= new Date();
   public getDatetime='';
   public ins_form!: FormGroup;
@@ -29,7 +29,7 @@ export class TrainingComponent {
   public stop_test:boolean=false;
   public trainee_id:any;
   public trainer_id:any;
-  filteredOptions: any = [];
+  public filteredOptions: any = [];
   public filteredInsOptions:any=[];
   public users:any;
   public mode:any;
@@ -38,8 +38,7 @@ export class TrainingComponent {
   public report:any=[];
   private intervalId: any;
   public session_id:any;
-  
-  ranks: string[] = ['L Nk', 'Nk', 'L Hav', 'Hav', 'Nb Sub', 'Sub', 'Sub Maj', 'Lt', 'Maj', 'Capt', 'Lt Col'];
+  public ranks: string[] = ['L Nk', 'Nk', 'L Hav', 'Hav', 'Nb Sub', 'Sub', 'Sub Maj', 'Lt', 'Maj', 'Capt', 'Lt Col'];
 
 
   constructor(
@@ -253,6 +252,7 @@ export class TrainingComponent {
   }
 
   fetchSessionID(){
+    console.log("Driver",this.trainee_id,"Ins",this.trainer_id)
     this.mode = this.ins_form.value['mode']
     this.startsession=true;
     this.http.get(this.environment.apiUrl + 'v1/course/start_session/?course_id='+this.course_id+'&trainee_id='+this.trainee_id+'&trainer_id='+this.trainer_id+'&mode='+this.mode).subscribe(
@@ -273,12 +273,13 @@ export class TrainingComponent {
   fetchLiveReport(){
     this.intervalId = setInterval(() => {
       this.livereport();
-    }, 5000);
+    }, 3000);
   }
 
   hasDataForReportItem(rowId: number): boolean {
     return this.report.some((reportItem:any) => reportItem.id === rowId);
   }
+
   livereport() {
     this.http.get(this.environment.apiUrl + 'v1/report/live_report/').subscribe(
       (data: any) => {
@@ -304,7 +305,8 @@ export class TrainingComponent {
       //         "total_marks": 20,
       //         "obtained_marks": 10,
       //         "name": "start",
-      //         "id": 1
+      //         "id": 1,
+      //         "obstacle_duration":20
       //     },
       //     {
       //         "tasks": [
@@ -343,7 +345,8 @@ export class TrainingComponent {
       //         "total_marks": 35,
       //         "obtained_marks": 0,
       //         "name": "Left Parking",
-      //         "id": 2
+      //         "id": 2,
+      //         "obstacle_duration":20
       //     }
       // ]
       },
@@ -351,6 +354,30 @@ export class TrainingComponent {
         console.error('Error fetching data:', error);
       }
     );
+  }
+
+  getTotalObtainedMarks(): number {
+    let totalObtainedMarks = 0;
+    for (const student of this.report) {
+      totalObtainedMarks += student.obtained_marks;
+    }
+    return totalObtainedMarks;
+  }
+
+  getTotalTimeTaken(): number {
+    let totalTimeTaken = 0;
+    for (const student of this.report) {
+      totalTimeTaken += student.obstacle_duration;
+    }
+    return totalTimeTaken;
+  }
+
+  getTotalMarks(): number {
+    let totalMarks = 0;
+    for (const trainee of this.report) {
+      totalMarks += trainee.total_marks;
+    }
+    return totalMarks;
   }
 
   stopTest(){
@@ -366,6 +393,4 @@ export class TrainingComponent {
       }
     );
   }
-
-  
 }
