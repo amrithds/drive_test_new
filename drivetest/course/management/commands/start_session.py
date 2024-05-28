@@ -129,7 +129,7 @@ class Command(BaseCommand):
                                 self.AUDIO_FILE = self.AUDIO_LOCATION+str(tempObstacleObj.audio_file)
                             
                             previousOSTracker = copy.deepcopy(OSTracker)
-                            OSTracker = ObstacleSessionTracker.objects.create(obstacle=tempObstacleObj\
+                            OSTracker,_ = ObstacleSessionTracker.objects.get_or_create(obstacle=tempObstacleObj\
                                                                         ,session=self.SESSION)
                             
                             #check if start RFID of next obstacle is read before reading previous
