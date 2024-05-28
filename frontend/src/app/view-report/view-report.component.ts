@@ -23,6 +23,7 @@ export class ViewReportComponent {
   public showpdf: boolean = false;
   public environment=environment;
   public individual_report:any=[];
+  public view_report:any;
 
 
   constructor(
@@ -46,6 +47,7 @@ export class ViewReportComponent {
         this.individual_report = data.results
         if(this.individual_report.length>0){
           this.enabletable = true;
+          this.form.reset();
         }else{
           window.alert("Trainee not exist")
         }
@@ -55,7 +57,7 @@ export class ViewReportComponent {
       }
     );  
   }
-  public view_report:any;
+
   viewReport(index:any){
     this.enablereport=true;
     this.enabletable=false;

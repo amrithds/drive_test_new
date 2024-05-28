@@ -14,7 +14,7 @@
         <form [formGroup]="ins_form">
             <div class="row py-2">
                 <div class="col-3">
-                    <label>Course ID: </label>
+                    <label class="required">Course ID</label>
                     <input type="text" placeholder="Course ID" (input)="onSearchChange()" class="form-control" formControlName="course"/>
                     <div class="autocomplete-container">
                       <div class="autocomplete-items" *ngIf="filteredOptions.length">
@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class="col-3">
-                    <label>Select Drive Mode: </label>
+                    <label class="required">Select Drive Mode</label>
                     <select class="form-select" formControlName="mode">
                         <option value="0">Evaluate</option>
                         <option value="1">Training</option>
@@ -35,7 +35,7 @@
             <div class="row py-2">
                 <label style="font-size: 25px;">Instructor</label>
                 <div class="col-3">
-                    <label>Army No: </label>
+                    <label class="required">Army No</label>
                     <input type="text" placeholder="Army no / Sl.no" class="form-control" formControlName="unique_ref_id" (input)="onSearchChangeIns()">
                     <div class="autocomplete-container">
                       <div class="autocomplete-items" *ngIf="filteredInsOptions.length">
@@ -46,25 +46,25 @@
                     </div>
                 </div>
                 <div class="col-3">
-                    <label>Name: </label>
+                    <label>Name</label>
                     <input type="text" placeholder="Name" class="form-control" style="background-color: #eeeef3;" formControlName="name" readonly>
                 </div>
                 <div class="col-3">
-                    <label>Rank: </label>
+                    <label>Rank</label>
                     <select class="form-select" formControlName="rank" style="background-color: #eeeef3;pointer-events: none;">
                         <option value="" disabled selected hidden>Rank</option>
                         <option *ngFor="let rank of ranks" [value]="rank">{{ rank }}</option>
                       </select>
                 </div>
                 <div class="col-3">
-                    <label>Unit: </label>
+                    <label>Unit</label>
                     <input type="select" placeholder="Unit" class="form-control" style="background-color: #eeeef3;" formControlName="unit" readonly>
                 </div>     
             </div>
             <div class="row py-2"  [formGroup]="driver_form">
                 <label style="font-size: 25px;">Driver</label>
                 <div class="col-3">
-                    <label>Army No: </label>
+                    <label class="required">Army No</label>
                     <input type="text" placeholder="Army no / Sl.no" class="form-control" formControlName="unique_ref_id" (input)="onSearchChangeDri()">
                     <div class="autocomplete-container">
                       <div class="autocomplete-items" *ngIf="filteredDriOptions.length">
@@ -75,18 +75,18 @@
                     </div>
                 </div>
                 <div class="col-3">
-                    <label>Name: </label>
+                    <label>Name</label>
                     <input type="text" placeholder="Name" class="form-control" style="background-color: #eeeef3;" formControlName="name" readonly>
                 </div>
                 <div class="col-3">
-                    <label>Rank: </label>
+                    <label>Rank</label>
                     <select class="form-select" formControlName="rank" style="background-color: #eeeef3;pointer-events: none;">
                         <option value="" disabled selected hidden>Rank</option>
                         <option *ngFor="let rank of ranks" [value]="rank">{{ rank }}</option>
                       </select>
                 </div>
                 <div class="col-3">
-                    <label>Unit: </label>
+                    <label>Unit</label>
                     <input type="select" placeholder="Unit" class="form-control" style="background-color: #eeeef3;" formControlName="unit" readonly>
                 </div>     
             </div>
