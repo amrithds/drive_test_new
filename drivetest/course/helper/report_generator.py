@@ -274,7 +274,7 @@ class ReportGenerator():
             dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_AND_RIGHT_ZIG_ZAG
         
         filter_query = Q(**{ "obstacle_id": obs_task_score.obstacle_id })
-        sensor_feed = SensorFeed.objects.filter(filter_query).order_by('created_dt')
+        sensor_feed = SensorFeed.objects.filter(filter_query).order_by('created_at')
         result = self.__distance_sensor_result(dis_sensor_calculation, sensor_feed, obs_task_score)
         
         return result
