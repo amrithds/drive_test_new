@@ -169,23 +169,34 @@ class ReportGenerator():
         right_sensor_id = sensor_ids[1]
 
         result = False
+        total_valid_count = 0
+        REQUIRED_VALID_COUNT = 4
         for sensor_feed in sensor_feeds:
             left_sensor_val = getattr(sensor_feed, left_sensor_id)
             right_sensor_val = getattr(sensor_feed, right_sensor_id)
             if sensor_calculation == self.DISTANCE_SENSOR_LEFT_ONLY:
                     if  left_min_range <= left_sensor_val and left_sensor_val <= left_max_range:
-                        result = True
+                        total_valid_count += 1
+                    else:
+                        total_valid_count = 0
             elif sensor_calculation == self.DISTANCE_SENSOR_RIGHT_ONLY:
                 if right_min_range <= right_sensor_val and right_sensor_val  <= right_max_range:
-                    result = True
+                    total_valid_count += 1
+                else:
+                    total_valid_count = 0
             elif sensor_calculation == self.DISTANCE_SENSOR_LEFT_RIGHT:
                 
                 if  left_min_range <= left_sensor_val and left_sensor_val <= left_max_range and \
                     right_min_range <= right_sensor_val and right_sensor_val  <= right_max_range:
-                    result = True
+                    
+                    total_valid_count += 1
+                else:
+                    total_valid_count = 0
             
-            #break if one result is failed
-            if result == False:
+            
+            #break if REQUIRED_VALID_COUNT is reached
+            if REQUIRED_VALID_COUNT == total_valid_count:
+                result = True
                 break
 
         return result
@@ -241,9 +252,11 @@ class ReportGenerator():
             dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_ONLY
         elif task_category == Task.TASK_TYPE_RIGHT_TURNING:
             dis_sensor_calculation = self.DISTANCE_SENSOR_RIGHT_ONLY
+        elif task_category == Task.TASK_TYPE_DUAL_SENSOR_TURNING:
+            dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_RIGHT
         
         filter_query = Q(**{ "obstacle_id": obs_task_score.obstacle_id })
-        sensor_feed = SensorFeed.objects.filter(filter_query)
+        sensor_feed = SensorFeed.objects.filter(filter_query).order_by('created_dt')
         result = self.__distance_sensor_result(dis_sensor_calculation, sensor_feed, obs_task_score)
         
         return result
