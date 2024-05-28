@@ -28,6 +28,7 @@ class Command(BaseCommand):
     SESSION = None
     AUDIO_LOCATION = str(settings.MEDIA_ROOT)+'/'
     RESUME=False
+    AUDIO_FILE=None
     
     def add_arguments(self, parser):
         parser.add_argument('-i','--trainer', type=int, help='trainer number of user in session')
@@ -62,14 +63,19 @@ class Command(BaseCommand):
             #clean data from last session
             start_session_helper.initialiseSession()
         
-        pool = concurrent.futures.ThreadPoolExecutor(max_workers=3)
+        pool = concurrent.futures.ThreadPoolExecutor(max_workers=4)
         
         pool.submit(self.readRFIDInputs)
         pool.submit(self.readSTMInputs)
         pool.submit(self.generateReport)
+        pool.submit(self.playAudio)
         
         pool.shutdown(wait=True)
 
+    def playAudio(self):
+        last_played = None
+        if self.AUDIO_FILE != last_played:
+            playsound(self.AUDIO_FILE)
 
     def generateReport(self):
         """
@@ -119,7 +125,7 @@ class Command(BaseCommand):
                         if OSTracker is None or OSTracker.obstacle_id != tempObstacleObj.id:
                             #play training audio
                             if self.SESSION.mode == Session.MODE_TRAINING:
-                                playsound(self.AUDIO_LOCATION+str(tempObstacleObj.audio_file))
+                                self.AUDIO_FILE = self.AUDIO_LOCATION+str(tempObstacleObj.audio_file)
                             
                             previousOSTracker = copy.deepcopy(OSTracker)
                             OSTracker = ObstacleSessionTracker.objects.create(obstacle=tempObstacleObj\

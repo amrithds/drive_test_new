@@ -77,7 +77,7 @@ class ReportGenerator():
             total_obs_score = 0
             total_score = 0
             for session_task_report in session_task_reports:
-                task_report_json = {"task":session_task_report.task.name, "result" : SessionReport.RESULTS[session_task_report.result]\
+                task_report_json = {"task":session_task_report.task.name, "result" : session_task_report.result\
                                , "score": 0 , "remark" : session_task_report.remark }
                 
                 obs_task_score = ObstacleTaskScore.objects.get(obstacle_id=session_task_report.obstacle_id\
@@ -97,7 +97,7 @@ class ReportGenerator():
             final_report.total_score = total_score
             final_report.obtained_score = total_obs_score
             final_report.data = data
-            final_report.duration = report_helper.get_obstacle_duration(obstacle.id)
+            final_report.obstacle_duration = report_helper.get_obstacle_duration(obstacle.id)
             final_report.save()
 
     def __initializeSessionReport(self):
