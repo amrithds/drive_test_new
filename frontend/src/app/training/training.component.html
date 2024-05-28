@@ -126,7 +126,7 @@
             </div>
         </div>
         <div class="row py-3">
-            <table class="table table-responsive table-striped" id="tableDataID">
+            <table class="table table-striped" id="tableDataID">
                 <thead class="table_column">
                     <tr>
                       <th>Sl.no</th>
@@ -142,15 +142,15 @@
                         <tr>
                           <td>{{ i + 1 }}.</td>
                           <td>{{ item.name }}</td>
-                          <ng-container *ngIf="!stop_test">
+                          <ng-container *ngIf="report.length==0">
                             <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
                           </ng-container>
-                          <ng-container *ngFor="let item of report;let in=index">
+                          <ng-container *ngFor="let item of report">
                             <ng-container *ngIf="i + 1 === item.id">
-                              <td [style.color]="item.result === 1 ? 'green' : 'red'">{{item.status == 1 ? 'Pass' : 'Fail'}}</td>
+                              <td [style.color]="item.result === 1 ? 'green' : 'red'">{{item.result == 1 ? 'Pass' : 'Fail'}}</td>
                               <td>
                                 <ng-container *ngFor="let data of item.tasks;">
                                   <div [style.color]="data.result === 0 ? 'grey' : (data.result === 1 ? 'green' : (data.result === 2 ? 'red' : 'green'))">{{data.name}}</div>
@@ -162,12 +162,22 @@
                                 </ng-container>
                               </td>
                               <td>{{item.obtained_marks}} / {{item.total_marks}}</td>                          
-                            </ng-container>
+                            </ng-container>                           
+                          </ng-container>
+                          <ng-container *ngIf="report.length != 0 && !hasDataForReportItem(i + 1)">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                           </ng-container>
                         </tr>
                       </ng-container>
                   </tbody>
             </table>
+            <div>
+              <label style="margin-left: 12%;">Total Marks</label>
+              <label style="float: right;margin-right: 7%;">70</label>
+            </div>
         </div>
         
     </div>

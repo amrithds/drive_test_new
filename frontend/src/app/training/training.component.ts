@@ -35,7 +35,7 @@ export class TrainingComponent {
   public mode:any;
   public filteredDriOptions:any=[];
   public obstacles:any=[]
-  public report:any;
+  public report:any=[];
   private intervalId: any;
   public session_id:any;
   public items=[
@@ -283,7 +283,6 @@ export class TrainingComponent {
         (data: any) => {
           console.log("Fetched obstacles",data.results);
           this.obstacles = data.results
-          this.obstacles.push({'name':'Total Marks'})
         },
         (error: any) => {
           console.error('Error fetching data:', error);
@@ -324,73 +323,76 @@ export class TrainingComponent {
     }, 5000);
   }
 
+  hasDataForReportItem(rowId: number): boolean {
+    return this.report.some((reportItem:any) => reportItem.id === rowId);
+  }
   livereport() {
     this.http.get(this.environment.apiUrl + 'v1/report/live_report/').subscribe(
       (data: any) => {
         this.report = data
         console.log(this.report)
-      //   this.report = [
-      //     {
-      //         "tasks": [
-      //             {
-      //                 "name": "Head Light",
-      //                 "score": 10,
-      //                 "result": 1,
-      //                 "remark": "Head light on",
-      //             },
-      //             {
-      //                 "name": "Seat belt",
-      //                 "score": 0,
-      //                 "result": 2,
-      //                 "remark": "",
-      //             }
-      //         ],
-      //         "status": 1,
-      //         "total_marks": 20,
-      //         "obtained_marks": 10,
-      //         "name": "start",
-      //         "id": 1
-      //     },
-      //     {
-      //         "tasks": [
-      //             {
-      //                 "name": "Parking",
-      //                 "score": 0,
-      //                 "result": 2,
-      //                 "remark": "Parking Success",
-      //                 "status": 2,
-      //                 "total_marks": 35,
-      //                 "obtained_marks": 0,
-      //                 "id": 2
-      //             },
-      //             {
-      //                 "name": "Seat belt",
-      //                 "score": 0,
-      //                 "result": 0,
-      //                 "remark": "",
-      //                 "status": 2,
-      //                 "total_marks": 35,
-      //                 "obtained_marks": 0,
-      //                 "id": 2
-      //             },
-      //             {
-      //                 "name": "Hand brake",
-      //                 "score": 0,
-      //                 "result": 0,
-      //                 "remark": "",
-      //                 "status": 2,
-      //                 "total_marks": 35,
-      //                 "obtained_marks": 0,
-      //                 "id": 2
-      //             }
-      //         ],
-      //         "status": 2,
-      //         "total_marks": 35,
-      //         "obtained_marks": 0,
-      //         "name": "Left Parking",
-      //         "id": 2
-      //     }
-      // ]
+        this.report = [
+          {
+              "tasks": [
+                  {
+                      "name": "Head Light",
+                      "score": 10,
+                      "result": 1,
+                      "remark": "Head light on",
+                  },
+                  {
+                      "name": "Seat belt",
+                      "score": 0,
+                      "result": 2,
+                      "remark": "",
+                  }
+              ],
+              "result": 1,
+              "total_marks": 20,
+              "obtained_marks": 10,
+              "name": "start",
+              "id": 1
+          },
+          {
+              "tasks": [
+                  {
+                      "name": "Parking",
+                      "score": 0,
+                      "result": 2,
+                      "remark": "Parking Success",
+                      "status": 2,
+                      "total_marks": 35,
+                      "obtained_marks": 0,
+                      "id": 2
+                  },
+                  {
+                      "name": "Seat belt",
+                      "score": 0,
+                      "result": 0,
+                      "remark": "",
+                      "status": 2,
+                      "total_marks": 35,
+                      "obtained_marks": 0,
+                      "id": 2
+                  },
+                  {
+                      "name": "Hand brake",
+                      "score": 0,
+                      "result": 0,
+                      "remark": "",
+                      "status": 2,
+                      "total_marks": 35,
+                      "obtained_marks": 0,
+                      "id": 2
+                  }
+              ],
+              "status": 2,
+              "total_marks": 35,
+              "obtained_marks": 0,
+              "name": "Left Parking",
+              "id": 2
+          }
+      ]
       },
       (error: any) => {
         console.error('Error fetching data:', error);
