@@ -14,8 +14,8 @@
             <form [formGroup]="form">
                 <div class="row">
                     <div class="col-12">
-                        <label class="form-label">Trainee ID: </label>
-                        <input type="text" placeholder="Enter trainee id" class="form-control" formControlName="course_id">
+                        <label class="form-label required">Trainee ID: </label>
+                        <input type="text" placeholder="Enter trainee id" class="form-control" formControlName="trainee_id">
                     </div>
                     <div class="py-3">
                         <button type="submit" class="btn btn-primary" (click)="getreports()">Submit</button>
@@ -44,7 +44,7 @@
                             <td></td>
                             <td>{{item.trainee.unique_ref_id}}</td>
                             <td>{{item.trainee.name}}</td>
-                            <td><button type="button" class="btn btn-primary" (click)="enablereport=true;enabletable=false">View Report</button></td>
+                            <td><button type="button" class="btn btn-primary" (click)="viewReport(i)">View Report</button></td>
                           </tr>
                     </thead>
                     <tbody>
@@ -62,19 +62,19 @@
             <div>
                 <label style="font-size: 20px;color: red;">Trainee:</label>
                 <div class="label_align">
-                    <label>Army No: 111111</label>
-                    <label>Rank: 111</label>
-                    <label>Name: 1111</label>
-                    <label>Unit: 111</label>
-                    <label>Course ID: 111</label>
-                    <label>Time Taken: 111</label>
+                    <label>Army No: {{view_report?.trainee?.unique_ref_id}}</label>
+                    <label>Rank: {{view_report?.trainee?.rank}}</label>
+                    <label>Name: {{view_report?.trainee?.name}}</label>
+                    <label>Unit: {{view_report?.trainee?.unit}}</label>
+                    <label>Course ID: {{view_report?.trainee?.course}}</label>
+                    <label>Time Taken: {{view_report?.trainee?.unique_ref_id}}</label>
                 </div>  
                 <label style="font-size: 20px;color: red;">Instructor:</label>
                 <div class="label_align">
-                    <label>Army No: 1111</label>
-                    <label>Rank: 111</label>
-                    <label>Name: 1111</label>
-                    <label>Unit: 111</label>
+                    <label>Army No: {{view_report?.trainer?.unique_ref_id}}</label>
+                    <label>Rank: {{view_report?.trainer?.rank}}</label>
+                    <label>Name: {{view_report?.trainer?.name}}</label>
+                    <label>Unit: {{view_report?.trainer?.unit}}</label>
                 </div>  
                 <div class="row py-3">
                     <table class="table table-striped" id="tableDataID">

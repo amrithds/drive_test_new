@@ -1,5 +1,5 @@
 
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DatePipe, formatDate } from '@angular/common';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -25,7 +25,6 @@ export class ViewReportComponent {
   public individual_report:any=[];
 
 
-
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
@@ -35,21 +34,34 @@ export class ViewReportComponent {
   }
 
   ngOnInit() {
-    // Initialize form here if needed
+    this.form = this.fb.group({
+      trainee_id: [null,Validators.required],
+    });
   }
 
   getreports() {
-    this.enabletable = true;
-    this.http.get(this.environment.apiUrl + 'v1/course/session/?search='+'111').subscribe(
+    this.http.get(this.environment.apiUrl + 'v1/course/session/?search='+this.form.value['trainee_id']).subscribe(
       (data: any) => {
         console.log(data.results)
         this.individual_report = data.results
-        // this.obstacles = data.results
+        if(this.individual_report.length>0){
+          this.enabletable = true;
+        }else{
+          window.alert("Trainee not exist")
+        }
       },
       (error: any) => {
         console.error('Error fetching data:', error);
       }
     );  
+  }
+  public view_report:any;
+  viewReport(index:any){
+    this.enablereport=true;
+    this.enabletable=false;
+    console.log(index)
+    this.view_report = this.individual_report[index]
+    console.log(this.view_report)
   }
 
   generatePDF() {
