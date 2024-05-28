@@ -26,7 +26,7 @@ class Command(BaseCommand):
     COLLECT_SENSOR_INPUTS=False
     RF_ID_OBSTACLE_MAP = {}
     SESSION = None
-    AUDIO_LOCATION = str(settings.BASE_DIR)+'/'
+    AUDIO_LOCATION = str(settings.MEDIA_ROOT)+'/'
     RESUME=False
     
     def add_arguments(self, parser):
@@ -139,7 +139,7 @@ class Command(BaseCommand):
                             OSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
                             OSTracker.save()
         except Exception as e:
-            RF_logger.error("Error: "+str(e))
+            RF_logger.exception(e)
     
     def readSTMInputs(self):
         """

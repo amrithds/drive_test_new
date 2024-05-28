@@ -100,6 +100,7 @@ class SessionViewSet(viewsets.ModelViewSet):
     queryset = Session.objects.all().order_by('-created_at')
     serializer_class = SessionSerializer
     permission_classes = [IsAuthenticated]
+    filterset_fields = ['trainer', 'trainee', 'status', 'mode']
 
     def get_queryset(self):
         """filter sessions using search field

@@ -74,4 +74,4 @@ class FinalReportViewSet(viewsets.ModelViewSet):
     queryset = FinalReport.objects.all()
     serializer_class = FinalReportSerializer
     permission_classes = [IsAuthenticated]
-    filterset_fields = [ 'session']
+    filterset_fields = ['session']
