@@ -31,17 +31,17 @@
                 <table class="table table-bordered table-hover">
                     <thead class="table_column">
                           <tr>
-                            <th>Sl.no</th>
-                            <th>Date</th>
                             <th>Report Id</th>
+                            <!-- <th>Sl.no</th> -->
+                            <th>Date</th>
                             <th>Trainee Id</th>
                             <th>Name</th>
                             <th>Action</th>
                           </tr>	
                           <tr *ngFor="let item of individual_report | paginate: { itemsPerPage: 10, currentPage: currentPage };let i =index">
-                            <td>{{i+1}}.</td>
-                            <td>{{ item.created_at | date:'mediumDate' }}</td>
+                            <!-- <td>{{i+1}}.</td> -->
                             <td>{{item.id}}</td>
+                            <td>{{ item.created_at | date:'mediumDate' }}</td>
                             <td>{{item.trainee.unique_ref_id}}</td>
                             <td>{{item.trainee.name}}</td>
                             <td><button type="button" class="btn btn-primary" (click)="viewReport(i)">View Report</button></td>
