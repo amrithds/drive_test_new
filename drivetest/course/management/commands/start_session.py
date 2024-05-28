@@ -76,6 +76,7 @@ class Command(BaseCommand):
         last_played = None
         while True:
             if self.AUDIO_FILE != last_played:
+                last_played = self.AUDIO_FILE
                 playsound(self.AUDIO_FILE)
 
     def generateReport(self):
