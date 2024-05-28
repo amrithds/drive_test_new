@@ -32,7 +32,7 @@ class ObstacleTaskScoreAdmin(admin.ModelAdmin):
     list_display = ['obstacle', 'task_metrics', 'score', 'is_mandatory', 'description' ]
 
 class ObstacleSessionTrackerAdmin(admin.ModelAdmin):
-    ordering = ['obstacle', 'task']
+    ordering = ['obstacle']
     list_display = ['obstacle', 'session', 'status', 'report_status' ]
 
 admin.site.register(User,UserAdmin)
