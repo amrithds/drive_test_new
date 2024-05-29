@@ -207,7 +207,7 @@ class Command(BaseCommand):
                     # print(data)
                 if STM_reader.dataWaiting() and self.COLLECT_SENSOR_INPUTS:
                     data = STM_reader.getSTMInput()
-                    print(data)
+                    sensor_logger.info(data)
                     # conside data less than 19 as noise
                     if len(data) == 19 and data != lastSensorFeed and self.CURRENT_REF_ID in self.RF_ID_OBSTACLE_MAP:
 
