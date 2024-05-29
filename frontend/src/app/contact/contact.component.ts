@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { DatePipe, formatDate } from '@angular/common';
 
 
 @Component({
@@ -8,11 +7,5 @@ import { DatePipe, formatDate } from '@angular/common';
   styleUrl: './contact.component.scss'
 })
 export class ContactComponent {
-  public today= new Date();
-  public getDatetime='';
-
-  constructor(){
-    this.getDatetime = formatDate(this.today, 'dd-MM-yyyy hh:mm a', 'en-US', '+0530');
-  }
 
 }

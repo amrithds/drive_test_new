@@ -6,10 +6,6 @@
     <app-menubar></app-menubar>
   </div>
   <div class="right_sidebar">
-    <div class="top_header">
-        <label>Vehicle BA No: </label>
-        <label style="text-align: right;">{{getDatetime}}</label>
-    </div>
     <div *ngIf="!startsession">
         <form [formGroup]="ins_form">
             <div class="row py-2">

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { formatDate } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environment/environment';
 import { firstValueFrom } from 'rxjs';
@@ -16,8 +15,6 @@ import { AuthService } from '../auth.service';
 export class LoginComponent {
 
   public form!: FormGroup;
-  public today= new Date();
-  public getDatetime='';
   public response:any;
   public environment = environment;
 
@@ -26,9 +23,7 @@ export class LoginComponent {
     private router:Router,
     private http:HttpClient,
     private authService: AuthService,
-  ){
-    this.getDatetime = formatDate(this.today, 'dd-MM-yyyy hh:mm a', 'en-US', '+0530');
-  }
+  ){}
   
   ngOnInit(){
     this.form = this.fb.group({

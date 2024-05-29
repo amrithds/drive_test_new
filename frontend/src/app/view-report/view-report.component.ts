@@ -1,9 +1,9 @@
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DatePipe, formatDate } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environment/environment';
 
@@ -16,8 +16,6 @@ import { environment } from '../../environment/environment';
 })
 export class ViewReportComponent {
   public form!: FormGroup;
-  public today = new Date();
-  public getDatetime = '';
   public enabletable: boolean = false;
   public enablereport: boolean = false;
   public showpdf: boolean = false;
@@ -25,21 +23,58 @@ export class ViewReportComponent {
   public individual_report:any=[];
   public view_report:any;
   public report_id:any;
-  currentPage = 1;
+  public currentPage = 1;
   public report:any=[];
+  public filteredOptions: any = [];
+  public filteredInsOptions:any=[];
+  public users:any=[];
+
 
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
-
-  ) {
-    this.getDatetime = formatDate(this.today, 'dd-MM-yyyy hh:mm a', 'en-US', '+0530');
-  }
+  ) {}
 
   ngOnInit() {
+    this.fetchUser();
     this.form = this.fb.group({
       trainee_id: [null,Validators.required],
     });
+  }
+
+  fetchUser(): void {
+    this.http.get(this.environment.apiUrl + 'v1/course/user/').subscribe(
+      (data: any) => {
+        console.log("Fetched Users",data.results);
+        this.users = data.results
+      },
+      (error: any) => {
+        console.error('Error fetching data:', error);
+      }
+    );
+  }
+
+  onSearchChange(): void {
+    let trainee_id = this.form.value['trainee_id']
+    console.log(trainee_id)
+    if(trainee_id){
+      this.filteredOptions = this.users.filter((user: any) =>
+        user.unique_ref_id.includes(trainee_id) &&
+        user.type == 1
+      );
+      console.log(this.filteredOptions)
+      if(this.filteredOptions.length==0){
+        this.form.get('trainee_id')?.reset()
+        window.alert("User not exist")
+      }
+    }else{
+      this.filteredOptions = [];
+    }
+  }
+
+  selectOption(option: any): void {
+    this.form.get('trainee_id')?.setValue(option);
+    this.filteredOptions = [];
   }
 
   getreports() {
@@ -66,13 +101,12 @@ export class ViewReportComponent {
     this.currentPage = pageNumber;
   }
 
-  viewReport(index:any){
+  viewReport(item:any){
+    console.log(item)
     this.enablereport=true;
     this.enabletable=false;
-    console.log(index)
-    this.view_report = this.individual_report[index]
-    this.report_id = this.individual_report[index].id
-    console.log(this.view_report)
+    this.view_report = item
+    this.report_id = item.id
     this.http.get(this.environment.apiUrl + 'v1/report/finalReport/?session='+this.report_id).subscribe(
       (data: any) => {
         console.log("Fetched session id",data.results);

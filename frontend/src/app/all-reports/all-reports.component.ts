@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FormBuilder,FormGroup } from '@angular/forms';
-import { formatDate } from '@angular/common';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
@@ -12,8 +11,6 @@ import html2canvas from 'html2canvas';
 })
 export class AllReportsComponent {
   public form!: FormGroup;
-  public today= new Date();
-  public getDatetime='';
   public all_reports:boolean=false;
 
   public center_content:any=[
@@ -76,9 +73,7 @@ export class AllReportsComponent {
 ]
 
 
-  constructor(private fb:FormBuilder){
-    this.getDatetime = formatDate(this.today, 'dd-MM-yyyy hh:mm a', 'en-US', '+0530');
-  }
+  constructor(private fb:FormBuilder){}
 
   generatePDF() {
     const data = document.getElementById('reportContent')!;

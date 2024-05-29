@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { formatDate } from '@angular/common';
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -9,14 +8,9 @@ import { AuthService } from '../auth.service';
 })
 export class MenubarComponent {
 
-  public today= new Date();
-  public getDatetime='';
-
   constructor(
     private authService: AuthService
-  ){
-    this.getDatetime = formatDate(this.today, 'dd-MM-yyyy hh:mm a', 'en-US', '+0530');
-  }
+  ){}
   logout() {
     this.authService.logout();
   }
