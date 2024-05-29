@@ -35,7 +35,7 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     
     def create(self, request):
-        request.data._mutable=True
+        #request.data._mutable=True
         post_data = request.data
         course_name = post_data['course']
         course,_ = Course.objects.get_or_create(name=course_name)

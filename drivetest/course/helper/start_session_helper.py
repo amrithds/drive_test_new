@@ -3,6 +3,7 @@ from course.models.obstacle_session_tracker import ObstacleSessionTracker
 from report.models.sensor_feed import SensorFeed
 from course.models.user import User
 from course.models.course import Course
+from course.models.obstacle import Obstacle
 from report.models.session_report import SessionReport
 
 def initialiseSession():
@@ -27,3 +28,13 @@ def createSession(trainer_id, trainee_id, session_mode, course_name, p_id = None
         sessionObj.pid = p_id
         sessionObj.save()
     return sessionObj
+
+def get_obstacle_mapping():
+    obstacleObjs = Obstacle.objects.all()
+
+    #map refID and Obstacle obj
+    rf_id_obstacle_map = {}
+    for obstcaleObj in obstacleObjs:
+        rf_id_obstacle_map[obstcaleObj.start_rf_id.upper()] = obstcaleObj
+    
+    return rf_id_obstacle_map

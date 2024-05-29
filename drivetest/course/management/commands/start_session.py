@@ -12,6 +12,8 @@ import concurrent.futures
 from playsound import playsound
 from django.conf import settings
 from app_config.helper import bluetooth_speaker_helper
+from drivetest.course.helper.vehicle_sensor import VehicleSensor
+from app_config.models import Config
 
 import logging
 RF_logger = logging.getLogger("RFlog")
@@ -22,13 +24,16 @@ report_logger = logging.getLogger("reportLog")
 class Command(BaseCommand):
     help = 'Start a session, listen to inputs'
     # global variables
-    CURRENT_RF_ID=None
+    CURRENT_REF_ID=None
     COLLECT_SENSOR_INPUTS=False
     RF_ID_OBSTACLE_MAP = {}
     SESSION = None
     AUDIO_LOCATION = str(settings.MEDIA_ROOT)+'/'
     RESUME=False
     AUDIO_FILE=None
+    VEHICLE_SENSORS_RFID = 'RFID'
+    VEHICLE_SENSORS_TCP = 'TCP'
+    VEHICLE_SENSORS = ('RFID', 'TCP')
     
     def add_arguments(self, parser):
         parser.add_argument('-i','--trainer', type=int, help='trainer number of user in session')
@@ -63,9 +68,18 @@ class Command(BaseCommand):
             #clean data from last session
             start_session_helper.initialiseSession()
         
+        try:
+            app_config = Config.objects.get(name='LOCATION_SENSOR')
+            sensor_type = app_config.value
+        except Exception as e:
+            sensor_type = self.VEHICLE_SENSORS_RFID
+        
         pool = concurrent.futures.ThreadPoolExecutor(max_workers=4)
         
-        pool.submit(self.readRFIDInputs)
+        if sensor_type == self.VEHICLE_SENSORS_RFID:
+            pool.submit(self.read_location_inputs)
+        else:
+            pool.submit(self.read_vehicle_sensor)
         pool.submit(self.readSTMInputs)
         pool.submit(self.generateReport)
         pool.submit(self.playAudio)
@@ -91,7 +105,38 @@ class Command(BaseCommand):
         except Exception as e:
             report_logger.exception("Error: "+str(e))
 
-    def readRFIDInputs(self):
+    def read_vehicle_sensor(self):
+        obstacles = Obstacle.objects.all()
+        
+        #get all obstacles
+        self.RF_ID_OBSTACLE_MAP = start_session_helper.get_obstacle_mapping()
+        OSTracker = None
+        while True:
+
+            for ip_address in self.RF_ID_OBSTACLE_MAP:
+                if VehicleSensor.IP_in_range(ip_address):
+                    if ip_address in self.RF_ID_OBSTACLE_MAP:
+                        print(ip_address)
+                        tempObstacleObj = self.RF_ID_OBSTACLE_MAP[ip_address]
+
+                        self.CURRENT_REF_ID = ip_address
+                        self.COLLECT_SENSOR_INPUTS = True
+                        #create ObstacleSessionTracker
+                        if OSTracker is None or OSTracker.obstacle_id != tempObstacleObj.id:
+                            #play training audio
+                            if self.SESSION.mode == Session.MODE_TRAINING:
+                                self.AUDIO_FILE = self.AUDIO_LOCATION+str(tempObstacleObj.audio_file)
+                            
+                            previousOSTracker = copy.deepcopy(OSTracker)
+                            OSTracker,_ = ObstacleSessionTracker.objects.get_or_create(obstacle=tempObstacleObj\
+                                                                        ,session=self.SESSION)
+                            
+                            #complete preious obscale when new IP is read
+                            if previousOSTracker is not None and previousOSTracker.status == ObstacleSessionTracker.STATUS_IN_PROGRESS:
+                                previousOSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
+                                previousOSTracker.save()
+
+    def read_location_inputs(self):
         """
         reads RF ID contineously for changes and next RF ID
         """
@@ -99,11 +144,7 @@ class Command(BaseCommand):
             
             print('Init RFID reader')
             #get all obstacles
-            obstacleObjs = Obstacle.objects.all()
-
-            #map refID and Obstacle obj
-            for obstcaleObj in obstacleObjs:
-                self.RF_ID_OBSTACLE_MAP[obstcaleObj.start_rf_id.upper()] = obstcaleObj
+            self.RF_ID_OBSTACLE_MAP = start_session_helper.get_obstacle_mapping()
             
             #init
             RF_ID_reader = rf_id_helper.RFIDReader()
@@ -121,7 +162,7 @@ class Command(BaseCommand):
                         print(readRFID)
                         tempObstacleObj = self.RF_ID_OBSTACLE_MAP[readRFID]
 
-                        self.CURRENT_RF_ID = readRFID
+                        self.CURRENT_REF_ID = readRFID
                         self.COLLECT_SENSOR_INPUTS = True
                         #create ObstacleSessionTracker
                         if OSTracker is None or OSTracker.obstacle_id != tempObstacleObj.id:
@@ -139,8 +180,8 @@ class Command(BaseCommand):
                                 previousOSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
                                 previousOSTracker.save()
                             
-                    elif self.CURRENT_RF_ID in self.RF_ID_OBSTACLE_MAP:
-                        tempObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
+                    elif self.CURRENT_REF_ID in self.RF_ID_OBSTACLE_MAP:
+                        tempObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_REF_ID]
                         if tempObstacleObj.end_rf_id.upper() == readRFID:
                             print("end", readRFID)
                             self.COLLECT_SENSOR_INPUTS = False
@@ -168,9 +209,9 @@ class Command(BaseCommand):
                     data = STM_reader.getSTMInput()
                     print(data)
                     # conside data less than 19 as noise
-                    if len(data) == 19 and data != lastSensorFeed and self.CURRENT_RF_ID in self.RF_ID_OBSTACLE_MAP:
+                    if len(data) == 19 and data != lastSensorFeed and self.CURRENT_REF_ID in self.RF_ID_OBSTACLE_MAP:
 
-                        ObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_RF_ID]
+                        ObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_REF_ID]
 
                         SensorFeed.objects.create(obstacle=ObstacleObj, s0=data[1], s1=data[2], s2=data[3], s3=data[4],\
                                                 s4=data[5], s5=data[6], s6=data[7], s7=data[8], s8=data[9], s9=data[10],\
