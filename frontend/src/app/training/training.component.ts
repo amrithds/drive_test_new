@@ -15,7 +15,6 @@ import { AuthService } from '../auth.service';
 export class TrainingComponent {
   public courses:any;
   public today= new Date();
-  public getDatetime='';
   public ins_form!: FormGroup;
   public driver_form !: FormGroup;
   public environment=environment;
@@ -46,9 +45,7 @@ export class TrainingComponent {
     private router: Router,
     private http: HttpClient,
     private authService: AuthService
-  ){
-    this.getDatetime = formatDate(this.today, 'dd-MM-yyyy hh:mm a', 'en-US', '+0530');
-  }
+  ){}
 
   ngOnInit() {
     this.fetchCourse();

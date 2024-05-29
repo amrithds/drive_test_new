@@ -13,7 +13,6 @@ import { Observable, firstValueFrom, map, startWith } from 'rxjs';
 })
 export class AddUserComponent {
   today = new Date();
-  getDatetime = '';
   newUser: any = {};
   public form!: FormGroup;
   public editUserForm !: FormGroup;
@@ -30,9 +29,7 @@ export class AddUserComponent {
     private fb: FormBuilder,
     private router: Router,
     private http: HttpClient
-  ) {
-    this.getDatetime = formatDate(this.today, 'dd-MM-yyyy hh:mm a', 'en-US', '+0530');
-  }
+  ) {}
 
   ngOnInit() {
     this.fetchCourse();

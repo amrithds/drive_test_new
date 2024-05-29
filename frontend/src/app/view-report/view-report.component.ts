@@ -17,7 +17,6 @@ import { environment } from '../../environment/environment';
 export class ViewReportComponent {
   public form!: FormGroup;
   public today = new Date();
-  public getDatetime = '';
   public enabletable: boolean = false;
   public enablereport: boolean = false;
   public showpdf: boolean = false;
@@ -32,9 +31,7 @@ export class ViewReportComponent {
     private fb: FormBuilder,
     private http: HttpClient,
 
-  ) {
-    this.getDatetime = formatDate(this.today, 'dd-MM-yyyy hh:mm a', 'en-US', '+0530');
-  }
+  ) {}
 
   ngOnInit() {
     this.form = this.fb.group({

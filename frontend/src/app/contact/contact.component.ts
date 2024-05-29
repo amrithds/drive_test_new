@@ -9,10 +9,5 @@ import { DatePipe, formatDate } from '@angular/common';
 })
 export class ContactComponent {
   public today= new Date();
-  public getDatetime='';
-
-  constructor(){
-    this.getDatetime = formatDate(this.today, 'dd-MM-yyyy hh:mm a', 'en-US', '+0530');
-  }
 
 }

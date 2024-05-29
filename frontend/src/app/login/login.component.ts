@@ -17,7 +17,6 @@ export class LoginComponent {
 
   public form!: FormGroup;
   public today= new Date();
-  public getDatetime='';
   public response:any;
   public environment = environment;
 
@@ -26,9 +25,7 @@ export class LoginComponent {
     private router:Router,
     private http:HttpClient,
     private authService: AuthService,
-  ){
-    this.getDatetime = formatDate(this.today, 'dd-MM-yyyy hh:mm a', 'en-US', '+0530');
-  }
+  ){}
   
   ngOnInit(){
     this.form = this.fb.group({
