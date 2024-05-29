@@ -3,7 +3,7 @@
 NAME="Drive test"
 
 #path to the folder containing the manage.py file
-DIR=/home/admin/Desktop/app/drive_test/drivetest
+DIR=/home/super/Desktop/app/drive_test/drivetest
 
 # Replace with your system user
 USER=root  
@@ -13,7 +13,7 @@ GROUP=root
 WORKERS=1
 
 #bind to port 8000
-BIND=127.0.0.1:8000
+BIND=0.0.0.0:8000
 
 # Put your project name
 DJANGO_SETTINGS_MODULE=admin.settings 
@@ -24,7 +24,7 @@ LOG_LEVEL=debug
 cd $DIR
 
 #activating the virtual environment
-source /home/admin/Desktop/app/drive_test/venv/bin/activate
+source /home/super/Desktop/app/drive_test/venv/bin/activate
 
 export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
 

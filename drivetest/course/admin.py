@@ -15,7 +15,7 @@ class CourseAdmin(admin.ModelAdmin):
     list_display = ["name"]
 
 class ObstableAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', "track_id", 'is_mandatory', 'order', 'start_rf_id', 'end_rf_id', 'audio_file']
+    list_display = [ 'name', "track_id", 'is_mandatory', 'order', 'start_rf_id', 'end_rf_id', 'audio_file']
 
 class SessionAdmin(admin.ModelAdmin):
     list_display = ['id', 'trainer','trainee', 'status', 'mode' ]
