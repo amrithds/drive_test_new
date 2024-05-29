@@ -12,7 +12,7 @@ import concurrent.futures
 from playsound import playsound
 from django.conf import settings
 from app_config.helper import bluetooth_speaker_helper
-from drivetest.course.helper.vehicle_sensor import VehicleSensor
+from course.helper.vehicle_sensor import VehicleSensor
 from app_config.models import Config
 
 import logging
