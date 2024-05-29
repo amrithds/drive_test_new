@@ -34,13 +34,13 @@
                             <th>Name</th>
                             <th>Action</th>
                           </tr>	
-                          <tr *ngFor="let item of individual_report | paginate: { itemsPerPage: 10, currentPage: currentPage };let i =index">
+                          <tr *ngFor="let item of individual_report | paginate: { itemsPerPage: 10, currentPage: currentPage };let i = index">
                             <!-- <td>{{i+1}}.</td> -->
                             <td>{{item.id}}</td>
                             <td>{{ item.created_at | date:'mediumDate' }}</td>
                             <td>{{item.trainee.unique_ref_id}}</td>
                             <td>{{item.trainee.name}}</td>
-                            <td><button type="button" class="btn btn-primary" (click)="viewReport(i)">View Report</button></td>
+                            <td><button type="button" class="btn btn-primary" (click)="viewReport(item)">View Report</button></td>
                           </tr>
                     </thead>
                     <tbody>

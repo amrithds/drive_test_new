@@ -1,9 +1,9 @@
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DatePipe, formatDate } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environment/environment';
 
@@ -24,13 +24,12 @@ export class ViewReportComponent {
   public individual_report:any=[];
   public view_report:any;
   public report_id:any;
-  currentPage = 1;
+  public currentPage = 1;
   public report:any=[];
 
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
-
   ) {}
 
   ngOnInit() {
@@ -63,13 +62,12 @@ export class ViewReportComponent {
     this.currentPage = pageNumber;
   }
 
-  viewReport(index:any){
+  viewReport(item:any){
+    console.log(item)
     this.enablereport=true;
     this.enabletable=false;
-    console.log(index)
-    this.view_report = this.individual_report[index]
-    this.report_id = this.individual_report[index].id
-    console.log(this.view_report)
+    this.view_report = item
+    this.report_id = item.id
     this.http.get(this.environment.apiUrl + 'v1/report/finalReport/?session='+this.report_id).subscribe(
       (data: any) => {
         console.log("Fetched session id",data.results);
