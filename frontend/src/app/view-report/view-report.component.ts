@@ -25,6 +25,10 @@ export class ViewReportComponent {
   public report_id:any;
   public currentPage = 1;
   public report:any=[];
+  public filteredOptions: any = [];
+  public filteredInsOptions:any=[];
+  public users:any=[];
+
 
   constructor(
     private fb: FormBuilder,
@@ -32,9 +36,45 @@ export class ViewReportComponent {
   ) {}
 
   ngOnInit() {
+    this.fetchUser();
     this.form = this.fb.group({
       trainee_id: [null,Validators.required],
     });
+  }
+
+  fetchUser(): void {
+    this.http.get(this.environment.apiUrl + 'v1/course/user/').subscribe(
+      (data: any) => {
+        console.log("Fetched Users",data.results);
+        this.users = data.results
+      },
+      (error: any) => {
+        console.error('Error fetching data:', error);
+      }
+    );
+  }
+
+  onSearchChange(): void {
+    let trainee_id = this.form.value['trainee_id']
+    console.log(trainee_id)
+    if(trainee_id){
+      this.filteredOptions = this.users.filter((user: any) =>
+        user.unique_ref_id.includes(trainee_id) &&
+        user.type == 1
+      );
+      console.log(this.filteredOptions)
+      if(this.filteredOptions.length==0){
+        this.form.get('trainee_id')?.reset()
+        window.alert("User not exist")
+      }
+    }else{
+      this.filteredOptions = [];
+    }
+  }
+
+  selectOption(option: any): void {
+    this.form.get('trainee_id')?.setValue(option);
+    this.filteredOptions = [];
   }
 
   getreports() {

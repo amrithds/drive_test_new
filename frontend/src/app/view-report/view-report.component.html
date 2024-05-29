@@ -11,7 +11,14 @@
                 <div class="row">
                     <div class="col-12">
                         <label class="form-label required">Trainee ID</label>
-                        <input type="text" placeholder="Enter trainee id" class="form-control" formControlName="trainee_id">
+                        <input type="text" placeholder="Enter trainee id" class="form-control" (input)="onSearchChange()" formControlName="trainee_id">
+                        <div class="autocomplete-container">
+                            <div class="autocomplete-items" *ngIf="filteredOptions.length">
+                              <div class="autocomplete-item" *ngFor="let option of filteredOptions" (click)="selectOption(option.unique_ref_id)">
+                                {{ option.unique_ref_id }}
+                              </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="py-3">
                         <button type="submit" class="btn btn-primary" (click)="getreports()">Submit</button>
