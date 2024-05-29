@@ -136,8 +136,8 @@
     <div class="row" style="border-bottom: 1px solid rgb(178, 177, 177);">
         <app-header></app-header>
     </div>
-    <div class="top_header mt-2" style="margin-left: 20px;">
-        <label style="text-align: center;">Report ID: {{report_id}}</label>
+    <div class="mt-2" style="margin-left: 20px;">
+        <p style="text-align: center;">Report ID: {{report_id}}</p>
     </div>
     <div>
         <div style="margin-left: 20px;">
@@ -148,7 +148,7 @@
                 <label>Name: {{view_report?.trainee?.name}}</label>
                 <label>Unit: {{view_report?.trainee?.unit}}</label>
                 <label>Course ID: {{view_report?.trainee?.course}}</label>
-                <label>Time Taken: {{view_report?.trainee?.unique_ref_id}}</label>
+                <label>Time Taken: {{ getTotalTimeTaken() }}</label>
             </div>  
             <label style="font-size: 20px;color: red;">Instructor:</label>
             <div class="label_align">
@@ -159,24 +159,56 @@
             </div>  
             <div class="row py-3">
                 <table class="table table-striped" id="tableDataID">
-                    <thead class="table_column">
+                    <thead class="table_column1">
                         <tr>
-                            <th>Sl.no</th>
-                            <th>Obstacle Name</th>
-                            <th>Result</th>
-                            <th>Remarks</th>
-                            <th>Marks</th> 
-                        </tr>	
-                        <tr>
-                            <td>1</td>
-                            <td>Maria Anders</td>
-                            <td>Germany</td>
-                            <td>Alfreds</td>
-                            <td>Maria Anders</td>
+                          <th>Sl.no</th>
+                          <th>Obstacle Name</th>
+                          <th>Result</th>
+                          <th>Tasks</th>
+                          <th>Remarks</th>
+                          <th>Time Taken</th>
+                          <th>Marks</th>
                         </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of report; let i=index">
+                            <td>{{ i + 1 }}.</td>
+                            <td>{{ item.name }}</td>
+                            <td [style.color]="item.result === 1 ? 'green' : 'red'">{{item.result == 1 ? 'Pass' : 'Fail'}}</td>
+                            <td>
+                            <ng-container *ngFor="let obj of item.data;">
+                                <div [style.color]="obj.result === 0 ? 'grey' : (obj.result === 1 ? 'green' : (obj.result === 2 ? 'red' : 'green'))">{{obj.name}}</div>
+                            </ng-container>
+                            </td>
+                            <td>
+                            <ng-container *ngFor="let obj of item.tasks;">
+                                <div>{{obj.remark}}</div>
+                            </ng-container>
+                            </td>
+                            <td>{{item.obstacle_duration}}</td>
+                            <td>{{item.obtained_score}} / {{item.total_score}}</td>                                                    
+                        </tr>
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                          <td></td>
+                          <td>Total Time Taken</td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td>{{ getTotalTimeTaken() }}</td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td></td>
+                          <td>Total Marks</td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td>{{ getTotalObtainedMarks() }} / {{getTotalMarks()}}</td>
+                        </tr>
+                      </tfoot>
                 </table>
             </div>
         </div>
