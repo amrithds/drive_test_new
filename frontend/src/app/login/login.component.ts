@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { formatDate } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environment/environment';
 import { firstValueFrom } from 'rxjs';
@@ -16,7 +15,6 @@ import { AuthService } from '../auth.service';
 export class LoginComponent {
 
   public form!: FormGroup;
-  public today= new Date();
   public response:any;
   public environment = environment;
 

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FormBuilder,FormGroup } from '@angular/forms';
-import { formatDate } from '@angular/common';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
@@ -12,7 +11,6 @@ import html2canvas from 'html2canvas';
 })
 export class AllReportsComponent {
   public form!: FormGroup;
-  public today= new Date();
   public all_reports:boolean=false;
 
   public center_content:any=[

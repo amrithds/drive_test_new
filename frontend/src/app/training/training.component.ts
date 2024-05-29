@@ -1,10 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { formatDate } from '@angular/common';
-import { FormGroup, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environment/environment';
-import { Observable, firstValueFrom, map, startWith } from 'rxjs';
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -14,7 +12,6 @@ import { AuthService } from '../auth.service';
 })
 export class TrainingComponent {
   public courses:any;
-  public today= new Date();
   public ins_form!: FormGroup;
   public driver_form !: FormGroup;
   public environment=environment;

@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { DatePipe, formatDate } from '@angular/common';
 
 
 @Component({
@@ -8,6 +7,5 @@ import { DatePipe, formatDate } from '@angular/common';
   styleUrl: './contact.component.scss'
 })
 export class ContactComponent {
-  public today= new Date();
 
 }

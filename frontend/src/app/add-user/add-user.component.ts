@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { formatDate } from '@angular/common';
 import { FormGroup, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -12,7 +11,6 @@ import { Observable, firstValueFrom, map, startWith } from 'rxjs';
   styleUrl: './add-user.component.scss'
 })
 export class AddUserComponent {
-  today = new Date();
   newUser: any = {};
   public form!: FormGroup;
   public editUserForm !: FormGroup;

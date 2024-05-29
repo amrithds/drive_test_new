@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { formatDate } from '@angular/common';
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -8,7 +7,6 @@ import { AuthService } from '../auth.service';
   styleUrl: './menubar.component.scss'
 })
 export class MenubarComponent {
-  public today= new Date();
 
   constructor(
     private authService: AuthService

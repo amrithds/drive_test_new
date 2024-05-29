@@ -16,7 +16,6 @@ import { environment } from '../../environment/environment';
 })
 export class ViewReportComponent {
   public form!: FormGroup;
-  public today = new Date();
   public enabletable: boolean = false;
   public enablereport: boolean = false;
   public showpdf: boolean = false;
