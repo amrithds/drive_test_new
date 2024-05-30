@@ -17,7 +17,7 @@ class CourseSerializer(serializers.HyperlinkedModelSerializer):
         model = Course
         fields = '__all__'
 
-class ObstacleSerializer(serializers.HyperlinkedModelSerializer):
+class ObstacleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Obstacle
         fields = '__all__'
