@@ -99,7 +99,7 @@
                                 <td [style.color]="item.result === 1 ? 'green' : 'red'">{{item.result == 1 ? 'Pass' : 'Fail'}}</td>
                                 <td>
                                 <ng-container *ngFor="let obj of item.data;">
-                                    <div [style.color]="obj.result === 0 ? 'grey' : (obj.result === 1 ? 'green' : (obj.result === 2 ? 'red' : 'green'))">{{obj.name}}</div>
+                                    <div [style.color]="obj.result === 0 ? 'grey' : (obj.result === 1 ? 'green' : (obj.result === 2 ? 'red' : 'green'))">{{obj.task}}</div>
                                 </ng-container>
                                 </td>
                                 <td>

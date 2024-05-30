@@ -114,6 +114,7 @@ export class AddUserComponent {
   handleChange(event: Event) {
     const selectedValue = (event.target as HTMLSelectElement).value;
     console.log(selectedValue);
+    this.users=[];
     if(this.searchTerm){
       this.fetchUser(this.searchTerm);
     }
