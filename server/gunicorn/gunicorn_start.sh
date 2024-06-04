@@ -6,9 +6,9 @@ NAME="Drive test"
 DIR=/home/super/Desktop/app/drive_test/drivetest
 
 # Replace with your system user
-USER=root  
+USER=super  
 # Replace with your system group
-GROUP=root
+GROUP=super
 
 WORKERS=1
 
@@ -19,28 +19,24 @@ BIND=0.0.0.0:8000
 DJANGO_SETTINGS_MODULE=admin.settings 
 DJANGO_WSGI_MODULE=admin.wsgi
 
-LOG_LEVEL=debug
 
-cd $DIR
+LOG_LEVEL=debug
+HOME_DIR="$(dirname $0)/../.."
+echo $HOME_DIR
+echo "fff"
+cd $HOME_DIR
+LOG_FILE=$HOME_DIR/log/gunicorn.log
 
 #activating the virtual environment
-source /home/super/Desktop/app/drive_test/venv/bin/activate
+source $HOME_DIR/venv/bin/activate
 
 export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
 
 export PYTHONPATH=$DIR:$PYTHONPATH
 
-exec gunicorn ${DJANGO_WSGI_MODULE}:application \
-
-  --name $NAME \
-
-  --workers $WORKERS \
-
-  --user=$USER \
+exec gunicorn admin.wsgi:application --bind=$BIND --user=$USER --log-file=$LOG_FILE --name $NAME --workers $WORKERS --user=$USER \
 
   --group=$GROUP \
-
-  --bind=$BIND \
 
   --log-level=$LOG_LEVEL \
 

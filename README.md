@@ -1,6 +1,9 @@
 # create virtual env
 python -m venv venv
+
 source venv/bin/activate
+
+pip install -r requirement.txt
 
 # os requirements
 sudo apt-get update
@@ -14,16 +17,19 @@ sudo apt-get install python-pip python-virtualenv python-setuptools python-dev b
 sudo apt-get install libapache2-mod-wsgi-py3
 sudo apt-get install python3-dev default-libmysqlclient-dev
 apt install python3-gst-1.0
-pip install -r requirement.txt
 
 # Install packages using 
 pip install <package> && pip freeze > requirements.txt
 
-https://stackoverflow.com/questions/15793990/django-how-to-set-foreign-key-checks-to-0
-
 # Application setup
+pip install -r requirement.txt
+mkdir log && chmod 777 log
 python manage.py migrate
 python manage.py createsuperuser 
+python manage.py collectstatic
+
+https://stackoverflow.com/questions/15793990/django-how-to-set-foreign-key-checks-to-0
+
 
 # install angular and django side by side
 # report ApI
@@ -50,7 +56,14 @@ https://blog.renu.ac.ug/index.php/2023/11/11/deploying-django-application-with-g
 https://faun.pub/deploy-angular-app-to-apache-server-b7d87dab96df
 python manage.py start_session -i 7 -s 6 -ses 16 -m 1
 
+# enable speaker
+https://raspberrypi.stackexchange.com/questions/120034/python-script-not-playing-audio-when-run-through-systemd
+
+FIRST2SERVE
+FIRST2SERVE.com
+19730128
 
 # App configs
 bluetooth speaker
 vehicle number
+LOCATION_SENSOR (Values: RFID, TCP_DISTANCE_SENSOR)

@@ -88,6 +88,7 @@ class Command(BaseCommand):
 
     def playAudio(self):
         last_played = None
+        
         while True:
             if self.AUDIO_FILE != last_played:
                 last_played = self.AUDIO_FILE
@@ -111,11 +112,11 @@ class Command(BaseCommand):
         #get all obstacles
         self.RF_ID_OBSTACLE_MAP = start_session_helper.get_obstacle_mapping()
         OSTracker = None
+        completed_obstacles= {}
         while True:
-
-            for ip_address in self.RF_ID_OBSTACLE_MAP:
-                if VehicleSensor.IP_in_range(ip_address):
-                    if ip_address in self.RF_ID_OBSTACLE_MAP:
+            try:
+                for ip_address in self.RF_ID_OBSTACLE_MAP:
+                    if ip_address not in completed_obstacles and VehicleSensor.IP_in_range(ip_address):
                         print(ip_address)
                         tempObstacleObj = self.RF_ID_OBSTACLE_MAP[ip_address]
 
@@ -133,8 +134,11 @@ class Command(BaseCommand):
                             
                             #complete preious obscale when new IP is read
                             if previousOSTracker is not None and previousOSTracker.status == ObstacleSessionTracker.STATUS_IN_PROGRESS:
+                                completed_obstacles[ip_address] = 1
                                 previousOSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
                                 previousOSTracker.save()
+            except Exception as e:
+                RF_logger.exception(e)
 
     def read_location_inputs(self):
         """

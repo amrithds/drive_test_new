@@ -11,7 +11,11 @@ class VehicleSensor():
 
     @classmethod
     def IP_in_range(cls, ip_address:str) -> bool:
-        data = cls.fetch_data(ip_address)
+        try:
+            data = cls.fetch_data(ip_address)
+        except Exception as e:
+            return False
+        
         distance = data['distance']
         if cls.START_RANGE <= distance and distance <= cls.MAX_RANGE:
             return True
@@ -45,6 +49,6 @@ class VehicleSensor():
             else:
                 print(f"Failed to fetch data. Status code: {response.status_code}")
                 raise Exception(f"Failed to fetch data. Status code: {response.status_code}")
-        except requests.RequestException as e:
+        except Exception as e:
             print(f"Error fetching data: {e}")
             raise e

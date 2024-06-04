@@ -4,6 +4,7 @@ from .models import Obstacle
 from .serializers import UserSerializer
 from .serializers import CourseSerializer
 from .serializers import SessionSerializer
+from .serializers import ObstacleSerializer
 from rest_framework import viewsets
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
@@ -93,7 +94,7 @@ class CourseViewSet(viewsets.ModelViewSet):
 
 class ObstacleViewSet(viewsets.ModelViewSet):
     queryset = Obstacle.objects.all().order_by('created_at')
-    serializer_class = CourseSerializer
+    serializer_class = ObstacleSerializer
     permission_classes = [IsAuthenticated]
 
 class SessionViewSet(viewsets.ModelViewSet):
@@ -204,10 +205,13 @@ def index(request):
     return render(request,'index/index.html')
 
 def test(request):
-    import subprocess
-    subprocess.Popen(['python', 'manage.py', 'test'])
-    #a = call_command(f'test &')
-    from django.http import JsonResponse 
+    from playsound import playsound
+    from django.conf import settings
+    AUDIO_LOCATION = str(settings.MEDIA_ROOT)+'/uploads/2.mp3'
+    try:
+        playsound(AUDIO_LOCATION)
+    except Exception as e:
+        logger.exception(e)
     return JsonResponse({'error': 'Some error'}, status=200)
 
 # @api_view(['GET'])
