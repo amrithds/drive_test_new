@@ -25,10 +25,15 @@ export class HeaderComponent {
   }
 
   get_veh_no() { 
-    this.http.get(this.environment.apiUrl + 'v1/course/get_vehicle_no/').subscribe(
+    this.http.get(this.environment.apiUrl + 'v1/app_config/config/').subscribe(
       (data: any) => {
         console.log("Fetched veh no",data);
-        this.veh_no = data.vehicle_no.toUpperCase();
+        if(data){
+          this.veh_no = data.results.filter((data:any)=>data.name=="VEHICLE_NUMBER")
+          if(this.veh_no){
+            this.veh_no = this.veh_no[0].value.toUpperCase();
+          }
+        }       
       },
       (error: any) => {
         console.error('Error fetching data:', error);
