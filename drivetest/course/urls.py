@@ -13,7 +13,6 @@ urlpatterns = [
     path('login/', views.UserLogIn.as_view(), name='course_login'),
     path('start_session/', views.start_session, name='start_session'),
     path('stop_session/', views.stop_session, name='stop_session'),
-    path('get_vehicle_no/', views.get_vehicle_no, name='get_vehicle_no'),
     path('current_session/', views.session_in_progress, name='current_session'),
     path('test/', views.test,name='test'),
     path('', include(router.urls)),

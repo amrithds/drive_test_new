@@ -172,16 +172,6 @@ def start_session(request):
     except Exception as e:
         logger.exception(e)
         return JsonResponse({'message': str(e)}, status=500)
-
-@api_view(['GET'])
-@permission_classes((IsAuthenticated, ))
-def get_vehicle_no(request):
-    try:
-        vehicle_config = Config.objects.get(name="VEHICLE_NUMBER")
-        vehicle_no = vehicle_config.value
-        return JsonResponse({'vehicle_no': vehicle_no}, status=200)
-    except Config.DoesNotExist:
-        return JsonResponse({'error': 'Vehicle number configuration not found'}, status=404)
     
 @api_view(['GET'])
 @permission_classes((IsAuthenticated, ))
