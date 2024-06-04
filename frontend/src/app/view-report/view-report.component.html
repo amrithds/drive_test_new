@@ -107,7 +107,7 @@
                                     <div>{{obj.remark}}</div>
                                 </ng-container>
                                 </td>
-                                <td>{{item.obstacle_duration}}</td>
+                                <td>{{item.obstacle_duration == null ? 0 : item.obstacle_duration}}</td>
                                 <td>{{item.obtained_score}} / {{item.total_score}}</td>                                                    
                             </tr>
                           </tbody>

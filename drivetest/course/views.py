@@ -24,6 +24,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
+from app_config.models import Config
 from rest_framework.decorators import api_view, permission_classes
 import json
 import logging
@@ -172,6 +173,16 @@ def start_session(request):
         logger.exception(e)
         return JsonResponse({'message': str(e)}, status=500)
 
+@api_view(['GET'])
+@permission_classes((IsAuthenticated, ))
+def get_vehicle_no(request):
+    try:
+        vehicle_config = Config.objects.get(name="VEHICLE_NUMBER")
+        vehicle_no = vehicle_config.value
+        return JsonResponse({'vehicle_no': vehicle_no}, status=200)
+    except Config.DoesNotExist:
+        return JsonResponse({'error': 'Vehicle number configuration not found'}, status=404)
+    
 @api_view(['GET'])
 @permission_classes((IsAuthenticated, ))
 def stop_session(request):

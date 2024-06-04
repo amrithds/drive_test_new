@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient,HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environment/environment';
 import { Observable, firstValueFrom, map, startWith } from 'rxjs';
-
 @Component({
   selector: 'app-add-user',
   templateUrl: './add-user.component.html',
@@ -55,11 +54,15 @@ export class AddUserComponent {
   addUser() {
     if (this.form.valid) {
       const newUser = this.form.value;
-      this.users.push(newUser);
       console.log(this.users)
       console.log(this.form.value)
       firstValueFrom(this.http.post(this.environment.apiUrl + 'v1/course/user/', this.form.value)).then((data: any) => {
         console.log(data);
+        this.users.push(newUser);
+      }).catch((error: HttpErrorResponse) => {
+        if (error.status === 400) {
+          window.alert('Rank Id already exist')
+        }
       });
       this.form.get('id')?.reset()
       this.form.get('name')?.reset()
