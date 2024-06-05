@@ -135,10 +135,10 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <ng-container *ngFor="let item of obstacles; let i=index">
+                    <ng-container *ngFor="let data of obstacles; let i=index">
                         <tr>
                           <td>{{ i + 1 }}.</td>
-                          <td>{{ item.name }}</td>
+                          <td>{{ data.name }}</td>
                           <ng-container *ngIf="report.length==0">
                             <td></td>
                             <td></td>
@@ -147,7 +147,7 @@
                             <td></td>
                           </ng-container>
                           <ng-container *ngFor="let item of report">
-                            <ng-container *ngIf="i + 1 === item.id">
+                            <ng-container *ngIf="data.id === item.id">
                               <td [style.color]="item.result === 1 ? 'green' : 'red'">{{item.result == 1 ? 'Pass' : 'Fail'}}</td>
                               <td>
                                 <ng-container *ngFor="let data of item.tasks;">
@@ -163,7 +163,7 @@
                               <td>{{item.obtained_marks}} / {{item.total_marks}}</td>                          
                             </ng-container>                           
                           </ng-container>
-                          <ng-container *ngIf="report.length != 0 && !hasDataForReportItem(i + 1)">
+                          <ng-container *ngIf="report.length != 0 && !hasDataForReportItem(data.id)">
                             <td></td>
                             <td></td>
                             <td></td>

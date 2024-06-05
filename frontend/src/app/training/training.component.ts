@@ -295,11 +295,11 @@ export class TrainingComponent {
       //                 "remark": "",
       //             }
       //         ],
-      //         "result": 1,
+      //         "result": 2,
       //         "total_marks": 20,
       //         "obtained_marks": 10,
       //         "name": "start",
-      //         "id": 1,
+      //         "id": 2,
       //         "obstacle_duration":20
       //     },
       //     {
@@ -309,37 +309,25 @@ export class TrainingComponent {
       //                 "score": 0,
       //                 "result": 2,
       //                 "remark": "Parking Success",
-      //                 "status": 2,
-      //                 "total_marks": 35,
-      //                 "obtained_marks": 0,
-      //                 "id": 2
       //             },
       //             {
       //                 "name": "Seat belt",
       //                 "score": 0,
       //                 "result": 0,
       //                 "remark": "",
-      //                 "status": 2,
-      //                 "total_marks": 35,
-      //                 "obtained_marks": 0,
-      //                 "id": 2
       //             },
       //             {
       //                 "name": "Hand brake",
       //                 "score": 0,
       //                 "result": 0,
       //                 "remark": "",
-      //                 "status": 2,
-      //                 "total_marks": 35,
-      //                 "obtained_marks": 0,
-      //                 "id": 2
       //             }
       //         ],
       //         "status": 2,
       //         "total_marks": 35,
       //         "obtained_marks": 0,
       //         "name": "Left Parking",
-      //         "id": 2,
+      //         "id": 3,
       //         "obstacle_duration":20
       //     }
       // ]
