@@ -16,7 +16,7 @@ from course.helper.vehicle_sensor import VehicleSensor
 from app_config.models import Config
 
 import logging
-RF_logger = logging.getLogger("RFlog")
+RF_logger = logging.getLogger("RFLog")
 
 sensor_logger = logging.getLogger("sensorLog")
 report_logger = logging.getLogger("reportLog")
@@ -90,9 +90,12 @@ class Command(BaseCommand):
         last_played = None
         
         while True:
-            if self.AUDIO_FILE != last_played:
-                last_played = self.AUDIO_FILE
-                playsound(self.AUDIO_FILE)
+            try:
+                if self.AUDIO_FILE != last_played:
+                    last_played = self.AUDIO_FILE
+                    playsound(self.AUDIO_FILE)
+            except Exception as e:
+                report_logger.exception("Error: "+str(e))
 
     def generateReport(self):
         """
@@ -107,6 +110,7 @@ class Command(BaseCommand):
             report_logger.exception("Error: "+str(e))
 
     def read_vehicle_sensor(self):
+        RF_logger.info("IP based sensor")
         obstacles = Obstacle.objects.all()
         
         #get all obstacles
@@ -116,7 +120,7 @@ class Command(BaseCommand):
         while True:
             try:
                 for ip_address in self.RF_ID_OBSTACLE_MAP:
-                    if ip_address not in completed_obstacles and VehicleSensor.IP_in_range(ip_address):
+                    if ip_address not in completed_obstacles and VehicleSensor.IP_in_range(ip_address) == True:
                         print(ip_address)
                         tempObstacleObj = self.RF_ID_OBSTACLE_MAP[ip_address]
 
@@ -146,7 +150,7 @@ class Command(BaseCommand):
         """
         try:
             
-            print('Init RFID reader')
+            RF_logger.info('Init RFID reader')
             #get all obstacles
             self.RF_ID_OBSTACLE_MAP = start_session_helper.get_obstacle_mapping()
             
@@ -199,7 +203,7 @@ class Command(BaseCommand):
         reads STM for sensor inputs when READ_STM_FLAG is True
         """
         try:
-            print('Init STM reader')
+            sensor_logger.info('Init STM reader')
             STM_reader = STMReader()
             #STMreader =  DataGenerator.STMGenerator()
             lastSensorFeed = []
