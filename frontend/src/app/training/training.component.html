@@ -163,7 +163,7 @@
                               <td>{{item.obtained_marks}} / {{item.total_marks}}</td>                          
                             </ng-container>                           
                           </ng-container>
-                          <ng-container *ngIf="report.length != 0 && !hasDataForReportItem(i + 1)">
+                          <ng-container *ngIf="report.length != 0 && !hasDataForReportItem(data.id)">
                             <td></td>
                             <td></td>
                             <td></td>

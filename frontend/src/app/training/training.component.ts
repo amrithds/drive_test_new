@@ -295,11 +295,11 @@ export class TrainingComponent {
       //                 "remark": "",
       //             }
       //         ],
-      //         "result": 1,
+      //         "result": 2,
       //         "total_marks": 20,
       //         "obtained_marks": 10,
       //         "name": "start",
-      //         "id": 1,
+      //         "id": 2,
       //         "obstacle_duration":20
       //     },
       //     {
@@ -327,7 +327,7 @@ export class TrainingComponent {
       //         "total_marks": 35,
       //         "obtained_marks": 0,
       //         "name": "Left Parking",
-      //         "id": 2,
+      //         "id": 3,
       //         "obstacle_duration":20
       //     }
       // ]
