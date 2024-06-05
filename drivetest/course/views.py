@@ -162,7 +162,12 @@ def start_session(request):
         trainee_id = request.GET['trainee_id']
         mode = request.GET['mode']
         
-        sessionObj = createSession( trainer_id, trainee_id, mode, course_id)
+        #close pending sessions
+        pending_sessions = Session.objects.filter(status=Session.STATUS_IN_PROGRESS)
+        for pending_session in pending_sessions:
+            __terminate_session(pending_session)
+        
+        sessionObj = createSession(trainer_id, trainee_id, mode, course_id)
         command = shlex.split(f'python manage.py start_session -i {trainer_id} -s {trainee_id} -ses {sessionObj.id} -m {mode}')
         p = subprocess.Popen(command)
         #p = subprocess.Popen(['python', 'manage.py', f'test'])
@@ -182,15 +187,18 @@ def stop_session(request):
         report_gen = ReportGenerator(sessionObj)
         report_gen.generateFinalReport()
         
-        process_helper.stop_process(sessionObj.pid)
-
-        sessionObj.status = Session.STATUS_COMPELETED
-        sessionObj.save()
+        __terminate_session(sessionObj)
 
         return JsonResponse({'session_id': sessionObj.id}, status=200)
     except Exception as e:
         logger.exception(e)
         return JsonResponse({'message': str(e)}, status=500)
+
+def __terminate_session(sessionObj: Session):
+    process_helper.stop_process(sessionObj.pid)
+
+    sessionObj.status = Session.STATUS_COMPELETED
+    sessionObj.save()
 
 @api_view(['GET'])
 @permission_classes((IsAuthenticated, ))
