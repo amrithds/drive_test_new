@@ -9,11 +9,13 @@ from course.helper import rf_id_helper
 from course.helper.STM_helper import STMReader
 import copy
 import concurrent.futures
-from playsound import playsound
 from django.conf import settings
 from app_config.helper import bluetooth_speaker_helper
 from course.helper.vehicle_sensor import VehicleSensor
 from app_config.models import Config
+import os
+from pwd import getpwnam
+import pwd
 
 import logging
 RF_logger = logging.getLogger("RFLog")
@@ -28,7 +30,7 @@ class Command(BaseCommand):
     COLLECT_SENSOR_INPUTS=False
     RF_ID_OBSTACLE_MAP = {}
     SESSION = None
-    AUDIO_LOCATION = str(settings.MEDIA_ROOT)+'/'
+    AUDIO_LOCATION = str(settings.MEDIA_ROOT)
     RESUME=False
     AUDIO_FILE=None
     VEHICLE_SENSORS_RFID = 'RFID'
@@ -92,8 +94,13 @@ class Command(BaseCommand):
         while True:
             try:
                 if self.AUDIO_FILE != last_played:
+                    
+                    user = pwd.getpwuid(os.getuid())[0]
+                    uid = getpwnam(user).pw_uid
+                    #uid = uid_parsed[1].split('(')[0]
+                    report_logger.error(uid)
+                    os.system(f'XDG_RUNTIME_DIR=/run/user/{uid} paplay {self.AUDIO_FILE}')
                     last_played = self.AUDIO_FILE
-                    playsound(self.AUDIO_FILE)
             except Exception as e:
                 report_logger.exception("Error: "+str(e))
 
