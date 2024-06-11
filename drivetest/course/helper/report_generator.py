@@ -135,8 +135,8 @@ class ReportGenerator():
     def __parkingTasksResult(self, obs_task_score:ObstacleTaskScore):
         
         sensor_ids = obs_task_score.task.sensor_id.split(",")
-        hand_brake_sensor_id = sensor_ids[2]
-        park_light_sensor_id = sensor_ids[3]
+        hand_brake_sensor_id = sensor_ids[3]
+        park_light_sensor_id = sensor_ids[4]
 
         task_obj = obs_task_score.task
 
@@ -174,46 +174,44 @@ class ReportGenerator():
         REQUIRED_VALID_COUNT = 4
         ZIG_ZAG_LEFT_RESULT = 0
         ZIG_ZAG_RIGHT_RESULT = 0
-        for sensor_feed in sensor_feeds:
-            left_sensor_val = getattr(sensor_feed, left_sensor_id)
-            right_sensor_val = getattr(sensor_feed, right_sensor_id)
-            if sensor_calculation == self.DISTANCE_SENSOR_LEFT_ONLY:
-                    if  left_min_range <= left_sensor_val and left_sensor_val <= left_max_range:
-                        total_valid_count += 1
-                    else:
-                        total_valid_count = 0
-            elif sensor_calculation == self.DISTANCE_SENSOR_RIGHT_ONLY:
-                if right_min_range <= right_sensor_val and right_sensor_val  <= right_max_range:
-                    total_valid_count += 1
-                else:
-                    total_valid_count = 0
-            elif sensor_calculation == self.DISTANCE_SENSOR_LEFT_AND_RIGHT:
-                
-                if  left_min_range <= left_sensor_val and left_sensor_val <= left_max_range and \
-                    right_min_range <= right_sensor_val and right_sensor_val  <= right_max_range:
-                    
-                    total_valid_count += 1
-                else:
-                    total_valid_count = 0
-            elif sensor_calculation == self.DISTANCE_SENSOR_LEFT_AND_RIGHT_ZIG_ZAG:
-                
-
-                if  left_min_range <= left_sensor_val and left_sensor_val <= left_max_range:
-                    ZIG_ZAG_LEFT_RESULT += 1
-                elif ZIG_ZAG_LEFT_RESULT < REQUIRED_VALID_COUNT:
-                    ZIG_ZAG_LEFT_RESULT = 0
-                
-                if right_min_range <= right_sensor_val and right_sensor_val  <= right_max_range:
-                    ZIG_ZAG_RIGHT_RESULT += 1
-                elif ZIG_ZAG_RIGHT_RESULT < REQUIRED_VALID_COUNT:
-                    ZIG_ZAG_RIGHT_RESULT = 0
-            
-            
-            #break if REQUIRED_VALID_COUNT is reached
-            if (REQUIRED_VALID_COUNT == total_valid_count or (ZIG_ZAG_RIGHT_RESULT == REQUIRED_VALID_COUNT \
-                                                             and ZIG_ZAG_RIGHT_RESULT == REQUIRED_VALID_COUNT)):
+        # for sensor_feed in sensor_feeds:
+        left_sensor_val = getattr(sensor_feeds, left_sensor_id)
+        right_sensor_val = getattr(sensor_feeds, right_sensor_id)
+        if sensor_calculation == self.DISTANCE_SENSOR_LEFT_ONLY:
+            if  left_min_range <= left_sensor_val and left_sensor_val <= left_max_range:
                 result = True
-                break
+            else:
+                result = False
+        elif sensor_calculation == self.DISTANCE_SENSOR_RIGHT_ONLY:
+            if right_min_range <= right_sensor_val and right_sensor_val  <= right_max_range:
+                result = True
+            else:
+                result = False
+        elif sensor_calculation == self.DISTANCE_SENSOR_LEFT_AND_RIGHT:
+            
+            if  left_min_range <= left_sensor_val and left_sensor_val <= left_max_range and \
+                right_min_range <= right_sensor_val and right_sensor_val  <= right_max_range:
+                
+                result = True
+            else:
+                result = False
+        elif sensor_calculation == self.DISTANCE_SENSOR_LEFT_AND_RIGHT_ZIG_ZAG:
+            if  left_min_range <= left_sensor_val and left_sensor_val <= left_max_range:
+                ZIG_ZAG_LEFT_RESULT += 1
+            elif ZIG_ZAG_LEFT_RESULT < REQUIRED_VALID_COUNT:
+                ZIG_ZAG_LEFT_RESULT = 0
+            
+            if right_min_range <= right_sensor_val and right_sensor_val  <= right_max_range:
+                ZIG_ZAG_RIGHT_RESULT += 1
+            elif ZIG_ZAG_RIGHT_RESULT < REQUIRED_VALID_COUNT:
+                ZIG_ZAG_RIGHT_RESULT = 0
+        
+        print("total_valid_count",total_valid_count)
+        #break if REQUIRED_VALID_COUNT is reached
+        if (REQUIRED_VALID_COUNT == total_valid_count or (ZIG_ZAG_RIGHT_RESULT == REQUIRED_VALID_COUNT \
+                                                            and ZIG_ZAG_RIGHT_RESULT == REQUIRED_VALID_COUNT)):
+            result = True
+            # break
 
         return result
     

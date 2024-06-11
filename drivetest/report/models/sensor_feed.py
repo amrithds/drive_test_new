@@ -2,7 +2,7 @@ from django.db import models
 from course.models.obstacle import Obstacle
 from utils.model_util.custom_date_time import DateTimeWithoutTZField as DateTimeField
 class SensorFeed(models.Model):
-    LEFT_DISTANCE_SENSOR = 's1'
+    LEFT_DISTANCE_SENSOR = 's0'
     RIGHT_DISTANCE_SENSOR = 's1'
     
     obstacle = models.ForeignKey(Obstacle, on_delete=models.DO_NOTHING, default=None)

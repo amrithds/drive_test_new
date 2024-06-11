@@ -7,6 +7,8 @@ from course.helper import start_session_helper
 from course.helper.report_generator import ReportGenerator
 from course.helper import rf_id_helper
 from course.helper.STM_helper import STMReader
+from course.models.obstacle_task_score import ObstacleTaskScore
+from course.models.task import Task 
 import copy
 import concurrent.futures
 from django.conf import settings
@@ -14,6 +16,8 @@ from app_config.helper import bluetooth_speaker_helper
 from course.helper.vehicle_sensor import VehicleSensor
 from app_config.models import Config
 import os
+import json 
+import threading
 from pwd import getpwnam
 import pwd
 
@@ -36,6 +40,7 @@ class Command(BaseCommand):
     VEHICLE_SENSORS_RFID = 'RFID'
     VEHICLE_SENSORS_TCP = 'TCP'
     VEHICLE_SENSORS = ('RFID', 'TCP')
+    OBS_TASK_IP_ADDRESS = {}
     
     def add_arguments(self, parser):
         parser.add_argument('-i','--trainer', type=int, help='trainer number of user in session')
@@ -127,13 +132,20 @@ class Command(BaseCommand):
         while True:
             try:
                 for ip_address in self.RF_ID_OBSTACLE_MAP:
-                    if ip_address not in completed_obstacles and VehicleSensor.IP_in_range(ip_address) == True:
-                        print(ip_address)
+                    # print(self.RF_ID_OBSTACLE_MAP)
+                    if ip_address not in completed_obstacles and VehicleSensor.IP_in_range(ip_address):
+                        print("ip_address",ip_address)
                         tempObstacleObj = self.RF_ID_OBSTACLE_MAP[ip_address]
-
+                        print("obstacle name",tempObstacleObj)
                         self.CURRENT_REF_ID = ip_address
                         self.COLLECT_SENSOR_INPUTS = True
                         #create ObstacleSessionTracker
+                        # print("obstacle id",tempObstacleObj.id)
+
+                        ObsTaskScores = ObstacleTaskScore.objects.filter(obstacle_id=tempObstacleObj.id)
+                        for obs_task_score in ObsTaskScores:
+                            if obs_task_score.task.category in Task.PARKING_TYPES:
+                                self.OBS_TASK_IP_ADDRESS = obs_task_score.ip_address
                         if OSTracker is None or OSTracker.obstacle_id != tempObstacleObj.id:
                             #play training audio
                             if self.SESSION.mode == Session.MODE_TRAINING:
@@ -220,19 +232,32 @@ class Command(BaseCommand):
                     # data = next(STMreader)
                     # print(self.COLLECT_SENSOR_INPUTS)
                     # print(data)
-                if STM_reader.dataWaiting() and self.COLLECT_SENSOR_INPUTS:
+                
+                if self.COLLECT_SENSOR_INPUTS and self.OBS_TASK_IP_ADDRESS:
+                    data = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+                    addrs = json.loads(self.OBS_TASK_IP_ADDRESS)
+                    for key, value in addrs.items():
+                        for ip_address in value:
+                            distance_val = VehicleSensor.distance_ip_addrs(ip_address)
+                            # print("distance_val",distance_val)
+                            if key=='s0':
+                                data[1] = int(distance_val)
+                            if key=='s1':
+                                data[2] = int(distance_val)
+                            
+                if self.COLLECT_SENSOR_INPUTS and STM_reader.dataWaiting():
                     data = STM_reader.getSTMInput()
                     sensor_logger.info(data)
                     # conside data less than 19 as noise
-                    if len(data) == 19 and data != lastSensorFeed and self.CURRENT_REF_ID in self.RF_ID_OBSTACLE_MAP:
+                if len(data) == 19 and data != lastSensorFeed and self.CURRENT_REF_ID in self.RF_ID_OBSTACLE_MAP:
 
-                        ObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_REF_ID]
+                    ObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_REF_ID]
 
-                        SensorFeed.objects.create(obstacle=ObstacleObj, s0=data[1], s1=data[2], s2=data[3], s3=data[4],\
-                                                s4=data[5], s5=data[6], s6=data[7], s7=data[8], s8=data[9], s9=data[10],\
-                                                s10=data[11],s11=data[12], s12=data[13], s13=data[14], s14=data[15], s15=data[16],\
-                                                s16=data[17] )
+                    SensorFeed.objects.create(obstacle=ObstacleObj, s0=data[1], s1=data[2], s2=data[3], s3=data[4],\
+                                            s4=data[5], s5=data[6], s6=data[7], s7=data[8], s8=data[9], s9=data[10],\
+                                            s10=data[11],s11=data[12], s12=data[13], s13=data[14], s14=data[15], s15=data[16],\
+                                            s16=data[17] )
 
-                        lastSensorFeed = data
+                    lastSensorFeed = data
         except Exception as e:
             sensor_logger.exception('Error: '+str(e))

@@ -23,6 +23,16 @@ class VehicleSensor():
         return False
     
     @classmethod
+    def distance_ip_addrs(cls, ip_address:str) -> bool:
+        try:
+            data = cls.fetch_data(ip_address)
+        except Exception as e:
+            return False
+        distance = data['distance']
+        return distance
+
+    
+    @classmethod
     def fetch_data(cls, ip_address: str):
         url = f'http://{ip_address}/'
         try:

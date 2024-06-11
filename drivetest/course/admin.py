@@ -29,7 +29,7 @@ class TaskMetricAdmin(admin.ModelAdmin):
 
 class ObstacleTaskScoreAdmin(admin.ModelAdmin):
     ordering = ['obstacle', 'task_metrics', 'score']
-    list_display = ['obstacle', 'task_metrics', 'score', 'is_mandatory', 'description' ]
+    list_display = ['obstacle', 'task_metrics', 'ip_address', 'score', 'is_mandatory', 'description' ]
 
 class ObstacleSessionTrackerAdmin(admin.ModelAdmin):
     ordering = ['obstacle']
