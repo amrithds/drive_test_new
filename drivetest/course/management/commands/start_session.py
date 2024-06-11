@@ -233,31 +233,34 @@ class Command(BaseCommand):
                     # print(self.COLLECT_SENSOR_INPUTS)
                     # print(data)
                 
-                if self.COLLECT_SENSOR_INPUTS and self.OBS_TASK_IP_ADDRESS:
+                if self.COLLECT_SENSOR_INPUTS:
                     data = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-                    addrs = json.loads(self.OBS_TASK_IP_ADDRESS)
-                    for key, value in addrs.items():
-                        for ip_address in value:
-                            distance_val = VehicleSensor.distance_ip_addrs(ip_address)
-                            # print("distance_val",distance_val)
-                            if key=='s0':
-                                data[1] = int(distance_val)
-                            if key=='s1':
-                                data[2] = int(distance_val)
+                    if self.OBS_TASK_IP_ADDRESS:
+                        addrs = json.loads(self.OBS_TASK_IP_ADDRESS)
+                        for key, value in addrs.items():
+                            for ip_address in value:
+                                distance_val = VehicleSensor.distance_ip_addrs(ip_address)
+                                # print("distance_val",distance_val)
+                                if key=='s0':
+                                    data[1] = int(distance_val)
+                                if key=='s1':
+                                    data[2] = int(distance_val)
+                                if key=='s10':
+                                    data[11] = int(distance_val)
                             
-                if self.COLLECT_SENSOR_INPUTS and STM_reader.dataWaiting():
-                    data = STM_reader.getSTMInput()
-                    sensor_logger.info(data)
+                    if self.COLLECT_SENSOR_INPUTS and STM_reader.dataWaiting():
+                        data = STM_reader.getSTMInput()
+                        sensor_logger.info(data)
                     # conside data less than 19 as noise
-                if len(data) == 19 and data != lastSensorFeed and self.CURRENT_REF_ID in self.RF_ID_OBSTACLE_MAP:
+                    if len(data) == 19 and data != lastSensorFeed and self.CURRENT_REF_ID in self.RF_ID_OBSTACLE_MAP:
 
-                    ObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_REF_ID]
+                        ObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_REF_ID]
 
-                    SensorFeed.objects.create(obstacle=ObstacleObj, s0=data[1], s1=data[2], s2=data[3], s3=data[4],\
-                                            s4=data[5], s5=data[6], s6=data[7], s7=data[8], s8=data[9], s9=data[10],\
-                                            s10=data[11],s11=data[12], s12=data[13], s13=data[14], s14=data[15], s15=data[16],\
-                                            s16=data[17] )
+                        SensorFeed.objects.create(obstacle=ObstacleObj, s0=data[1], s1=data[2], s2=data[3], s3=data[4],\
+                                                s4=data[5], s5=data[6], s6=data[7], s7=data[8], s8=data[9], s9=data[10],\
+                                                s10=data[11],s11=data[12], s12=data[13], s13=data[14], s14=data[15], s15=data[16],\
+                                                s16=data[17] )
 
-                    lastSensorFeed = data
+                        lastSensorFeed = data
         except Exception as e:
             sensor_logger.exception('Error: '+str(e))
