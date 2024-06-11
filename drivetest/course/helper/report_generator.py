@@ -20,6 +20,7 @@ class ReportGenerator():
     DISTANCE_SENSOR_RIGHT_ONLY = 1
     DISTANCE_SENSOR_LEFT_AND_RIGHT = 2
     DISTANCE_SENSOR_LEFT_AND_RIGHT_ZIG_ZAG = 3
+    DISTANCE_SENSOR_BACK = 4
 
     def __init__(self, session: Session, resume: int=False) -> None:
         """init
@@ -122,7 +123,8 @@ class ReportGenerator():
         task_category = ObsTaskScore.task.category
         result = False
         if task_category == Task.TASK_TYPE_BOOLEAN:
-            result = self.__booleanTasksResult(ObsTaskScore)
+            result = True
+            # result = self.__booleanTasksResult(ObsTaskScore)
         elif task_category in Task.PARKING_TYPES:
             result = self.__parkingTasksResult(ObsTaskScore )
         elif task_category == Task.TASK_TYPE_SPEED:
@@ -154,6 +156,8 @@ class ReportGenerator():
                 dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_ONLY
             elif task_obj.category == Task.TASK_TYPE_RIGHT_PARKING:
                 dis_sensor_calculation = self.DISTANCE_SENSOR_RIGHT_ONLY
+            elif task_obj.category == Task.TASK_TYPE_REVERSE_PARKING:
+                dis_sensor_calculation = self.DISTANCE_SENSOR_BACK
             
             result = self.__distance_sensor_result(dis_sensor_calculation, latest_sensor_feeds, obs_task_score)
         return result
@@ -164,10 +168,13 @@ class ReportGenerator():
         left_max_range = obs_task_score.task_metrics.left_max_range
         right_min_range = obs_task_score.task_metrics.right_min_range
         right_max_range = obs_task_score.task_metrics.right_max_range
+        back_min_range = obs_task_score.task_metrics.back_min_range
+        back_max_range = obs_task_score.task_metrics.back_max_range
 
         sensor_ids = obs_task_score.task.sensor_id.split(",")
         left_sensor_id = sensor_ids[0]
         right_sensor_id = sensor_ids[1]
+        back_sensor_id = sensor_ids[2]
 
         result = False
         total_valid_count = 0
@@ -178,8 +185,20 @@ class ReportGenerator():
         for sensor_feed in sensor_feeds:
             left_sensor_val = getattr(sensor_feed, left_sensor_id)
             right_sensor_val = getattr(sensor_feed, right_sensor_id)
+            back_sensor_val = getattr(sensor_feed, back_sensor_id)
+            print("left_sensor_val",left_sensor_val,"right_sensor_val",right_sensor_val,"back_sensor_val",back_sensor_val)
 
-            if sensor_calculation == self.DISTANCE_SENSOR_LEFT_ONLY:
+            # reverse parking logic
+            if sensor_calculation == self.DISTANCE_SENSOR_BACK:
+                side_sensor_val = left_sensor_val if left_sensor_val else right_sensor_val
+                if side_sensor_val:
+                    if  left_min_range <= side_sensor_val and side_sensor_val <= left_max_range:
+                        if back_sensor_val and back_min_range <= back_sensor_val and back_sensor_val <= back_max_range: 
+                            total_valid_count += 1
+                        else:
+                            total_valid_count = 0
+
+            elif sensor_calculation == self.DISTANCE_SENSOR_LEFT_ONLY:
                 if  left_min_range <= left_sensor_val and left_sensor_val <= left_max_range:
                     total_valid_count += 1
                 else:

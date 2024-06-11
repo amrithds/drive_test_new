@@ -10,6 +10,8 @@ class TaskMetric(BaseModel):
     left_max_range = models.IntegerField(blank=True, null=True)
     right_min_range = models.IntegerField(blank=True, null=True)
     right_max_range = models.IntegerField(blank=True, null=True)
+    back_min_range = models.IntegerField(blank=True, null=True)
+    back_max_range = models.IntegerField(blank=True, null=True)
     distance = models.IntegerField( blank=True, null=True)
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     success_message = models.CharField(max_length=1024, default='')
