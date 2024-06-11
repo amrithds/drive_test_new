@@ -9,7 +9,6 @@
     production: false,
     get apiUrl() {
       const ipAddress = window.location.hostname;
-      console.log(ipAddress)
       return `http://${ipAddress}:8000/`;
     }
   };

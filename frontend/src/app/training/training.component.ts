@@ -267,7 +267,7 @@ export class TrainingComponent {
   fetchLiveReport(){
     this.intervalId = setInterval(() => {
       this.livereport();
-    }, 3000);
+    }, 5000);
   }
 
   hasDataForReportItem(rowId: number): boolean {
