@@ -123,8 +123,7 @@ class ReportGenerator():
         task_category = ObsTaskScore.task.category
         result = False
         if task_category == Task.TASK_TYPE_BOOLEAN:
-            result = True
-            # result = self.__booleanTasksResult(ObsTaskScore)
+            result = self.__booleanTasksResult(ObsTaskScore)
         elif task_category in Task.PARKING_TYPES:
             result = self.__parkingTasksResult(ObsTaskScore )
         elif task_category == Task.TASK_TYPE_SPEED:
