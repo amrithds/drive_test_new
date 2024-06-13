@@ -89,7 +89,7 @@ export class AddUserComponent {
   removeUser(index: number) {
     console.log(index,this.users)
     const user_id = this.users[index].id;
-    this.http.delete(this.environment.apiUrl+ 'v1/course/user/'+user_id).subscribe(
+    this.http.delete(this.environment.apiUrl+ 'v1/course/user/'+user_id+'/').subscribe(
       () => {
         if (index >= 0 && index < this.users.length) {
           this.users.splice(index, 1);

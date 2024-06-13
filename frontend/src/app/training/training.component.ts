@@ -228,7 +228,7 @@ export class TrainingComponent {
       this.http.get(this.environment.apiUrl + 'v1/course/obstacle/').subscribe(
         (data: any) => {
           console.log("Fetched obstacles",data.results);
-          this.obstacles = data.results
+          this.obstacles = data.results.sort((a:any, b:any) => a.order - b.order);
         },
         (error: any) => {
           console.error('Error fetching data:', error);
