@@ -160,6 +160,10 @@ class Command(BaseCommand):
                                 completed_obstacles[ip_address] = 1
                                 previousOSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
                                 previousOSTracker.save()
+                            sensor_logger.info("completed_obstacles",completed_obstacles)
+                            sensor_logger.info(len(completed_obstacles),len(self.RF_ID_OBSTACLE_MAP))
+                            if len(completed_obstacles) == len(self.RF_ID_OBSTACLE_MAP):
+                                break
             except Exception as e:
                 RF_logger.exception(e)
 
@@ -234,7 +238,10 @@ class Command(BaseCommand):
                     # print(data)
                 
                 if self.COLLECT_SENSOR_INPUTS:
-                    data = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+                    data = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]  
+                    if STM_reader.dataWaiting():
+                        data = STM_reader.getSTMInput()
+                        sensor_logger.info(data)
                     if self.OBS_TASK_IP_ADDRESS:
                         addrs = json.loads(self.OBS_TASK_IP_ADDRESS)
                         for key, value in addrs.items():
@@ -247,10 +254,6 @@ class Command(BaseCommand):
                                     data[2] = int(distance_val)
                                 if key=='s10':
                                     data[11] = int(distance_val)
-                            
-                    if self.COLLECT_SENSOR_INPUTS and STM_reader.dataWaiting():
-                        data = STM_reader.getSTMInput()
-                        sensor_logger.info(data)
                     # conside data less than 19 as noise
                     if len(data) == 19 and data != lastSensorFeed and self.CURRENT_REF_ID in self.RF_ID_OBSTACLE_MAP:
 
