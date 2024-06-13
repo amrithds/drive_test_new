@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environment/environment';
 import { AuthService } from '../auth.service';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-training',
@@ -374,5 +376,29 @@ export class TrainingComponent {
         console.error('Error fetching data:', error);
       }
     );
+  }
+
+  generatePDF() {
+    const data = document.getElementById('reportContent')!;
+    console.log(data)
+    html2canvas(data).then(canvas => {
+      const imgWidth = 210;
+      const imgHeight = canvas.height * imgWidth / canvas.width;
+
+      const contentDataURL = canvas.toDataURL('image/png');
+      let pdf = new jsPDF('p', 'mm', 'a4');
+      const position = 0;
+      pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight);
+
+       // Add footer
+      pdf.setFontSize(10);
+       pdf.text('Smart Skill Driving Technology By | FIRSTSERVE.com | Mob:99000 99100', 50, pdf.internal.pageSize.height - 10); 
+
+      // Open the PDF in a new tab and trigger the print dialog
+      const pdfOutput = pdf.output('blob');
+      const blobUrl = URL.createObjectURL(pdfOutput);
+      
+      const printWindow = window.open(blobUrl);
+    });
   }
 }
