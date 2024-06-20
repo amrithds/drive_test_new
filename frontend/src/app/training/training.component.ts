@@ -269,7 +269,7 @@ export class TrainingComponent {
   fetchLiveReport(){
     this.intervalId = setInterval(() => {
       this.livereport();
-    }, 5000);
+    }, 2000);
   }
 
   hasDataForReportItem(rowId: number): boolean {
@@ -281,58 +281,6 @@ export class TrainingComponent {
       (data: any) => {
         this.report = data
         console.log(this.report)
-      //   this.report = [
-      //     {
-      //         "tasks": [
-      //             {
-      //                 "name": "Head Light",
-      //                 "score": 10,
-      //                 "result": 1,
-      //                 "remark": "Head light on",
-      //             },
-      //             {
-      //                 "name": "Seat belt",
-      //                 "score": 0,
-      //                 "result": 2,
-      //                 "remark": "",
-      //             }
-      //         ],
-      //         "result": 2,
-      //         "total_marks": 20,
-      //         "obtained_marks": 10,
-      //         "name": "start",
-      //         "id": 2,
-      //         "obstacle_duration":20
-      //     },
-      //     {
-      //         "tasks": [
-      //             {
-      //                 "name": "Parking",
-      //                 "score": 0,
-      //                 "result": 2,
-      //                 "remark": "Parking Success",
-      //             },
-      //             {
-      //                 "name": "Seat belt",
-      //                 "score": 0,
-      //                 "result": 0,
-      //                 "remark": "",
-      //             },
-      //             {
-      //                 "name": "Hand brake",
-      //                 "score": 0,
-      //                 "result": 0,
-      //                 "remark": "",
-      //             }
-      //         ],
-      //         "status": 2,
-      //         "total_marks": 35,
-      //         "obtained_marks": 0,
-      //         "name": "Left Parking",
-      //         "id": 3,
-      //         "obstacle_duration":20
-      //     }
-      // ]
       },
       (error: any) => {
         console.error('Error fetching data:', error);
@@ -362,6 +310,17 @@ export class TrainingComponent {
       totalMarks += trainee.total_marks;
     }
     return totalMarks;
+  }
+
+  resumeSession(){
+    this.http.get(this.environment.apiUrl + 'v1/course/current_session/').subscribe(
+      (data: any) => {
+        console.log("Fetched session",data);
+      },
+      (error: any) => {
+        console.error('Error fetching data:', error);
+      }
+    );
   }
 
   stopTest(){
