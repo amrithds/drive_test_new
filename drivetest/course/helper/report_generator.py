@@ -136,17 +136,19 @@ class ReportGenerator():
     def __parkingTasksResult(self, obs_task_score:ObstacleTaskScore):
         
         sensor_ids = obs_task_score.task.sensor_id.split(",")
-        hand_brake_sensor_id = sensor_ids[3]
-        park_light_sensor_id = sensor_ids[4]
-
         task_obj = obs_task_score.task
-
-        #either parking light or hand brake is enabled
-        filter = Q(obstacle_id= obs_task_score.obstacle_id) & Q(~Q(**{"%s" % hand_brake_sensor_id: 0}) | ~Q(**{"%s" % park_light_sensor_id: 0}))
-        # ,or_(~Q(**{"%s" % reverse_sensor_id: '0'}),\
-        #                                                    ~Q(**{"%s" % park_light_sensor_id: '0'}))
-        latest_sensor_feeds = SensorFeed.objects.filter(filter).order_by('-created_at')[:1]
         result = False
+
+        if(len(sensor_ids)>2):
+            hand_brake_sensor_id = sensor_ids[3]
+            park_light_sensor_id = sensor_ids[4]
+
+            #either parking light or hand brake is enabled
+            filter = Q(obstacle_id= obs_task_score.obstacle_id) & Q(~Q(**{"%s" % hand_brake_sensor_id: 0}) | ~Q(**{"%s" % park_light_sensor_id: 0}))
+            # ,or_(~Q(**{"%s" % reverse_sensor_id: '0'}),\ ~Q(**{"%s" % park_light_sensor_id: '0'}))
+        else:
+            filter = Q(obstacle_id= obs_task_score.obstacle_id)
+        latest_sensor_feeds = SensorFeed.objects.filter(filter).order_by('-created_at')[:1]
         if latest_sensor_feeds:
             #choose which calculation logic to use
             dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_AND_RIGHT
@@ -173,7 +175,10 @@ class ReportGenerator():
         sensor_ids = obs_task_score.task.sensor_id.split(",")
         left_sensor_id = sensor_ids[0]
         right_sensor_id = sensor_ids[1]
-        back_sensor_id = sensor_ids[2]
+        if(len(sensor_ids)>2):
+            back_sensor_id = sensor_ids[2]
+        else:
+            back_sensor_id = "s10"
 
         result = False
         total_valid_count = 0
