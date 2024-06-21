@@ -127,9 +127,9 @@
                     <tr>
                       <th>Sl.no</th>
                       <th>Obstacle Name</th>
-                      <th>Result</th>
                       <th>Tasks</th>
                       <th>Remarks</th>
+                      <th>Result</th>
                       <th>Time Taken</th>
                       <th>Marks</th>
                     </tr>
@@ -148,7 +148,6 @@
                           </ng-container>
                           <ng-container *ngFor="let item of report">
                             <ng-container *ngIf="data.id === item.id">
-                              <td [style.color]="item.result === 1 ? 'green' : 'red'">{{item.result == 1 ? 'Pass' : 'Fail'}}</td>
                               <td>
                                 <ng-container *ngFor="let data of item.tasks;">
                                   <div [style.color]="data.result === 0 ? 'grey' : (data.result === 1 ? 'green' : (data.result === 2 ? 'red' : 'green'))">{{data.name}}</div>
@@ -159,6 +158,7 @@
                                   <div>{{data.remark}}</div>
                                 </ng-container>
                               </td>
+                              <td [style.color]="item.result === 1 ? 'green' : 'red'">{{item.result == 1 ? 'Pass' : 'Fail'}}</td>
                               <td>{{item.obstacle_duration}}</td>
                               <td>{{item.obtained_marks}} / {{item.total_marks}}</td>                          
                             </ng-container>                           
