@@ -231,6 +231,7 @@ export class TrainingComponent {
         (data: any) => {
           console.log("Fetched obstacles",data.results);
           this.obstacles = data.results.sort((a:any, b:any) => a.order - b.order);
+          this.resumeSession();
         },
         (error: any) => {
           console.error('Error fetching data:', error);
@@ -315,7 +316,14 @@ export class TrainingComponent {
   resumeSession(){
     this.http.get(this.environment.apiUrl + 'v1/course/current_session/').subscribe(
       (data: any) => {
-        console.log("Fetched session",data);
+        console.log("Fetched session in progress",data);
+        if(Object.keys(data).length > 0){
+          this.fetchLiveReport();
+          this.stop_test = true;
+          this.session_id = data.session_id;
+        }else{
+          console.log("There is no session in progress")
+        }
       },
       (error: any) => {
         console.error('Error fetching data:', error);
@@ -324,17 +332,22 @@ export class TrainingComponent {
   }
 
   stopTest(){
-    this.http.get(this.environment.apiUrl + 'v1/course/stop_session/?session_id='+this.session_id).subscribe(
-      (data: any) => {
-        console.log("Fetched session id",data);
-        this.stop_test=false;
-        window.alert('Test ended successfully');
-        clearInterval(this.intervalId);
-      },
-      (error: any) => {
-        console.error('Error fetching data:', error);
-      }
-    );
+    const userConfirmed = window.confirm("Do you want to stop the test?");
+    console.log("Stop Test",userConfirmed)
+    if (userConfirmed) {
+      this.http.get(this.environment.apiUrl + 'v1/course/stop_session/?session_id='+this.session_id).subscribe(
+        (data: any) => {
+          this.stop_test=false;
+          window.alert('Test ended successfully');
+          clearInterval(this.intervalId);
+        },
+        (error: any) => {
+          console.error('Error fetching data:', error);
+        }
+      );
+    } else {
+        console.log("Test continues.");
+    }
   }
 
   generatePDF() {

@@ -1,6 +1,6 @@
 #!/bin/bash
 #This is the Gunicorn script used to automatically launch the application through Gunicorn
-NAME="Drive test"
+NAME="Drivetest"
 
 #path to the folder containing the manage.py file
 DIR=/home/super/Desktop/app/drive_test/drivetest
