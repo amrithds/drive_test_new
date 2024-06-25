@@ -27,7 +27,7 @@ export class HeaderComponent {
   get_veh_no() { 
     this.http.get(this.environment.apiUrl + 'v1/app_config/config/').subscribe(
       (data: any) => {
-        console.log("Fetched veh no",data);
+        // console.log("Fetched veh no",data);
         if(data){
           this.veh_no = data.results.filter((data:any)=>data.name=="VEHICLE_NUMBER")
           if(this.veh_no){

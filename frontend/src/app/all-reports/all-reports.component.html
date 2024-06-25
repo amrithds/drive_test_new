@@ -10,12 +10,19 @@
             <form [formGroup]="form">
                 <div class="col-12">
                     <label class="required">Course ID</label>
-                    <input type="text" placeholder="Enter course id" class="form-control mb-2" formControlName="course_id">
+                    <input type="text" placeholder="Course ID" (input)="onSearchChange()" class="form-control" formControlName="course_id"/>
+                    <div class="autocomplete-container">
+                        <div class="autocomplete-items" *ngIf="filteredOptions.length">
+                        <div class="autocomplete-item" *ngFor="let option of filteredOptions" (click)="selectOption(option.name)">
+                            {{ option.name }}
+                        </div>
+                        </div>
+                    </div>
                     <label class="required">From Date</label>
-                    <input type="Date" class="form-control mb-2" formControlName="course_id">
+                    <input type="Date" class="form-control mb-2" formControlName="from_date">
                     <label class="required">To Date</label>
-                    <input type="date" class="form-control mb-3" formControlName="course_id">
-                    <button type="submit" class="btn btn-primary" (click)="all_reports=true">Submit</button>
+                    <input type="date" class="form-control mb-3" formControlName="to_date">
+                    <button type="submit" class="btn btn-primary" (click)="viewFinalReport()">Submit</button>
                 </div>
             </form>
         </div>
@@ -23,7 +30,7 @@
 
     <div *ngIf="all_reports" class="final_report">
         <div>
-            <img src="./assets/images/back_button.png" class="back_button" (click)="all_reports=false;">
+            <img src="./assets/images/back_button.png" class="back_button" (click)="all_reports=false;form.reset()">
             <img src="./assets/images/printout.png" class="print_out" (click)="generatePDF()">
         </div>
         <div style="text-align: center;">

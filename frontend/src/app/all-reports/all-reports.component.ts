@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
-import { FormBuilder,FormGroup } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { environment } from '../../environment/environment';
+import { HttpClient } from '@angular/common/http';
 
 
 @Component({
@@ -12,6 +14,10 @@ import html2canvas from 'html2canvas';
 export class AllReportsComponent {
   public form!: FormGroup;
   public all_reports:boolean=false;
+  public courses:any=[];
+  public environment = environment;
+  public course_id:any;
+  public filteredOptions:any = [];
 
   public center_content:any=[
     {
@@ -73,7 +79,49 @@ export class AllReportsComponent {
 ]
 
 
-  constructor(private fb:FormBuilder){}
+  constructor(
+    private fb:FormBuilder,
+    private http: HttpClient,
+  ){}
+
+  ngOnInit() {
+    this.fetchCourse();
+    this.form = this.fb.group({
+      course_id: [null,Validators.required],
+      from_date: [null,Validators.required],
+      to_date: [null],
+    });
+  }
+
+  viewFinalReport(){
+    console.log(this.form)
+    this.all_reports=true;
+  }
+
+  fetchCourse() { 
+    this.http.get(this.environment.apiUrl + 'v1/course/course/').subscribe(
+      (data: any) => {
+        console.log("Fetched course",data.results);
+        this.courses = data.results
+      },
+      (error: any) => {
+        console.error('Error fetching data:', error);
+      }
+    ); 
+  }
+
+  onSearchChange(): void {
+    this.course_id = this.form.value['course_id']
+    this.filteredOptions = this.courses.filter((course: any) =>
+      course.name.toLowerCase().includes(this.course_id?.toLowerCase())
+    );
+  }
+
+  selectOption(option: any): void {
+    this.form.get('course_id')?.setValue(option);
+    this.course_id = this.form.value['course_id'];
+    this.filteredOptions = [];
+  }
 
   generatePDF() {
     const data = document.getElementById('reportContent')!;
