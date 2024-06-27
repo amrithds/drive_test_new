@@ -281,7 +281,75 @@ export class TrainingComponent {
     this.http.get(this.environment.apiUrl + 'v1/report/live_report/').subscribe(
       (data: any) => {
         this.report = data
+        this.report=[
+          {
+            "tasks": [
+              {
+                "name": "Seat Belt",
+                "score": 10,
+                "result": 1,
+                "remark": "Seat Belt Fastened"
+              },
+              {
+                "name": "Head Light",
+                "score": 0,
+                "result": 1,
+                "remark": "Head Light on"
+              },
+              {
+                "name": "Seat Belt",
+                "score": 10,
+                "result": 1,
+                "remark": "task 3"
+              },
+              {
+                "name": "Head Light",
+                "score": 0,
+                "result": 1,
+                "remark": "task 4"
+              },
+              {
+                "name": "Head Light",
+                "score": 0,
+                "result": 1,
+                "remark": "task 5"
+              }
+            ],
+            "result": 1,
+            "total_marks": 20,
+            "obtained_marks": 10,
+            "obstacle_duration": 16,
+            "name": "start",
+            "id": 2
+          },
+          {
+            "tasks": [
+              {
+                "name": "Parking",
+                "score": 0,
+                "result": 2,
+                "remark": "Parking Failure"
+              },
+            ],
+            "result": 2,
+            "total_marks": 35,
+            "obtained_marks": 0,
+            "obstacle_duration": 38,
+            "name": "Left Parking",
+            "id": 3
+          }
+        ]
         console.log(this.report)
+        console.log(this.obstacles)
+
+        for(const obstacle of this.obstacles){
+          for(const report of this.report){
+            if(obstacle.id==report.id){
+              obstacle.obstacletaskscore_set = report.tasks
+              obstacle.result = report.result
+            }
+          }
+        }
       },
       (error: any) => {
         console.error('Error fetching data:', error);
@@ -335,9 +403,9 @@ export class TrainingComponent {
     const userConfirmed = window.confirm("Do you want to stop the test?");
     console.log("Stop Test",userConfirmed)
     if (userConfirmed) {
+      this.stop_test=false;
       this.http.get(this.environment.apiUrl + 'v1/course/stop_session/?session_id='+this.session_id).subscribe(
         (data: any) => {
-          this.stop_test=false;
           window.alert('Test ended successfully');
           clearInterval(this.intervalId);
         },
@@ -373,4 +441,21 @@ export class TrainingComponent {
       const printWindow = window.open(blobUrl);
     });
   }
+
+  getColor(result: number): string {
+    if (result === 0) return 'grey';
+    if (result === 1) return 'green';
+    if (result === 2) return 'red';
+    return 'grey';
+  }
+  getObsColor(result: number): string {
+    if (result === 0) return 'black';
+    if (result === 1) return 'green';
+    if (result === 2) return 'black';
+    return 'black';
+  }
+  getDisplayText(content: any): string {
+    return content.result == 0 ? content.name : content.remark;
+  }
+
 }

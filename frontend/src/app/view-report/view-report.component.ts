@@ -170,6 +170,20 @@ export class ViewReportComponent {
     );
   }
 
+  getTaskColor(result: number): string {
+    if (result === 0) return 'grey';
+    if (result === 1) return 'green';
+    if (result === 2) return 'red';
+    return 'grey';
+  }
+
+  getObsColor(result: number): string {
+    if (result === 0) return 'black';
+    if (result === 1) return 'green';
+    if (result === 2) return 'black';
+    return 'black';
+  }
+
   getTotalObtainedMarks(): number {
     let totalObtainedMarks = 0;
     for (const student of this.report) {

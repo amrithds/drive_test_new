@@ -13,7 +13,7 @@
                     <input type="text" placeholder="Course ID" (input)="onSearchChange()" class="form-control" formControlName="course_id"/>
                     <div class="autocomplete-container">
                         <div class="autocomplete-items" *ngIf="filteredOptions.length">
-                        <div class="autocomplete-item" *ngFor="let option of filteredOptions" (click)="selectOption(option.name)">
+                        <div class="autocomplete-item" *ngFor="let option of filteredOptions" (click)="selectOption(option)">
                             {{ option.name }}
                         </div>
                         </div>

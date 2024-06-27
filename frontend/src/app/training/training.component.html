@@ -125,22 +125,38 @@
             <table class="table table-responsive table-striped" id="tableDataID">
                 <thead class="table_column">
                     <tr>
-                      <th>Sl.no</th>
+                      <th style="text-align: center">Sl.no</th>
                       <th>Obstacle Name</th>
                       <th>Tasks</th>
-                      <th>Remarks</th>
                       <th>Result</th>
-                      <th>Time Taken</th>
-                      <th>Marks</th>
+                      <th style="text-align: center">Time Taken</th>
+                      <th style="text-align: center">Marks</th>
                     </tr>
                   </thead>
                   <tbody>
                     <ng-container *ngFor="let data of obstacles; let i=index">
                         <tr>
-                          <td>{{ i + 1 }}.</td>
-                          <td>{{ data.name }}</td>
+                          <td style="text-align: center">{{ i + 1 }}.</td>
+                          <td [style.color]="getObsColor(data.result)">{{ data.name }}</td>
+                          <td>
+                            <ng-container *ngFor="let i of data.obstacletaskscore_set; let idx = index">
+                              <span [style.color]="getColor(i.result)">
+                                {{ getDisplayText(i) }}
+                              </span>
+                              <span *ngIf="(idx + 1) % 3 !== 0 && idx !== data.obstacletaskscore_set.length - 1"> | </span>
+                              <br *ngIf="(idx + 1) % 3 === 0 && idx !== data.obstacletaskscore_set.length - 1">
+                            </ng-container>
+                          </td>
+
+                          <!-- <td>
+                            <ng-container *ngFor="let content of data.obstacletaskscore_set;let last = last">
+                              <span [style.color]="getColor(content.result)">
+                                {{ getDisplayText(content) }}
+                              </span>
+                              <span *ngIf="!last"> | </span>
+                            </ng-container>
+                          </td> -->
                           <ng-container *ngIf="report.length==0">
-                            <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
@@ -148,23 +164,13 @@
                           </ng-container>
                           <ng-container *ngFor="let item of report">
                             <ng-container *ngIf="data.id === item.id">
-                              <td>
-                                <ng-container *ngFor="let data of item.tasks;">
-                                  <div [style.color]="data.result === 0 ? 'grey' : (data.result === 1 ? 'green' : (data.result === 2 ? 'red' : 'green'))">{{data.name}}</div>
-                                </ng-container>
-                              </td>
-                              <td>
-                                <ng-container *ngFor="let data of item.tasks;">
-                                  <div>{{data.remark}}</div>
-                                </ng-container>
-                              </td>
                               <td [style.color]="item.result === 1 ? 'green' : 'red'">{{item.result == 1 ? 'Pass' : 'Fail'}}</td>
-                              <td>{{item.obstacle_duration}}</td>
-                              <td>{{item.obtained_marks}} / {{item.total_marks}}</td>                          
+                              <td style="text-align: center">{{item.obstacle_duration}}</td>
+                              <td style="text-align: center">{{item.obtained_marks}} / {{item.total_marks}}</td>
+                              <td></td>                          
                             </ng-container>                           
                           </ng-container>
                           <ng-container *ngIf="report.length != 0 && !hasDataForReportItem(data.id)">
-                            <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
@@ -179,8 +185,8 @@
                       <td>Total Time Taken</td>
                       <td></td>
                       <td></td>
+                      <td style="text-align: center">{{ getTotalTimeTaken() }}</td>
                       <td></td>
-                      <td>{{ getTotalTimeTaken() }}</td>
                       <td></td>
                     </tr>
                     <tr>
@@ -189,8 +195,8 @@
                       <td></td>
                       <td></td>
                       <td></td>
+                      <td style="text-align: center">{{ getTotalObtainedMarks() }} / {{getTotalMarks()}}</td>
                       <td></td>
-                      <td>{{ getTotalObtainedMarks() }} / {{getTotalMarks()}}</td>
                     </tr>
                   </tfoot>
             </table>

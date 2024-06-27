@@ -18,6 +18,7 @@ export class AllReportsComponent {
   public environment = environment;
   public course_id:any;
   public filteredOptions:any = [];
+  public selected_option:any;
 
   public center_content:any=[
     {
@@ -96,6 +97,27 @@ export class AllReportsComponent {
   viewFinalReport(){
     console.log(this.form)
     this.all_reports=true;
+    // this.getreports();
+  }
+
+  getreports() {
+    this.http.get(this.environment.apiUrl + 'v1/report/finalReport/?course_id='+this.selected_option.id+'&from_date='+this.form.value['from_date']+'&to_date='+this.form.value['to_date']).subscribe(
+      (data: any) => {
+        console.log("final report",data)
+        // this.individual_report = data.results;
+        // if (this.individual_report.length > 0) {
+        //   this.enabletable = true;
+        //   console.log(this.individual_report)
+        //   this.individual_report = this.individual_report.sort((a:any, b:any) => a.id - b.id);
+        //   this.form.reset();
+        // } else {
+        //   window.alert("Trainee not exist");
+        // }
+      },
+      (error: any) => {
+        console.error('Error fetching data:', error);
+      }
+    );
   }
 
   fetchCourse() { 
@@ -116,9 +138,10 @@ export class AllReportsComponent {
       course.name.toLowerCase().includes(this.course_id?.toLowerCase())
     );
   }
-
+  
   selectOption(option: any): void {
-    this.form.get('course_id')?.setValue(option);
+    this.selected_option = option
+    this.form.get('course_id')?.setValue(option.name);
     this.course_id = this.form.value['course_id'];
     this.filteredOptions = [];
   }
