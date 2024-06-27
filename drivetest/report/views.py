@@ -12,6 +12,11 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from report.helper.report_helper import get_obstacle_duration
+from django.db.models import Q
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+from datetime import datetime
+from django.utils.timezone import make_aware
 # Create your views here.
 
 @api_view(['GET'])
@@ -71,7 +76,32 @@ def live_report(request):
     return HttpResponse(json.dumps(data), status=200)
 
 class FinalReportViewSet(viewsets.ModelViewSet):
-    queryset = FinalReport.objects.all()
+    queryset = FinalReport.objects.order_by('id')
     serializer_class = FinalReportSerializer
     permission_classes = [IsAuthenticated]
-    filterset_fields = ['session']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        request = self.request
+
+        course_id = request.query_params.get('course_id', None)
+        from_date = request.query_params.get('from_date', None)
+        to_date = request.query_params.get('to_date', None)
+        session = request.query_params.get('session',None)
+
+        if session:
+            queryset = queryset.filter(session__id=session)
+
+        if course_id:
+            queryset = queryset.filter(session__course__id=course_id)
+        
+        if from_date and to_date:
+            # Convert from_date and to_date to datetime objects
+            from_date_obj = make_aware(datetime.strptime(from_date, '%Y-%m-%d'))
+            to_date_obj = make_aware(datetime.strptime(to_date, '%Y-%m-%d'))
+
+            # Filter queryset using Q objects to ensure correct filtering
+            queryset = queryset.filter(session__created_at__gte=from_date_obj, session__created_at__lte=to_date_obj)
+
+
+        return queryset

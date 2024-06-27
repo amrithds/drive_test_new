@@ -12,7 +12,7 @@ class UserAdmin(UserAdmin):
     list_display = ['id', 'name', 'unique_ref_id','rank', 'course', 'type']
 
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ["name"]
+    list_display = ["name","id"]
 
 class ObstableAdmin(admin.ModelAdmin):
     list_display = [ 'name', "track_id", 'is_mandatory', 'order', 'start_rf_id', 'end_rf_id', 'audio_file']

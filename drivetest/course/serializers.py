@@ -1,10 +1,23 @@
 from .models import User
 from .models import Course
-from .models import Obstacle
+from .models import Obstacle,ObstacleTaskScore,Task
 from .models import Session
 from rest_framework import serializers
 
+class TaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Task
+        fields = ('id', 'name')
 
+class ObstacleTaskScoreSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='task.name')
+    result = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ObstacleTaskScore
+        fields = ('id', 'name', 'result')
+    def get_result(self, obj):
+        return 0
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     course = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all())
     class Meta:
@@ -15,9 +28,11 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class CourseSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Course
-        fields = '__all__'
+        fields = ['id', 'name']
 
 class ObstacleSerializer(serializers.ModelSerializer):
+    obstacletaskscore_set = ObstacleTaskScoreSerializer(many=True, read_only=True)
+
     class Meta:
         model = Obstacle
         fields = '__all__'
