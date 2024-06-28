@@ -147,15 +147,6 @@
                               <br *ngIf="(idx + 1) % 3 === 0 && idx !== data.obstacletaskscore_set.length - 1">
                             </ng-container>
                           </td>
-
-                          <!-- <td>
-                            <ng-container *ngFor="let content of data.obstacletaskscore_set;let last = last">
-                              <span [style.color]="getColor(content.result)">
-                                {{ getDisplayText(content) }}
-                              </span>
-                              <span *ngIf="!last"> | </span>
-                            </ng-container>
-                          </td> -->
                           <ng-container *ngIf="report.length==0">
                             <td></td>
                             <td></td>
