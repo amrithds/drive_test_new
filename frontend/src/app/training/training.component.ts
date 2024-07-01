@@ -281,66 +281,66 @@ export class TrainingComponent {
     this.http.get(this.environment.apiUrl + 'v1/report/live_report/').subscribe(
       (data: any) => {
         this.report = data
-        this.report=[
-          {
-            "tasks": [
-              {
-                "name": "Seat Belt",
-                "score": 10,
-                "result": 1,
-                "remark": "Seat Belt Fastened"
-              },
-              {
-                "name": "Head Light",
-                "score": 0,
-                "result": 1,
-                "remark": "Head Light on"
-              },
-              {
-                "name": "Seat Belt",
-                "score": 10,
-                "result": 1,
-                "remark": "task 3"
-              },
-              {
-                "name": "Head Light",
-                "score": 0,
-                "result": 1,
-                "remark": "task 4"
-              },
-              {
-                "name": "Head Light",
-                "score": 0,
-                "result": 1,
-                "remark": "task 5"
-              }
-            ],
-            "result": 1,
-            "total_marks": 20,
-            "obtained_marks": 10,
-            "obstacle_duration": 16,
-            "name": "start",
-            "id": 2
-          },
-          {
-            "tasks": [
-              {
-                "name": "Parking",
-                "score": 0,
-                "result": 2,
-                "remark": "Parking Failure"
-              },
-            ],
-            "result": 2,
-            "total_marks": 35,
-            "obtained_marks": 0,
-            "obstacle_duration": 38,
-            "name": "Left Parking",
-            "id": 3
-          }
-        ]
+        // this.report=[
+        //   {
+        //     "tasks": [
+        //       {
+        //         "name": "Seat Belt",
+        //         "score": 10,
+        //         "result": 1,
+        //         "remark": "Seat Belt Fastened"
+        //       },
+        //       {
+        //         "name": "Head Light",
+        //         "score": 0,
+        //         "result": 1,
+        //         "remark": "Head Light on"
+        //       },
+        //       {
+        //         "name": "Seat Belt",
+        //         "score": 10,
+        //         "result": 1,
+        //         "remark": "task 3"
+        //       },
+        //       {
+        //         "name": "Head Light",
+        //         "score": 0,
+        //         "result": 1,
+        //         "remark": "task 4"
+        //       },
+        //       {
+        //         "name": "Head Light",
+        //         "score": 0,
+        //         "result": 1,
+        //         "remark": "task 5"
+        //       }
+        //     ],
+        //     "result": 1,
+        //     "total_marks": 20,
+        //     "obtained_marks": 10,
+        //     "obstacle_duration": 16,
+        //     "name": "start",
+        //     "id": 2
+        //   },
+        //   {
+        //     "tasks": [
+        //       {
+        //         "name": "Parking",
+        //         "score": 0,
+        //         "result": 2,
+        //         "remark": "Parking Failure"
+        //       },
+        //     ],
+        //     "result": 2,
+        //     "total_marks": 35,
+        //     "obtained_marks": 0,
+        //     "obstacle_duration": 38,
+        //     "name": "Left Parking",
+        //     "id": 3
+        //   }
+        // ]
         console.log(this.report)
-        console.log(this.obstacles)
+        // console.log(this.obstacles)
 
         for(const obstacle of this.obstacles){
           for(const report of this.report){
