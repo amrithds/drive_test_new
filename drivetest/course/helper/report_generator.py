@@ -161,6 +161,7 @@ class ReportGenerator():
                 dis_sensor_calculation = self.DISTANCE_SENSOR_BACK
             
             result = self.__distance_sensor_result(dis_sensor_calculation, latest_sensor_feeds, obs_task_score)
+            print('result')
         return result
     
     def __distance_sensor_result(self, sensor_calculation: int, sensor_feeds: SensorFeed, obs_task_score:ObstacleTaskScore) -> bool:
@@ -186,6 +187,7 @@ class ReportGenerator():
         ZIG_ZAG_LEFT_RESULT = 0
         ZIG_ZAG_RIGHT_RESULT = 0
         task = obs_task_score.task
+        print('here : get result')
         for sensor_feed in sensor_feeds:
             left_sensor_val = getattr(sensor_feed, left_sensor_id)
             right_sensor_val = getattr(sensor_feed, right_sensor_id)
