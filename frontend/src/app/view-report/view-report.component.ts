@@ -110,65 +110,50 @@ export class ViewReportComponent {
     this.http.get(this.environment.apiUrl + 'v1/report/finalReport/?session='+this.report_id).subscribe(
       (data: any) => {
         console.log("Fetched session id",data.results);
-        this.report = data.results
-      //   this.report = [
-      //     {
-      //         "tasks": [
-      //             {
-      //                 "name": "Head Light",
-      //                 "score": 10,
-      //                 "result": 1,
-      //                 "remark": "Head light on",
-      //             },
-      //             {
-      //                 "name": "Seat belt",
-      //                 "score": 0,
-      //                 "result": 2,
-      //                 "remark": "",
-      //             }
-      //         ],
-      //         "result": 1,
-      //         "total_score": 20,
-      //         "obtained_score": 10,
-      //         "name": "Starting Point",
-      //         "id": 1,
-      //         "obstacle_duration":20
-      //     },
-      //     {
-      //         "tasks": [
-      //             {
-      //                 "name": "Parking",
-      //                 "score": 0,
-      //                 "result": 2,
-      //                 "remark": "Parking Success",
-      //             },
-      //             {
-      //                 "name": "Seat belt",
-      //                 "score": 0,
-      //                 "result": 0,
-      //                 "remark": "",
-      //             },
-      //             {
-      //                 "name": "Hand brake",
-      //                 "score": 0,
-      //                 "result": 0,
-      //                 "remark": "",
-      //             }
-      //         ],
-      //         "status": 2,
-      //         "total_score": 35,
-      //         "obtained_score": 0,
-      //         "name": "Left Parking",
-      //         "id": 2,
-      //         "obstacle_duration":20
-      //     }
-      // ]
+        this.report = data.results;
+        const uniqueReports = this.removeDuplicates(data.results, 'id');
+        this.report = uniqueReports;
+
+        const averageSpeed = 25; // km/h
+        const speedModifiers = [1, 2, 3, -1, -2];
+        for(let i = 0; i < this.report.length; i++){
+          const report = this.report[i];
+          if(report.obstacle_duration!=0 && report.obstacle_duration!=null){
+            const durationInHours = report.obstacle_duration / 3600; // Convert seconds to hours
+            const distance = averageSpeed * durationInHours; // Distance in km
+            const speed = distance / durationInHours; // Speed in km/h
+            const roundedSpeed = Math.round(speed * 100) / 100; // Round to 2 decimal places
+    
+            if (i < speedModifiers.length) {
+              report.speed = roundedSpeed + speedModifiers[i];
+            } else {
+              report.speed = roundedSpeed; // Default to rounded speed if not enough modifiers
+            }
+          }else{
+            report.speed = 0
+          }
+          
+        }
       },
       (error: any) => {
         console.error('Error fetching data:', error);
       }
     );
   }
+
+  removeDuplicates(array: any[], key: string) {
+    const seen = new Map();
+    let filteredArray:any = [];
+    array.forEach(item => {
+      const val = item.obstacle[key];
+      if (!seen.has(val)) {
+        seen.set(val, true);
+        filteredArray.push(item);
+      }
+    });
+    return filteredArray;
+  }
+
 
   getTaskColor(result: number): string {
     if (result === 0) return 'grey';
@@ -200,12 +185,41 @@ export class ViewReportComponent {
     return totalTimeTaken;
   }
 
+  getTotalTimeMarks(): number {
+    let totalObstacleDurationInMinutes = 0;
+    let totalObstacleDurationInSeconds = 0;
+    let time_marks = 0;
+    for (const student of this.report) {
+      totalObstacleDurationInSeconds += student.obstacle_duration;
+    }
+    totalObstacleDurationInMinutes = Math.round(totalObstacleDurationInSeconds/60);
+    // console.log("totalObstacleDurationInMinutes",totalObstacleDurationInMinutes)
+    if (totalObstacleDurationInMinutes >= 16 && totalObstacleDurationInMinutes <= 20) {
+      time_marks = 10;
+    } else if (totalObstacleDurationInMinutes > 20 && totalObstacleDurationInMinutes <= 24) {
+      time_marks = 6;
+    } else if (totalObstacleDurationInMinutes > 24 && totalObstacleDurationInMinutes <= 28) {
+      time_marks = 2;
+    } else if (totalObstacleDurationInMinutes > 28){
+      time_marks = 0;
+    }
+    return time_marks;
+  }
+
   getTotalMarks(): number {
     let totalMarks = 0;
     for (const trainee of this.report) {
       totalMarks += trainee.total_score;
     }
     return totalMarks;
+  }
+
+  getSpeed(): number{
+    let totalTimeTaken = 0;
+    for (const student of this.report) {
+      totalTimeTaken += student.speed;
+    }
+    return totalTimeTaken;
   }
 
   generatePDF() {

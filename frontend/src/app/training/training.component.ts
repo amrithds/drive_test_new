@@ -345,16 +345,21 @@ export class TrainingComponent {
         for(const obstacle of this.obstacles){
           for(let i = 0; i < this.report.length; i++){
             const report = this.report[i];
-            const durationInHours = report.obstacle_duration / 3600; // Convert seconds to hours
-            const distance = averageSpeed * durationInHours; // Distance in km
-            const speed = distance / durationInHours; // Speed in km/h
-            const roundedSpeed = Math.round(speed * 100) / 100; // Round to 2 decimal places
-    
-            if (i < speedModifiers.length) {
-              report.speed = roundedSpeed + speedModifiers[i];
-            } else {
-              report.speed = roundedSpeed; // Default to rounded speed if not enough modifiers
+            if(report.obstacle_duration!=0 && report.obstacle_duration!=null){
+              const durationInHours = report.obstacle_duration / 3600; // Convert seconds to hours
+              const distance = averageSpeed * durationInHours; // Distance in km
+              const speed = distance / durationInHours; // Speed in km/h
+              const roundedSpeed = Math.round(speed * 100) / 100; // Round to 2 decimal places
+      
+              if (i < speedModifiers.length) {
+                report.speed = roundedSpeed + speedModifiers[i];
+              } else {
+                report.speed = roundedSpeed; // Default to rounded speed if not enough modifiers
+              }
+            }else{
+              report.speed = 0;
             }
+            
             if(obstacle.id==report.id){
               obstacle.obstacletaskscore_set = report.tasks
               obstacle.result = report.result
@@ -392,7 +397,7 @@ export class TrainingComponent {
       totalObstacleDurationInSeconds += student.obstacle_duration;
     }
     totalObstacleDurationInMinutes = Math.round(totalObstacleDurationInSeconds/60);
-    console.log("totalObstacleDurationInMinutes",totalObstacleDurationInMinutes)
+    // console.log("totalObstacleDurationInMinutes",totalObstacleDurationInMinutes)
     if (totalObstacleDurationInMinutes >= 16 && totalObstacleDurationInMinutes <= 20) {
       time_marks = 10;
     } else if (totalObstacleDurationInMinutes > 20 && totalObstacleDurationInMinutes <= 24) {
