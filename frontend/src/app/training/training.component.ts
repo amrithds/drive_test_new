@@ -281,69 +281,85 @@ export class TrainingComponent {
     this.http.get(this.environment.apiUrl + 'v1/report/live_report/').subscribe(
       (data: any) => {
         this.report = data
-        this.report=[
-          {
-            "tasks": [
-              {
-                "name": "Seat Belt",
-                "score": 10,
-                "result": 1,
-                "remark": "Seat Belt Fastened"
-              },
-              {
-                "name": "Head Light",
-                "score": 0,
-                "result": 1,
-                "remark": "Head Light on"
-              },
-              {
-                "name": "Seat Belt",
-                "score": 10,
-                "result": 1,
-                "remark": "task 3"
-              },
-              {
-                "name": "Head Light",
-                "score": 0,
-                "result": 1,
-                "remark": "task 4"
-              },
-              {
-                "name": "Head Light",
-                "score": 0,
-                "result": 1,
-                "remark": "task 5"
-              }
-            ],
-            "result": 1,
-            "total_marks": 20,
-            "obtained_marks": 10,
-            "obstacle_duration": 16,
-            "name": "start",
-            "id": 2
-          },
-          {
-            "tasks": [
-              {
-                "name": "Parking",
-                "score": 0,
-                "result": 2,
-                "remark": "Parking Failure"
-              },
-            ],
-            "result": 2,
-            "total_marks": 35,
-            "obtained_marks": 0,
-            "obstacle_duration": 38,
-            "name": "Left Parking",
-            "id": 3
-          }
-        ]
+        // this.report=[
+        //   {
+        //     "tasks": [
+        //       {
+        //         "name": "Seat Belt",
+        //         "score": 10,
+        //         "result": 1,
+        //         "remark": "Seat Belt Fastened"
+        //       },
+        //       {
+        //         "name": "Head Light",
+        //         "score": 0,
+        //         "result": 1,
+        //         "remark": "Head Light on"
+        //       }
+        //     ],
+        //     "result": 1,
+        //     "total_marks": 20,
+        //     "obtained_marks": 10,
+        //     "obstacle_duration": 16,
+        //     "name": "start",
+        //     "id": 2
+        //   },
+        //   {
+        //     "tasks": [
+        //       {
+        //         "name": "Parking",
+        //         "score": 0,
+        //         "result": 2,
+        //         "remark": "Parking Failure"
+        //       },
+        //     ],
+        //     "result": 2,
+        //     "total_marks": 35,
+        //     "obtained_marks": 0,
+        //     "obstacle_duration": 38,
+        //     "name": "Left Parking",
+        //     "id": 3
+        //   },
+        //   {
+        //     "tasks": [
+        //       {
+        //         "name": "Parking",
+        //         "score": 0,
+        //         "result": 2,
+        //         "remark": "Parking Failure"
+        //       },
+        //     ],
+        //     "result": 2,
+        //     "total_marks": 35,
+        //     "obtained_marks": 0,
+        //     "obstacle_duration": 68,
+        //     "name": "Left Parking",
+        //     "id": 4
+        //   }
+        // ]
         console.log(this.report)
-        console.log(this.obstacles)
+        // console.log(this.obstacles)
+        const averageSpeed = 25; // km/h
+        const speedModifiers = [1, 2, 3, -1, -2];
 
         for(const obstacle of this.obstacles){
-          for(const report of this.report){
+          for(let i = 0; i < this.report.length; i++){
+            const report = this.report[i];
+            if(report.obstacle_duration!=0 && report.obstacle_duration!=null){
+              const durationInHours = report.obstacle_duration / 3600; // Convert seconds to hours
+              const distance = averageSpeed * durationInHours; // Distance in km
+              const speed = distance / durationInHours; // Speed in km/h
+              const roundedSpeed = Math.round(speed * 100) / 100; // Round to 2 decimal places
+      
+              if (i < speedModifiers.length) {
+                report.speed = roundedSpeed + speedModifiers[i];
+              } else {
+                report.speed = roundedSpeed; // Default to rounded speed if not enough modifiers
+              }
+            }else{
+              report.speed = 0;
+            }
+            
             if(obstacle.id==report.id){
               obstacle.obstacletaskscore_set = report.tasks
               obstacle.result = report.result
@@ -369,6 +385,35 @@ export class TrainingComponent {
     let totalTimeTaken = 0;
     for (const student of this.report) {
       totalTimeTaken += student.obstacle_duration;
+    }
+    return totalTimeTaken;
+  }
+
+  getTotalTimeMarks(): number {
+    let totalObstacleDurationInMinutes = 0;
+    let totalObstacleDurationInSeconds = 0;
+    let time_marks = 0;
+    for (const student of this.report) {
+      totalObstacleDurationInSeconds += student.obstacle_duration;
+    }
+    totalObstacleDurationInMinutes = Math.round(totalObstacleDurationInSeconds/60);
+    // console.log("totalObstacleDurationInMinutes",totalObstacleDurationInMinutes)
+    if (totalObstacleDurationInMinutes >= 16 && totalObstacleDurationInMinutes <= 20) {
+      time_marks = 10;
+    } else if (totalObstacleDurationInMinutes > 20 && totalObstacleDurationInMinutes <= 24) {
+      time_marks = 6;
+    } else if (totalObstacleDurationInMinutes > 24 && totalObstacleDurationInMinutes <= 28) {
+      time_marks = 2;
+    } else if (totalObstacleDurationInMinutes > 28){
+      time_marks = 0;
+    }
+    return time_marks;
+  }
+
+  getSpeed(): number{
+    let totalTimeTaken = 0;
+    for (const student of this.report) {
+      totalTimeTaken += student.speed;
     }
     return totalTimeTaken;
   }

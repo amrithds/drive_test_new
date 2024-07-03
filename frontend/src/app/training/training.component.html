@@ -97,8 +97,9 @@
             <!-- <label style="text-align: center;">Report ID: 111</label> -->
             <img src="./assets/images/printout.png" class="print_out" (click)="generatePDF()">
         </div>
-        <label style="font-size: 20px;color: red;">Trainee:</label>
+        
         <div class="label_align">
+          <label style="font-size: 20px;color: red;">Trainee:</label>
             <label>Army No: {{driver_form.value['unique_ref_id']}}</label>
             <label>Rank: {{driver_form.value['rank']}}</label>
             <label>Name: {{driver_form.value['name']}}</label>
@@ -106,8 +107,9 @@
             <label>Course ID: {{ins_form.value['type']}}</label>
             <label>Time Taken: {{ getTotalTimeTaken() }}</label>
         </div>  
-        <label style="font-size: 20px;color: red;">Instructor:</label>
+        
         <div class="label_align">
+          <label style="font-size: 20px;color: red;">Instructor:</label>
             <label>Army No: {{ins_form.value['unique_ref_id']}}</label>
             <label>Rank: {{ins_form.value['rank']}}</label>
             <label>Name: {{ins_form.value['name']}}</label>
@@ -129,7 +131,7 @@
                       <th>Obstacle Name</th>
                       <th>Tasks</th>
                       <th>Result</th>
-                      <th style="text-align: center">Time Taken</th>
+                      <th style="text-align: center">Speed (km/h)/Time Taken</th>
                       <th style="text-align: center">Marks</th>
                     </tr>
                   </thead>
@@ -156,7 +158,7 @@
                           <ng-container *ngFor="let item of report">
                             <ng-container *ngIf="data.id === item.id">
                               <td [style.color]="item.result === 1 ? 'green' : 'red'">{{item.result == 1 ? 'Pass' : 'Fail'}}</td>
-                              <td style="text-align: center">{{item.obstacle_duration}}</td>
+                              <td style="text-align: center">{{item.speed}} / {{item.obstacle_duration}}</td>
                               <td style="text-align: center">{{item.obtained_marks}} / {{item.total_marks}}</td>
                               <td></td>                          
                             </ng-container>                           
@@ -173,11 +175,11 @@
                   <tfoot>
                     <tr>
                       <td></td>
-                      <td>Total Time Taken</td>
+                      <td>Total Speed / Time Taken</td>
                       <td></td>
                       <td></td>
-                      <td style="text-align: center">{{ getTotalTimeTaken() }}</td>
-                      <td></td>
+                      <td style="text-align: center">{{ getSpeed() }} / {{getTotalTimeTaken() }}</td>
+                      <td style="text-align: center">{{getTotalTimeMarks()}}</td>
                       <td></td>
                     </tr>
                     <tr>
@@ -194,6 +196,8 @@
         </div>
     </div>
   </div>
+
+  <!--PDF-->
   <div id="reportContent" style="position: absolute; left: -9999px;">
     <div class="row" style="border-bottom: 1px solid rgb(178, 177, 177);">
       <app-header></app-header>
@@ -201,8 +205,9 @@
   <!-- <div class="mt-2" style="margin-left: 20px;">
       <p style="text-align: center;">Report ID: {{report_id}}</p>
   </div> -->
-    <label style="font-size: 20px;color: red;">Trainee:</label>
+    
     <div class="label_align">
+        <label style="font-size: 20px;color: red;">Trainee:</label>
         <label>Army No: {{driver_form.value['unique_ref_id']}}</label>
         <label>Rank: {{driver_form.value['rank']}}</label>
         <label>Name: {{driver_form.value['name']}}</label>
@@ -210,87 +215,84 @@
         <label>Course ID: {{ins_form.value['type']}}</label>
         <label>Time Taken: {{ getTotalTimeTaken() }}</label>
     </div>  
-    <label style="font-size: 20px;color: red;">Instructor:</label>
     <div class="label_align">
+    <label style="font-size: 20px;color: red;">Instructor:</label>
         <label>Army No: {{ins_form.value['unique_ref_id']}}</label>
         <label>Rank: {{ins_form.value['rank']}}</label>
         <label>Name: {{ins_form.value['name']}}</label>
         <label>Unit: {{ins_form.value['unit']}}</label>
     </div>  
     <div class="row py-3">
-        <table class="table table-responsive table-striped" id="tableDataID">
-            <thead class="table_column">
-                <tr>
-                  <th>Sl.no</th>
-                  <th>Obstacle Name</th>
-                  <th>Result</th>
-                  <th>Tasks</th>
-                  <th>Remarks</th>
-                  <th>Time Taken</th>
-                  <th>Marks</th>
-                </tr>
-              </thead>
-              <tbody>
-                <ng-container *ngFor="let data of obstacles; let i=index">
-                    <tr>
-                      <td>{{ i + 1 }}.</td>
-                      <td>{{ data.name }}</td>
-                      <ng-container *ngIf="report.length==0">
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+      <table class="table table-responsive table-striped" id="tableDataID">
+          <thead class="table_column">
+              <tr>
+                <th style="text-align: center">Sl.no</th>
+                <th>Obstacle Name</th>
+                <th>Tasks</th>
+                <th>Result</th>
+                <th style="text-align: center">Speed (km/h)/Time Taken</th>
+                <th style="text-align: center">Marks</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let data of obstacles; let i=index">
+                  <tr>
+                    <td style="text-align: center">{{ i + 1 }}.</td>
+                    <td [style.color]="getObsColor(data.result)">{{ data.name }}</td>
+                    <td>
+                      <ng-container *ngFor="let i of data.obstacletaskscore_set; let idx = index">
+                        <span [style.color]="getColor(i.result)">
+                          {{ getDisplayText(i) }}
+                        </span>
+                        <span *ngIf="(idx + 1) % 3 !== 0 && idx !== data.obstacletaskscore_set.length - 1"> | </span>
+                        <br *ngIf="(idx + 1) % 3 === 0 && idx !== data.obstacletaskscore_set.length - 1">
                       </ng-container>
-                      <ng-container *ngFor="let item of report">
-                        <ng-container *ngIf="data.id === item.id">
-                          <td [style.color]="item.result === 1 ? 'green' : 'red'">{{item.result == 1 ? 'Pass' : 'Fail'}}</td>
-                          <td>
-                            <ng-container *ngFor="let data of item.tasks;">
-                              <div [style.color]="data.result === 0 ? 'grey' : (data.result === 1 ? 'green' : (data.result === 2 ? 'red' : 'green'))">{{data.name}}</div>
-                            </ng-container>
-                          </td>
-                          <td>
-                            <ng-container *ngFor="let data of item.tasks;">
-                              <div>{{data.remark}}</div>
-                            </ng-container>
-                          </td>
-                          <td>{{item.obstacle_duration}}</td>
-                          <td>{{item.obtained_marks}} / {{item.total_marks}}</td>                          
-                        </ng-container>                           
-                      </ng-container>
-                      <ng-container *ngIf="report.length != 0 && !hasDataForReportItem(data.id)">
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </ng-container>
-                    </tr>
-                  </ng-container>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td></td>
-                  <td>Total Time Taken</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td>{{ getTotalTimeTaken() }}</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td>Total Marks</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td>{{ getTotalObtainedMarks() }} / {{getTotalMarks()}}</td>
-                </tr>
-              </tfoot>
-        </table>
-    </div>
+                    </td>
+                    <ng-container *ngIf="report.length==0">
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </ng-container>
+                    <ng-container *ngFor="let item of report">
+                      <ng-container *ngIf="data.id === item.id">
+                        <td [style.color]="item.result === 1 ? 'green' : 'red'">{{item.result == 1 ? 'Pass' : 'Fail'}}</td>
+                        <td style="text-align: center">{{item.speed}} / {{item.obstacle_duration}}</td>
+                        <td style="text-align: center">{{item.obtained_marks}} / {{item.total_marks}}</td>
+                        <td></td>                          
+                      </ng-container>                           
+                    </ng-container>
+                    <ng-container *ngIf="report.length != 0 && !hasDataForReportItem(data.id)">
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </ng-container>
+                  </tr>
+                </ng-container>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td></td>
+                <td>Total Speed / Time Taken</td>
+                <td></td>
+                <td></td>
+                <td style="text-align: center">{{ getSpeed() }} / {{getTotalTimeTaken() }}</td>
+                <td style="text-align: center">{{getTotalTimeMarks()}}</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>Total Marks</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="text-align: center">{{ getTotalObtainedMarks() }} / {{getTotalMarks()}}</td>
+                <td></td>
+              </tr>
+            </tfoot>
+      </table>
+  </div>
   </div>
 
 </div>

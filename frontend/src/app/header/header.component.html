@@ -10,12 +10,12 @@
 
 <div class="header-container">
     <div class="header">
-        <img src="./assets/images/army_logo_1.jpg" alt="army_logo_1" width="8%" style="margin-left: 30px;">
+        <img [src]="'./assets/images/' + left_logo" alt="army_logo_1" width="8%" style="margin-left: 30px;">
         <div class="header-content">
-            <h3>FOREVER HILL DRIVING SCHOOL</h3>
-            <p>508 ASC BN, KARGIL</p>
+            <h3>{{title}}</h3>
+            <p>{{subtitle}}</p>
         </div>
-        <img src="./assets/images/kargil_image_1.jpeg" alt="army_logo_2" width="7%" style="margin-right: 30px;">
+        <img [src]="'./assets/images/' + right_logo" alt="army_logo_2" width="7%" style="margin-right: 30px;">
     </div>
     <div class="top_header">
         <label>Vehicle BA No: {{veh_no}}</label>

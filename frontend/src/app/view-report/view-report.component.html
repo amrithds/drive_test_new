@@ -61,8 +61,8 @@
                 <img src="./assets/images/printout.png" class="print_out" (click)="generatePDF()">
             </div>
             <div>
-                <label style="font-size: 20px;color: red;">Trainee:</label>
                 <div class="label_align">
+                    <label style="font-size: 20px;color: red;">Trainee:</label>
                     <label>Army No: {{view_report?.trainee?.unique_ref_id}}</label>
                     <label>Rank: {{view_report?.trainee?.rank}}</label>
                     <label>Name: {{view_report?.trainee?.name}}</label>
@@ -70,8 +70,8 @@
                     <label>Course ID: {{view_report?.trainee?.course}}</label>
                     <label>Time Taken: {{ getTotalTimeTaken() }}</label>
                 </div>  
-                <label style="font-size: 20px;color: red;">Instructor:</label>
                 <div class="label_align">
+                    <label style="font-size: 20px;color: red;">Instructor:</label>
                     <label>Army No: {{view_report?.trainer?.unique_ref_id}}</label>
                     <label>Rank: {{view_report?.trainer?.rank}}</label>
                     <label>Name: {{view_report?.trainer?.name}}</label>
@@ -85,7 +85,7 @@
                               <th>Obstacle Name</th>
                               <th>Tasks</th>
                               <th>Result</th>
-                              <th style="text-align: center">Time Taken</th>
+                              <th style="text-align: center">Speed (km/h)/Time Taken</th>
                               <th style="text-align: center">Marks</th>
                             </tr>
                           </thead>
@@ -108,7 +108,7 @@
                                   </ng-container>
                                 </td> -->
                                 <td [style.color]="item.result === 1 ? 'green' : 'red'">{{item.result == 1 ? 'Pass' : 'Fail'}}</td>
-                                <td style="text-align: center">{{item.obstacle_duration == null ? 0 : item.obstacle_duration}}</td>
+                                <td style="text-align: center">{{item.speed}} / {{item.obstacle_duration == null ? 0 : item.obstacle_duration}}</td>
                                 <td style="text-align: center">{{item.obtained_score}} / {{item.total_score}}</td>                                                    
                             </tr>
                           </tbody>
@@ -118,8 +118,8 @@
                               <td>Total Time Taken</td>
                               <td></td>
                               <td></td>
-                              <td style="text-align: center">{{ getTotalTimeTaken() }}</td>
-                              <td></td>
+                              <td style="text-align: center">{{ getSpeed() }} / {{ getTotalTimeTaken() }}</td>
+                              <td style="text-align: center">{{getTotalTimeMarks()}}</td>
                             </tr>
                             <tr>
                               <td></td>
@@ -147,8 +147,8 @@
     </div>
     <div>
         <div style="margin-left: 20px;">
-            <label style="font-size: 20px;color: red;">Trainee:</label>
             <div class="label_align">
+                <label style="font-size: 20px;color: red;">Trainee:</label>
                 <label>Army No: {{view_report?.trainee?.unique_ref_id}}</label>
                 <label>Rank: {{view_report?.trainee?.rank}}</label>
                 <label>Name: {{view_report?.trainee?.name}}</label>
@@ -156,8 +156,8 @@
                 <label>Course ID: {{view_report?.trainee?.course}}</label>
                 <label>Time Taken: {{ getTotalTimeTaken() }}</label>
             </div>  
-            <label style="font-size: 20px;color: red;">Instructor:</label>
             <div class="label_align">
+                <label style="font-size: 20px;color: red;">Instructor:</label>
                 <label>Army No: {{view_report?.trainer?.unique_ref_id}}</label>
                 <label>Rank: {{view_report?.trainer?.rank}}</label>
                 <label>Name: {{view_report?.trainer?.name}}</label>
@@ -171,7 +171,7 @@
                         <th>Obstacle Name</th>
                         <th>Tasks</th>
                         <th>Result</th>
-                        <th style="text-align: center">Time Taken</th>
+                        <th style="text-align: center">Speed (km/h)/Time Taken</th>
                         <th style="text-align: center">Marks</th>
                       </tr>
                     </thead>
@@ -194,7 +194,7 @@
                             </ng-container>
                           </td> -->
                           <td [style.color]="item.result === 1 ? 'green' : 'red'">{{item.result == 1 ? 'Pass' : 'Fail'}}</td>
-                          <td style="text-align: center">{{item.obstacle_duration == null ? 0 : item.obstacle_duration}}</td>
+                          <td style="text-align: center">{{item.speed}} / {{item.obstacle_duration == null ? 0 : item.obstacle_duration}}</td>
                           <td style="text-align: center">{{item.obtained_score}} / {{item.total_score}}</td>                                                    
                       </tr>
                     </tbody>
@@ -204,8 +204,8 @@
                         <td>Total Time Taken</td>
                         <td></td>
                         <td></td>
-                        <td style="text-align: center">{{ getTotalTimeTaken() }}</td>
-                        <td></td>
+                        <td style="text-align: center">{{ getSpeed() }} / {{ getTotalTimeTaken() }}</td>
+                        <td style="text-align: center">{{getTotalTimeMarks()}}</td>
                       </tr>
                       <tr>
                         <td></td>
