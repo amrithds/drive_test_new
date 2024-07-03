@@ -41,13 +41,6 @@ export class AllReportsComponent {
     });
   }
 
-  viewFinalReport(){
-    console.log(this.form)
-    this.all_reports=true;
-    this.getreports();
-    this.fetchObstacle();
-  }
-
   calculateTotalMarks(data: any) {
     let total = 0;
     for (let mark of data.numbers) {
@@ -72,70 +65,77 @@ export class AllReportsComponent {
       .subscribe(
         (data: any) => {
           console.log("Final report data:", data);
+          if(data.results.length>0){
+            this.all_reports=true;
+            this.fetchObstacle();
+
+            console.log("Final report data:", data);
           
-          // Initialize the sessions object
-          const sessions: { session: any, reports: any[], numbers: number[],totalMarks: number;timemarks:number  }[] = [];
-
-          data.results.forEach((report:any) => {
-            const sessionId = report.session.id;
-
-            let sessionEntry = sessions.find(s => s.session.id === sessionId);
+            // Initialize the sessions object
+            const sessions: { session: any, reports: any[], numbers: number[],totalMarks: number;timemarks:number  }[] = [];
   
-            if (!sessionEntry) {
-              sessionEntry = {
-                session: report.session,
-                reports: [],
-                numbers: Array(10).fill(1),
-                totalMarks: 0,
-                timemarks:0,
-              };
-              sessions.push(sessionEntry);
-            }
-            const existingReportIndex = sessionEntry.reports.findIndex(r => r.obstacle.id === report.obstacle.id);
+            data.results.forEach((report:any) => {
+              const sessionId = report.session.id;
   
-            if (existingReportIndex === -1) {
-              sessionEntry.reports.push(report);
-            } else {
-              sessionEntry.reports[existingReportIndex] = report;
-            }
-  
-          });
-          sessions.forEach(session => {
-            let totalObstacleDurationInMinutes = 0;
-            let totalObstacleDurationInSeconds = 0;
-            session.reports.forEach(report => {
-              if (report.obstacle_duration !== null) {
-                totalObstacleDurationInSeconds += report.obstacle_duration;
+              let sessionEntry = sessions.find(s => s.session.id === sessionId);
+    
+              if (!sessionEntry) {
+                sessionEntry = {
+                  session: report.session,
+                  reports: [],
+                  numbers: Array(10).fill(1),
+                  totalMarks: 0,
+                  timemarks:0,
+                };
+                sessions.push(sessionEntry);
               }
-              totalObstacleDurationInMinutes = totalObstacleDurationInSeconds / 60;
-
+              const existingReportIndex = sessionEntry.reports.findIndex(r => r.obstacle.id === report.obstacle.id);
+    
+              if (existingReportIndex === -1) {
+                sessionEntry.reports.push(report);
+              } else {
+                sessionEntry.reports[existingReportIndex] = report;
+              }
+    
             });
-            if (totalObstacleDurationInMinutes >= 16 && totalObstacleDurationInMinutes <= 20) {
-              session.timemarks = 10;
-            } else if (totalObstacleDurationInMinutes > 20 && totalObstacleDurationInMinutes <= 24) {
-              session.timemarks = 6;
-            } else if (totalObstacleDurationInMinutes > 24 && totalObstacleDurationInMinutes <= 28) {
-              session.timemarks = 2;
-            } else if (totalObstacleDurationInMinutes > 28){
-              session.timemarks = 0;
-            }
-            let total = 0;
-            session.numbers.forEach(mark => {
-              total += mark || 0;
+            sessions.forEach(session => {
+              let totalObstacleDurationInMinutes = 0;
+              let totalObstacleDurationInSeconds = 0;
+              session.reports.forEach(report => {
+                if (report.obstacle_duration !== null) {
+                  totalObstacleDurationInSeconds += report.obstacle_duration;
+                }
+                totalObstacleDurationInMinutes = Math.round(totalObstacleDurationInSeconds/60);
+  
+              });
+              if (totalObstacleDurationInMinutes >= 16 && totalObstacleDurationInMinutes <= 20) {
+                session.timemarks = 10;
+              } else if (totalObstacleDurationInMinutes > 20 && totalObstacleDurationInMinutes <= 24) {
+                session.timemarks = 6;
+              } else if (totalObstacleDurationInMinutes > 24 && totalObstacleDurationInMinutes <= 28) {
+                session.timemarks = 2;
+              } else if (totalObstacleDurationInMinutes > 28){
+                session.timemarks = 0;
+              }
+              let total = 0;
+              session.numbers.forEach(mark => {
+                total += mark || 0;
+              });
+              session.totalMarks = total;           
             });
-            session.totalMarks = total;           
-          });
-          this.sessions = sessions;
-
-          let totalObstacleDurationInSeconds = 0;
-
-          this.sessions.forEach((report: any) => {
-            if (report.obstacle_duration !== null) {
-                totalObstacleDurationInSeconds += report.obstacle_duration;
-            }
-          });
-
-          console.log("Transformed data:", this.sessions);
+            this.sessions = sessions;
+  
+            let totalObstacleDurationInSeconds = 0;
+  
+            this.sessions.forEach((report: any) => {
+              if (report.obstacle_duration !== null) {
+                  totalObstacleDurationInSeconds += report.obstacle_duration;
+              }
+            });
+            console.log("Transformed data:", this.sessions);
+          }else{
+            window.alert("There are no records.")
+          }
         },
         (error: any) => {
           console.error('Error fetching data:', error);

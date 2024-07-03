@@ -384,6 +384,27 @@ export class TrainingComponent {
     return totalTimeTaken;
   }
 
+  getTotalTimeMarks(): number {
+    let totalObstacleDurationInMinutes = 0;
+    let totalObstacleDurationInSeconds = 0;
+    let time_marks = 0;
+    for (const student of this.report) {
+      totalObstacleDurationInSeconds += student.obstacle_duration;
+    }
+    totalObstacleDurationInMinutes = Math.round(totalObstacleDurationInSeconds/60);
+    console.log("totalObstacleDurationInMinutes",totalObstacleDurationInMinutes)
+    if (totalObstacleDurationInMinutes >= 16 && totalObstacleDurationInMinutes <= 20) {
+      time_marks = 10;
+    } else if (totalObstacleDurationInMinutes > 20 && totalObstacleDurationInMinutes <= 24) {
+      time_marks = 6;
+    } else if (totalObstacleDurationInMinutes > 24 && totalObstacleDurationInMinutes <= 28) {
+      time_marks = 2;
+    } else if (totalObstacleDurationInMinutes > 28){
+      time_marks = 0;
+    }
+    return time_marks;
+  }
+
   getSpeed(): number{
     let totalTimeTaken = 0;
     for (const student of this.report) {
