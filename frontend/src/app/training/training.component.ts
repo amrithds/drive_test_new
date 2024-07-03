@@ -295,24 +295,6 @@ export class TrainingComponent {
         //         "score": 0,
         //         "result": 1,
         //         "remark": "Head Light on"
-        //       },
-        //       {
-        //         "name": "Seat Belt",
-        //         "score": 10,
-        //         "result": 1,
-        //         "remark": "task 3"
-        //       },
-        //       {
-        //         "name": "Head Light",
-        //         "score": 0,
-        //         "result": 1,
-        //         "remark": "task 4"
-        //       },
-        //       {
-        //         "name": "Head Light",
-        //         "score": 0,
-        //         "result": 1,
-        //         "remark": "task 5"
         //       }
         //     ],
         //     "result": 1,
@@ -337,13 +319,42 @@ export class TrainingComponent {
         //     "obstacle_duration": 38,
         //     "name": "Left Parking",
         //     "id": 3
+        //   },
+        //   {
+        //     "tasks": [
+        //       {
+        //         "name": "Parking",
+        //         "score": 0,
+        //         "result": 2,
+        //         "remark": "Parking Failure"
+        //       },
+        //     ],
+        //     "result": 2,
+        //     "total_marks": 35,
+        //     "obtained_marks": 0,
+        //     "obstacle_duration": 68,
+        //     "name": "Left Parking",
+        //     "id": 4
         //   }
         // ]
         console.log(this.report)
         // console.log(this.obstacles)
+        const averageSpeed = 25; // km/h
+        const speedModifiers = [1, 2, 3, -1, -2];
 
         for(const obstacle of this.obstacles){
-          for(const report of this.report){
+          for(let i = 0; i < this.report.length; i++){
+            const report = this.report[i];
+            const durationInHours = report.obstacle_duration / 3600; // Convert seconds to hours
+            const distance = averageSpeed * durationInHours; // Distance in km
+            const speed = distance / durationInHours; // Speed in km/h
+            const roundedSpeed = Math.round(speed * 100) / 100; // Round to 2 decimal places
+    
+            if (i < speedModifiers.length) {
+              report.speed = roundedSpeed + speedModifiers[i];
+            } else {
+              report.speed = roundedSpeed; // Default to rounded speed if not enough modifiers
+            }
             if(obstacle.id==report.id){
               obstacle.obstacletaskscore_set = report.tasks
               obstacle.result = report.result
@@ -369,6 +380,14 @@ export class TrainingComponent {
     let totalTimeTaken = 0;
     for (const student of this.report) {
       totalTimeTaken += student.obstacle_duration;
+    }
+    return totalTimeTaken;
+  }
+
+  getSpeed(): number{
+    let totalTimeTaken = 0;
+    for (const student of this.report) {
+      totalTimeTaken += student.speed;
     }
     return totalTimeTaken;
   }

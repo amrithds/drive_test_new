@@ -129,7 +129,7 @@
                       <th>Obstacle Name</th>
                       <th>Tasks</th>
                       <th>Result</th>
-                      <th style="text-align: center">Time Taken</th>
+                      <th style="text-align: center">Speed (km/h)/Time Taken</th>
                       <th style="text-align: center">Marks</th>
                     </tr>
                   </thead>
@@ -156,7 +156,7 @@
                           <ng-container *ngFor="let item of report">
                             <ng-container *ngIf="data.id === item.id">
                               <td [style.color]="item.result === 1 ? 'green' : 'red'">{{item.result == 1 ? 'Pass' : 'Fail'}}</td>
-                              <td style="text-align: center">{{item.obstacle_duration}}</td>
+                              <td style="text-align: center">{{item.speed}} / {{item.obstacle_duration}}</td>
                               <td style="text-align: center">{{item.obtained_marks}} / {{item.total_marks}}</td>
                               <td></td>                          
                             </ng-container>                           
@@ -173,10 +173,10 @@
                   <tfoot>
                     <tr>
                       <td></td>
-                      <td>Total Time Taken</td>
+                      <td>Total Speed / Time Taken</td>
                       <td></td>
                       <td></td>
-                      <td style="text-align: center">{{ getTotalTimeTaken() }}</td>
+                      <td style="text-align: center">{{ getSpeed() }} / {{getTotalTimeTaken() }}</td>
                       <td></td>
                       <td></td>
                     </tr>
