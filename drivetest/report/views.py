@@ -101,6 +101,6 @@ class FinalReportViewSet(viewsets.ModelViewSet):
             to_date_obj = datetime.strptime(to_date, '%Y-%m-%d').date()
             start_datetime = timezone.make_aware(datetime.combine(from_date_obj, datetime.min.time()))
             end_datetime = timezone.make_aware(datetime.combine(to_date_obj, datetime.max.time()))
-        queryset = queryset.filter(session__created_at__range=(start_datetime, end_datetime))
+            queryset = queryset.filter(session__created_at__range=(start_datetime, end_datetime))
 
         return queryset
