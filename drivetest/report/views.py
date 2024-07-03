@@ -17,6 +17,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from datetime import datetime
 from django.utils.timezone import make_aware
+from django.utils import timezone
 # Create your views here.
 
 @api_view(['GET'])
@@ -96,12 +97,10 @@ class FinalReportViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(session__course__id=course_id)
         
         if from_date and to_date:
-            # Convert from_date and to_date to datetime objects
-            from_date_obj = make_aware(datetime.strptime(from_date, '%Y-%m-%d'))
-            to_date_obj = make_aware(datetime.strptime(to_date, '%Y-%m-%d'))
-
-            # Filter queryset using Q objects to ensure correct filtering
-            queryset = queryset.filter(session__created_at__gte=from_date_obj, session__created_at__lte=to_date_obj)
-
+            from_date_obj = datetime.strptime(from_date, '%Y-%m-%d').date()
+            to_date_obj = datetime.strptime(to_date, '%Y-%m-%d').date()
+            start_datetime = timezone.make_aware(datetime.combine(from_date_obj, datetime.min.time()))
+            end_datetime = timezone.make_aware(datetime.combine(to_date_obj, datetime.max.time()))
+        queryset = queryset.filter(session__created_at__range=(start_datetime, end_datetime))
 
         return queryset
