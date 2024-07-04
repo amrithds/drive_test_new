@@ -109,7 +109,7 @@
                             </ng-container>
                         </tr>
                         <tr>
-                            <ng-container *ngFor="let cont of sessions[0]?.reports;">
+                            <ng-container *ngFor="let cont of sessions[0]?.reports;let i=index">
                                 <th>{{cont.total_score}}</th>
                             </ng-container>   
                             <th>{{getTotalMarks()}}</th>
@@ -123,10 +123,10 @@
                             <ng-container *ngFor="let cont of data.reports;">
                                 <td>{{cont.obtained_score}}</td>
                             </ng-container>
-                            <td>{{getTotalObtainedMarks()}}</td>
+                            <td>{{data.totalobtainedscore}}</td>
                             <td>{{data.timemarks}}</td>
-                            <td>{{ data.totalMarks + getTotalMarks() + data.timemarks }}</td>
-                            <td>{{ getTotalObtainedMarks() > 60 ? 'Pass' : 'Retest' }}</td>
+                            <td>{{ data.totalMarks + data.totalobtainedscore + data.timemarks }}</td>
+                            <td>{{ data.totalMarks + data.totalobtainedscore + data.timemarks > 60 ? 'Pass' : 'Retest' }}</td>
                         </tr>
                     </tbody>
                   </table>
@@ -196,16 +196,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <ng-container *ngFor="let cont of obstacles; let i = index">
-                            <tr style="font-size: xx-small;" *ngIf="i < 7">
-                                <td>{{ cont.id }}</td>
-                                <td>{{ cont.name }}</td>
-                                <td *ngIf="obstacles[i + 7]">
-                                    {{ obstacles[i + 7].id }}
-                                </td>
-                                <td *ngIf="obstacles[i + 7]">
-                                    {{ obstacles[i + 7].name }}
-                                </td>
+                        <ng-container *ngFor="let obstacle of firstColumn; let i = index">
+                            <tr>
+                              <td>{{ obstacle.id }}</td>
+                              <td>{{ obstacle.name }}</td>
+                              <td *ngIf="secondColumn[i]">{{ secondColumn[i].id }}</td>
+                              <td *ngIf="secondColumn[i]">{{ secondColumn[i].name }}</td>
                             </tr>
                         </ng-container>
                     </tbody>
@@ -370,10 +366,10 @@
                         <ng-container *ngFor="let cont of data.reports;">
                             <td>{{cont.obtained_score}}</td>
                         </ng-container>
-                        <td>{{getTotalObtainedMarks()}}</td>
+                        <td>{{data.totalobtainedscore}}</td>
                         <td>{{data.timemarks}}</td>
-                        <td>{{ data.totalMarks + getTotalMarks() + data.timemarks }}</td>
-                        <td>{{ getTotalObtainedMarks() > 60 ? 'Pass' : 'Retest' }}</td>
+                        <td>{{ data.totalMarks + data.totalobtainedscore + data.timemarks }}</td>
+                        <td>{{ data.totalMarks + data.totalobtainedscore + data.timemarks > 60 ? 'Pass' : 'Retest' }}</td>
                     </tr>
                 </tbody>
               </table>
@@ -443,16 +439,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <ng-container *ngFor="let cont of obstacles; let i = index">
-                        <tr style="font-size: xx-small;" *ngIf="i < 7">
-                            <td>{{ cont.id }}</td>
-                            <td>{{ cont.name }}</td>
-                            <td *ngIf="obstacles[i + 7]">
-                                {{ obstacles[i + 7].id }}
-                            </td>
-                            <td *ngIf="obstacles[i + 7]">
-                                {{ obstacles[i + 7].name }}
-                            </td>
+                    <ng-container *ngFor="let obstacle of firstColumn; let i = index">
+                        <tr>
+                          <td>{{ obstacle.id }}</td>
+                          <td>{{ obstacle.name }}</td>
+                          <td *ngIf="secondColumn[i]">{{ secondColumn[i].id }}</td>
+                          <td *ngIf="secondColumn[i]">{{ secondColumn[i].name }}</td>
                         </tr>
                     </ng-container>
                 </tbody>

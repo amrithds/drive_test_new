@@ -20,9 +20,11 @@ export class AllReportsComponent {
   public filteredOptions:any = [];
   public selected_option:any;
   groupedReports: { [sessionId: number]: Report[] }[] = [];
-  sessions: { session: any, reports: any[], numbers: number[],totalMarks: number;timemarks:number  }[] = []; 
+  sessions: { session: any, reports: any[], numbers: number[],totalMarks: number;timemarks:number;totalobtainedscore:number  }[] = []; 
   public header_num = Array(10).fill(1);
   retainFocus = true; // Flag to control whether to retain focus
+  firstColumn: any[] = [];
+  secondColumn: any[] = [];
 
 
 
@@ -72,7 +74,8 @@ export class AllReportsComponent {
             console.log("Final report data:", data);
           
             // Initialize the sessions object
-            const sessions: { session: any, reports: any[], numbers: number[],totalMarks: number;timemarks:number  }[] = [];
+            const sessions: { session: any, 
+              reports: any[], numbers: number[],totalMarks: number;timemarks:number;totalobtainedscore:number  }[] = [];
   
             data.results.forEach((report:any) => {
               const sessionId = report.session.id;
@@ -86,6 +89,7 @@ export class AllReportsComponent {
                   numbers: Array(10).fill(1),
                   totalMarks: 0,
                   timemarks:0,
+                  totalobtainedscore:0,
                 };
                 sessions.push(sessionEntry);
               }
@@ -101,9 +105,13 @@ export class AllReportsComponent {
             sessions.forEach(session => {
               let totalObstacleDurationInMinutes = 0;
               let totalObstacleDurationInSeconds = 0;
+              let totalobtainedscore = 0;
               session.reports.forEach(report => {
                 if (report.obstacle_duration !== null) {
                   totalObstacleDurationInSeconds += report.obstacle_duration;
+                }
+                if (report.obtained_score !== null) {
+                  totalobtainedscore += report.obtained_score;
                 }
                 totalObstacleDurationInMinutes = Math.round(totalObstacleDurationInSeconds/60);
   
@@ -117,6 +125,7 @@ export class AllReportsComponent {
               } else if (totalObstacleDurationInMinutes > 28){
                 session.timemarks = 0;
               }
+              session.totalobtainedscore = totalobtainedscore;
               let total = 0;
               session.numbers.forEach(mark => {
                 total += mark || 0;
@@ -143,16 +152,6 @@ export class AllReportsComponent {
       );
   }
 
-  getTotalObtainedMarks(): number {
-    let totalObtainedMarks = 0;
-    if(this.sessions.length>0){
-      for (const student of this.sessions[0].reports) {
-        totalObtainedMarks += student.obtained_score;
-      }
-    }
-    return totalObtainedMarks;
-  }
-
   getTotalMarks(): number {
     let totalMarks = 0;
     if(this.sessions.length>0){
@@ -170,6 +169,10 @@ export class AllReportsComponent {
       (data: any) => {
         console.log("Fetched obstacles",data.results);
         this.obstacles = data.results.sort((a:any, b:any) => a.order - b.order);
+        const halfLength = Math.ceil(this.obstacles.length / 2);
+  
+        this.firstColumn = this.obstacles.slice(0, halfLength);
+        this.secondColumn = this.obstacles.slice(halfLength);
       },
       (error: any) => {
         console.error('Error fetching data:', error);
