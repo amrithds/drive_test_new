@@ -52,9 +52,7 @@
                     </tbody>
                 </table>
             </div>
-            <pagination-controls (pageChange)="pageChanged($event)" class="pagination" previousLabel="Previous" nextLabel="Next" [(ngModel)]="currentPage"></pagination-controls>
-
-            <!-- <pagination-controls style="text-align: right;" (pageChange)="pageChanged($event)"></pagination-controls> -->
+            <pagination-controls style="text-align: right;" (pageChange)="pageChanged($event)"></pagination-controls>
         </div>
         <div *ngIf="!enabletable && enablereport">
             <div>
