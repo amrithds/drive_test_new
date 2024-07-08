@@ -37,7 +37,7 @@ export class TrainingComponent {
   private intervalId: any;
   public session_id:any;
   public ranks: string[] = ['L Nk', 'Nk', 'L Hav', 'Hav', 'Nb Sub', 'Sub', 'Sub Maj', 'Lt', 'Maj', 'Capt', 'Lt Col'];
-
+  public selectedItem:any;
 
   constructor(
     private fb: FormBuilder,
@@ -81,24 +81,43 @@ export class TrainingComponent {
     ); 
   }
 
-  onSearchChange(): void {
+  onSearchChangeCourse() {
     this.course_id = this.ins_form.value['course']
-    this.filteredOptions = this.courses.filter((course: any) =>
-      course.name.toLowerCase().includes(this.course_id?.toLowerCase())
+    this.selectedItem = this.courses.find((item: any) => 
+      item.name.toLowerCase().startsWith(this.ins_form.value['course'].toLowerCase())
     );
+    if (this.selectedItem) {
+      console.log("Selected Course:", this.selectedItem);
+      this.ins_form.get('course')?.setValue(this.selectedItem.name);
+      this.course_id = this.ins_form.value['course']
+      this.fetchUser();
+    } else {
+      window.alert("No matching course found");
+    }
   }
 
-  selectOption(option: any): void {
-    this.ins_form.get('course')?.setValue(option);
-    this.course_id = this.ins_form.value['course'];
-    this.filteredOptions = [];
-    this.fetchUser();
-  }
+  // onSearchChange(): void {
+  //   this.course_id = this.ins_form.value['course']
+  //   if(this.course_id){
+  //     this.filteredOptions = this.courses.filter((course: any) =>
+  //       course.name.toLowerCase().includes(this.course_id?.toLowerCase())
+  //     );
+  //   }else{
+  //     this.filteredOptions = []
+  //   }
+  // }
+
+  // selectOption(option: any): void {
+  //   this.ins_form.get('course')?.setValue(option);
+  //   this.course_id = this.ins_form.value['course'];
+  //   this.filteredOptions = [];
+  //   this.fetchUser();
+  // }
 
   fetchUser(): void {
     this.http.get(this.environment.apiUrl + 'v1/course/user/?course_id='+this.course_id).subscribe(
       (data: any) => {
-        console.log("Fetched Users",data.results);
+        console.log("Fetched Total Users",data.results);
         this.users = data.results
       },
       (error: any) => {
@@ -109,22 +128,27 @@ export class TrainingComponent {
 
   onSearchChangeIns(): void {
     this.unique_ref_id = this.ins_form.value['unique_ref_id']
-    console.log(this.unique_ref_id)
+    console.log("Entered Ins ID",this.unique_ref_id)
     if(this.course_id){
       if(this.unique_ref_id){
-        this.filteredInsOptions = this.users.filter((user: any) =>
-          user.unique_ref_id.toLowerCase().includes(this.unique_ref_id?.toLowerCase()) &&
-          user.type == 2
-        );
-        console.log(this.filteredInsOptions)
-        if(this.filteredInsOptions.length==0){
-          this.ins_form.get('unique_ref_id')?.reset()
+        const uniqueRefIdInt = parseInt(this.unique_ref_id, 10);
+        this.selectedItem = this.users.filter((user: any) => user.id == uniqueRefIdInt && user.type == 2);
+        console.log("Selected Instructor",this.selectedItem[0])
+        if(this.selectedItem.length>0){
+          this.ins_form.get('unique_ref_id')?.setValue(this.selectedItem[0].unique_ref_id);
+          this.unique_ref_id = this.ins_form.value['unique_ref_id']
+          this.type = this.ins_form.value['type']
+          this.fetInsData();
+        }else{
           window.alert("User not exist")
+          this.ins_form.get('unique_ref_id')?.reset()
+          this.ins_form.get('name')?.reset()
+          this.ins_form.get('rank')?.setValue('')
+          this.ins_form.get('unit')?.reset()
         }
       }else{
-        this.filteredInsOptions = [];
         this.ins_form.get('name')?.reset()
-        this.ins_form.get('rank')?.reset()
+        this.ins_form.get('rank')?.setValue('')
         this.ins_form.get('unit')?.reset()
       }
     }else{
@@ -133,13 +157,39 @@ export class TrainingComponent {
     }
   }
 
-  selectOptionIns(option: any): void {
-    this.ins_form.get('unique_ref_id')?.setValue(option);
-    this.unique_ref_id = this.ins_form.value['unique_ref_id'];
-    this.type = this.ins_form.value['type']
-    this.filteredInsOptions = [];
-    this.fetInsData();
-  }
+  // onSearchChangeIns(): void {
+  //   this.unique_ref_id = this.ins_form.value['unique_ref_id']
+  //   console.log(this.unique_ref_id)
+  //   if(this.course_id){
+  //     if(this.unique_ref_id){
+  //       this.filteredInsOptions = this.users.filter((user: any) =>
+  //         user.unique_ref_id.toLowerCase().includes(this.unique_ref_id?.toLowerCase()) &&
+  //         user.type == 2
+  //       );
+  //       console.log(this.filteredInsOptions)
+  //       if(this.filteredInsOptions.length==0){
+  //         this.ins_form.get('unique_ref_id')?.reset()
+  //         window.alert("User not exist")
+  //       }
+  //     }else{
+  //       this.filteredInsOptions = [];
+  //       this.ins_form.get('name')?.reset()
+  //       this.ins_form.get('rank')?.reset()
+  //       this.ins_form.get('unit')?.reset()
+  //     }
+  //   }else{
+  //     window.alert("Please select course id")
+  //     this.ins_form.get('unique_ref_id')?.reset()
+  //   }
+  // }
+
+  // selectOptionIns(option: any): void {
+  //   this.ins_form.get('unique_ref_id')?.setValue(option);
+  //   this.unique_ref_id = this.ins_form.value['unique_ref_id'];
+  //   this.type = this.ins_form.value['type']
+  //   this.filteredInsOptions = [];
+  //   this.fetInsData();
+  // }
 
   fetInsData(): void{
     if(this.unique_ref_id){
@@ -170,25 +220,29 @@ export class TrainingComponent {
     }
   }
 
-
   onSearchChangeDri(): void {
     this.unique_ref_id = this.driver_form.value['unique_ref_id']
-    console.log(this.unique_ref_id)
+    console.log("Entered Dri ID",this.unique_ref_id)
     if(this.course_id){
       if(this.unique_ref_id){
-        this.filteredDriOptions = this.users.filter((user: any) =>
-          user.unique_ref_id.toLowerCase().includes(this.unique_ref_id?.toLowerCase()) &&
-          user.type == 1
-        );
-        console.log(this.filteredDriOptions)
-        if(this.filteredDriOptions.length==0){
-          this.driver_form.get('unique_ref_id')?.reset()
+        const uniqueRefIdInt = parseInt(this.unique_ref_id, 10);
+        this.selectedItem = this.users.filter((user: any) => user.id == uniqueRefIdInt && user.type == 1);
+        console.log("Selected Driver",this.selectedItem[0])
+        if(this.selectedItem.length>0){
+          this.driver_form.get('unique_ref_id')?.setValue(this.selectedItem[0].unique_ref_id);
+          this.unique_ref_id = this.driver_form.value['unique_ref_id']
+          this.type = this.driver_form.value['type']
+          this.fetDriData();
+        }else{
           window.alert("User not exist")
+          this.driver_form.get('unique_ref_id')?.reset()
+          this.driver_form.get('name')?.reset()
+          this.driver_form.get('rank')?.setValue('')
+          this.driver_form.get('unit')?.reset()
         }
       }else{
-        this.filteredDriOptions = [];
         this.driver_form.get('name')?.reset()
-        this.driver_form.get('rank')?.reset()
+        this.driver_form.get('rank')?.setValue('')
         this.driver_form.get('unit')?.reset()
       }
     }else{
@@ -197,13 +251,39 @@ export class TrainingComponent {
     }
   }
 
-  selectOptionDri(option: any): void {
-    this.driver_form.get('unique_ref_id')?.setValue(option);
-    this.unique_ref_id = this.driver_form.value['unique_ref_id'];
-    this.type = this.driver_form.value['type']
-    this.filteredDriOptions = [];
-    this.fetDriData();
-  }
+  // onSearchChangeDri(): void {
+  //   this.unique_ref_id = this.driver_form.value['unique_ref_id']
+  //   console.log(this.unique_ref_id)
+  //   if(this.course_id){
+  //     if(this.unique_ref_id){
+  //       this.filteredDriOptions = this.users.filter((user: any) =>
+  //         user.unique_ref_id.toLowerCase().includes(this.unique_ref_id?.toLowerCase()) &&
+  //         user.type == 1
+  //       );
+  //       console.log(this.filteredDriOptions)
+  //       if(this.filteredDriOptions.length==0){
+  //         this.driver_form.get('unique_ref_id')?.reset()
+  //         window.alert("User not exist")
+  //       }
+  //     }else{
+  //       this.filteredDriOptions = [];
+  //       this.driver_form.get('name')?.reset()
+  //       this.driver_form.get('rank')?.reset()
+  //       this.driver_form.get('unit')?.reset()
+  //     }
+  //   }else{
+  //     window.alert("Please select course id and drive mode")
+  //     this.driver_form.get('unique_ref_id')?.reset()
+  //   }
+  // }
+
+  // selectOptionDri(option: any): void {
+  //   this.driver_form.get('unique_ref_id')?.setValue(option);
+  //   this.unique_ref_id = this.driver_form.value['unique_ref_id'];
+  //   this.type = this.driver_form.value['type']
+  //   this.filteredDriOptions = [];
+  //   this.fetDriData();
+  // }
 
   fetDriData(): void{
     this.http.get(this.environment.apiUrl + 'v1/course/user/?course_id='+this.course_id+'&search_id='+this.unique_ref_id+'&type='+this.type).subscribe(

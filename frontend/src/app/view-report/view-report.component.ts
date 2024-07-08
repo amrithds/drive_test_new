@@ -84,7 +84,7 @@ export class ViewReportComponent {
         if (this.individual_report.length > 0) {
           this.enabletable = true;
           console.log(this.individual_report)
-          this.individual_report = this.individual_report.sort((a:any, b:any) => a.id - b.id);
+          // this.individual_report = this.individual_report.sort((a:any, b:any) => a.id - b.id);
           this.form.reset();
         } else {
           window.alert("Trainee not exist");

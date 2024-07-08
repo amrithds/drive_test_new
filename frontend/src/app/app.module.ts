@@ -24,6 +24,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { LiveDashboardComponent } from './live-dashboard/live-dashboard.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { PreventEnterButtonDirective } from './prevent-enter-button.directive';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     ContactComponent,
     LoginComponent,
     LiveDashboardComponent,
+    PreventEnterButtonDirective,
   ],
   imports: [
     BrowserModule,
