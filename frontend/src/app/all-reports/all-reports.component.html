@@ -198,9 +198,9 @@
                     <tbody>
                         <ng-container *ngFor="let obstacle of firstColumn; let i = index">
                             <tr>
-                              <td>{{ obstacle.id }}</td>
+                              <td>{{ i+1 }}</td>
                               <td>{{ obstacle.name }}</td>
-                              <td *ngIf="secondColumn[i]">{{ secondColumn[i].id }}</td>
+                              <td *ngIf="secondColumn[i]">{{ i + 1 + firstColumn.length  }}</td>
                               <td *ngIf="secondColumn[i]">{{ secondColumn[i].name }}</td>
                             </tr>
                         </ng-container>
@@ -335,7 +335,7 @@
               </tbody>
             </table>
         </div>
-        <div class="col-6">
+        <div class="col-5">
             <table class="table table-sm table-bordered table-hover" style="font-size: xx-small;">
                 <thead class="table_column" style="height: 105px;">
                     <tr>
@@ -352,7 +352,7 @@
                         </ng-container>
                     </tr>
                     <tr>
-                        <ng-container *ngFor="let cont of sessions[0]?.reports;">
+                        <ng-container *ngFor="let cont of sessions[0]?.reports;let i=index">
                             <th>{{cont.total_score}}</th>
                         </ng-container>   
                         <th>{{getTotalMarks()}}</th>
@@ -441,9 +441,9 @@
                 <tbody>
                     <ng-container *ngFor="let obstacle of firstColumn; let i = index">
                         <tr>
-                          <td>{{ obstacle.id }}</td>
+                          <td>{{ i+1 }}</td>
                           <td>{{ obstacle.name }}</td>
-                          <td *ngIf="secondColumn[i]">{{ secondColumn[i].id }}</td>
+                          <td *ngIf="secondColumn[i]">{{ i + 1 + firstColumn.length  }}</td>
                           <td *ngIf="secondColumn[i]">{{ secondColumn[i].name }}</td>
                         </tr>
                     </ng-container>

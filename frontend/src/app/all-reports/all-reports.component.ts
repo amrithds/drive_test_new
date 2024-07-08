@@ -25,6 +25,7 @@ export class AllReportsComponent {
   retainFocus = true; // Flag to control whether to retain focus
   firstColumn: any[] = [];
   secondColumn: any[] = [];
+  public obstacles:any;
 
 
 
@@ -163,7 +164,6 @@ export class AllReportsComponent {
     return totalMarks;
   }
 
-  public obstacles:any;
   fetchObstacle(){
     this.http.get(this.environment.apiUrl + 'v1/course/obstacle/').subscribe(
       (data: any) => {
