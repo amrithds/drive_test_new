@@ -103,7 +103,7 @@ class Command(BaseCommand):
                     user = pwd.getpwuid(os.getuid())[0]
                     uid = getpwnam(user).pw_uid
                     #uid = uid_parsed[1].split('(')[0]
-                    report_logger.error(uid)
+                    #report_logger.error(uid)
                     os.system(f'XDG_RUNTIME_DIR=/run/user/{uid} mpg321 {self.AUDIO_FILE}')
                     last_played = self.AUDIO_FILE
             except Exception as e:
@@ -241,6 +241,7 @@ class Command(BaseCommand):
                     data = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]  
                     if STM_reader.dataWaiting():
                         data = STM_reader.getSTMInput()
+                        sensor_logger.info(self.RF_ID_OBSTACLE_MAP[self.CURRENT_REF_ID])
                         sensor_logger.info(data)
                     if self.OBS_TASK_IP_ADDRESS:
                         addrs = json.loads(self.OBS_TASK_IP_ADDRESS)
