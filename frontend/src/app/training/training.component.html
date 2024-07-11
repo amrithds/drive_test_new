@@ -11,7 +11,7 @@
             <div class="row py-2">
                 <div class="col-3">
                     <label class="required">Course ID</label>
-                    <input type="text" (keydown.enter)="onSearchChangeCourse()" placeholder="Course ID" class="form-control" formControlName="course"/>
+                    <input type="text" (keydown.enter)="onSearchChangeCourse()" (change)="onSearchChangeCourse()" placeholder="Course ID" class="form-control" formControlName="course"/>
                     <!-- <input type="text" placeholder="Course ID" (input)="onSearchChange()" class="form-control" formControlName="course"/>
                     <div class="autocomplete-container">
                       <div class="autocomplete-items" *ngIf="filteredOptions.length">
@@ -33,7 +33,7 @@
                 <label style="font-size: 25px;">Instructor</label>
                 <div class="col-3">
                     <label class="required">Army No</label>
-                    <input type="text" (keydown.enter)="onSearchChangeIns()" placeholder="Army no / Sl.no" class="form-control" formControlName="unique_ref_id"/>
+                    <input type="text" (keydown.enter)="onSearchChangeIns()" (change)="onSearchChangeIns()" placeholder="Army no / Sl.no" class="form-control" formControlName="unique_ref_id"/>
                     <!-- <input type="text" placeholder="Army no / Sl.no" class="form-control" formControlName="unique_ref_id" (input)="onSearchChangeIns()">
                     <div class="autocomplete-container">
                       <div class="autocomplete-items" *ngIf="filteredInsOptions.length">
@@ -63,7 +63,7 @@
                 <label style="font-size: 25px;">Driver</label>
                 <div class="col-3">
                     <label class="required">Army No</label>
-                    <input type="text" (keydown.enter)="onSearchChangeDri()" placeholder="Army no / Sl.no" class="form-control" formControlName="unique_ref_id"/>
+                    <input type="text" (keydown.enter)="onSearchChangeDri()" (change)="onSearchChangeDri()" placeholder="Army no / Sl.no" class="form-control" formControlName="unique_ref_id"/>
                     <!-- <input type="text" placeholder="Army no / Sl.no" class="form-control" formControlName="unique_ref_id" (input)="onSearchChangeDri()">
                     <div class="autocomplete-container">
                       <div class="autocomplete-items" *ngIf="filteredDriOptions.length">
