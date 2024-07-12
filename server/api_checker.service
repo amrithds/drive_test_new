@@ -1,0 +1,12 @@
+[Unit]
+Description=Resume Session Service
+After=network-online.target
+
+[Service]
+User=admin
+ExecStart=/home/admin/Desktop/app/drive_test/server/resume_session.sh >> /home/admin/log.log
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

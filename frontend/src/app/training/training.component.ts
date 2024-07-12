@@ -38,6 +38,7 @@ export class TrainingComponent {
   public session_id:any;
   public ranks: string[] = ['L Nk', 'Nk', 'L Hav', 'Hav', 'Nb Sub', 'Sub', 'Sub Maj', 'Lt', 'Maj', 'Capt', 'Lt Col'];
   public selectedItem:any;
+  public old_data:any;
 
   constructor(
     private fb: FormBuilder,
@@ -131,8 +132,11 @@ export class TrainingComponent {
     console.log("Entered Ins ID",this.unique_ref_id)
     if(this.course_id){
       if(this.unique_ref_id){
-        const uniqueRefIdInt = parseInt(this.unique_ref_id, 10);
-        this.selectedItem = this.users.filter((user: any) => user.id == uniqueRefIdInt && user.type == 2);
+        // const uniqueRefIdInt = parseInt(this.unique_ref_id, 10);
+        this.selectedItem = this.users.filter((user: any) =>
+          user.type == 2 &&  
+          user.unique_ref_id.startsWith(this.unique_ref_id) || 
+          user.id == parseInt(this.unique_ref_id, 10));
         console.log("Selected Instructor",this.selectedItem[0])
         if(this.selectedItem.length>0){
           this.ins_form.get('unique_ref_id')?.setValue(this.selectedItem[0].unique_ref_id);
@@ -225,8 +229,12 @@ export class TrainingComponent {
     console.log("Entered Dri ID",this.unique_ref_id)
     if(this.course_id){
       if(this.unique_ref_id){
-        const uniqueRefIdInt = parseInt(this.unique_ref_id, 10);
-        this.selectedItem = this.users.filter((user: any) => user.id == uniqueRefIdInt && user.type == 1);
+        // const uniqueRefIdInt = parseInt(this.unique_ref_id, 10);
+        this.selectedItem = this.users.filter((user: any) => 
+          user.type == 1 &&
+          user.unique_ref_id.startsWith(this.unique_ref_id) || 
+          user.id == parseInt(this.unique_ref_id, 10));
+        // this.selectedItem = this.users.filter((user: any) => user.id == uniqueRefIdInt && user.type == 1);
         console.log("Selected Driver",this.selectedItem[0])
         if(this.selectedItem.length>0){
           this.driver_form.get('unique_ref_id')?.setValue(this.selectedItem[0].unique_ref_id);
@@ -310,8 +318,10 @@ export class TrainingComponent {
       this.http.get(this.environment.apiUrl + 'v1/course/obstacle/').subscribe(
         (data: any) => {
           console.log("Fetched obstacles",data.results);
+          this.old_data = JSON.parse(JSON.stringify(data.results));
           this.obstacles = data.results.sort((a:any, b:any) => a.order - b.order);
-          this.resumeSession();
+          this.old_data.sort((a:any, b:any) => a.order - b.order);
+          // this.resumeSession();
         },
         (error: any) => {
           console.error('Error fetching data:', error);
@@ -337,6 +347,8 @@ export class TrainingComponent {
         console.log("Fetched session id",data);
         this.stop_test=true;
         this.session_id = data.session_id
+        this.report = [];
+        this.obstacles = JSON.parse(JSON.stringify(this.old_data));
         if(this.session_id){
           this.fetchLiveReport();
         }
@@ -347,10 +359,15 @@ export class TrainingComponent {
     );
   }
 
-  fetchLiveReport(){
-    this.intervalId = setInterval(() => {
-      this.livereport();
-    }, 2000);
+  fetchLiveReport() {
+    // Initial longer interval (7000 milliseconds)
+    setTimeout(() => {
+      this.livereport(); // Execute live report once after initial delay
+      // Switch to shorter interval (2000 milliseconds)
+      this.intervalId = setInterval(() => {
+        this.livereport();
+      }, 2000);
+    }, 7000);
   }
 
   hasDataForReportItem(rowId: number): boolean {
