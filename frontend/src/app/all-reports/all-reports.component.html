@@ -335,7 +335,7 @@
               </tbody>
             </table>
         </div>
-        <div class="col-5">
+        <div class="col-6">
             <table class="table table-sm table-bordered table-hover" style="font-size: xx-small;">
                 <thead class="table_column" style="height: 105px;">
                     <tr>
@@ -367,7 +367,7 @@
                             <td>{{cont.obtained_score}}</td>
                         </ng-container>
                         <td>{{data.totalobtainedscore}}</td>
-                        <td>{{data.timemarks}}</td>
+                        <td>{{ data.timemarks }}</td>
                         <td>{{ data.totalMarks + data.totalobtainedscore + data.timemarks }}</td>
                         <td>{{ data.totalMarks + data.totalobtainedscore + data.timemarks > 60 ? 'Pass' : 'Retest' }}</td>
                     </tr>
