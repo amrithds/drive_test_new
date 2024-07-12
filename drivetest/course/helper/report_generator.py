@@ -148,7 +148,7 @@ class ReportGenerator():
             # ,or_(~Q(**{"%s" % reverse_sensor_id: '0'}),\ ~Q(**{"%s" % park_light_sensor_id: '0'}))
         else:
             filter = Q(obstacle_id= obs_task_score.obstacle_id)
-        latest_sensor_feeds = SensorFeed.objects.filter(filter).order_by('-created_at')[:1]
+        latest_sensor_feeds = SensorFeed.objects.filter(filter).order_by('-created_at')[:5000]
         if latest_sensor_feeds:
             #choose which calculation logic to use
             dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_AND_RIGHT
