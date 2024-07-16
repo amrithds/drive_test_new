@@ -13,6 +13,7 @@ sudo apt-get upgrade
 sudo apt-get install apache2
 
 sudo apt-get install python-pip python-virtualenv python-setuptools python-dev build-essential
+sudo apt install libcairo2-dev pkg-config python3-dev libgirepository1.0-dev
 
 sudo apt-get install libapache2-mod-wsgi-py3
 sudo apt-get install python3-dev default-libmysqlclient-dev
@@ -32,9 +33,6 @@ https://stackoverflow.com/questions/15793990/django-how-to-set-foreign-key-check
 
 
 # install angular and django side by side
-# report ApI
-# Bulk report api
-# Test
 
 # Installation steps
 
@@ -59,11 +57,8 @@ python manage.py start_session -i 7 -s 6 -ses 16 -m 1
 # enable speaker
 https://raspberrypi.stackexchange.com/questions/120034/python-script-not-playing-audio-when-run-through-systemd
 
-FIRST2SERVE
-FIRST2SERVE.com
-19730128
 
 # App configs
-bluetooth speaker
-vehicle number
+BLUETOOTH_SPEAKER
+VEHICLE_NUMBER
 LOCATION_SENSOR (Values: RFID, TCP_DISTANCE_SENSOR)

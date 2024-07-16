@@ -9,4 +9,4 @@ class Command(BaseCommand):
         while True:
             logger.info('Inside')
             import time
-            time.sleep(10)
+            time.sleep(1)

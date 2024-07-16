@@ -108,7 +108,7 @@ class Command(BaseCommand):
                     user = pwd.getpwuid(os.getuid())[0]
                     uid = getpwnam(user).pw_uid
                     #uid = uid_parsed[1].split('(')[0]
-                    report_logger.error(uid)
+                    #report_logger.error(uid)
                     os.system(f'XDG_RUNTIME_DIR=/run/user/{uid} mpg321 {self.AUDIO_FILE}')
                     last_played = self.AUDIO_FILE
             except Exception as e:

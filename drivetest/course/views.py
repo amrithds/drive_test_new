@@ -25,6 +25,8 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
 from app_config.models import Config
+from django.db.models import Exists, OuterRef
+from report.models import FinalReport
 from rest_framework.decorators import api_view, permission_classes
 import json
 import logging
@@ -122,6 +124,12 @@ class SessionViewSet(viewsets.ModelViewSet):
                 filter = Q(trainee__unique_ref_id = search)
             
             queryset = queryset.filter(filter)
+
+        # Filter sessions that have a related FinalReport
+        queryset = queryset.annotate(
+            has_final_report=Exists(FinalReport.objects.filter(session=OuterRef('pk')))
+        ).filter(has_final_report=True)
+
         queryset = queryset.select_related('trainee')
         return queryset
 
