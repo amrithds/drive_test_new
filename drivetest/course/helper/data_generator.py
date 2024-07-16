@@ -1,4 +1,5 @@
 import time
+import os
 
 class DataGenerator():
     RFID = 0
@@ -40,4 +41,6 @@ class DataGenerator():
             time.sleep(2)
 
 
-            
+def read_rf_id_mock():
+    f = open(os.path.dirname(os.path.realpath(__file__))+"/rf_id.txt", "r")
+    return f.read()

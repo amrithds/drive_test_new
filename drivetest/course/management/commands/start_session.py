@@ -5,6 +5,7 @@ from report.models.sensor_feed import SensorFeed
 from course.models.obstacle_session_tracker import ObstacleSessionTracker
 from course.helper import start_session_helper
 from course.helper.report_generator import ReportGenerator
+from course.helper.data_generator import read_rf_id_mock
 from course.helper import rf_id_helper
 from course.helper.STM_helper import STMReader
 from course.models.obstacle_task_score import ObstacleTaskScore
@@ -52,17 +53,18 @@ class Command(BaseCommand):
 
 
     def handle(self, *args, **kwargs):
-
-        trainer_id = kwargs['trainer']
-        trainee_id = kwargs['trainee']
-        session_mode = int(kwargs['mode'])
-        course_id = kwargs['course']
         self.RESUME = kwargs['resume']
         
         #session_id is optional during debug
+        session_mode = None
         if kwargs["session_id"]:
             self.SESSION = Session.objects.get(id=kwargs["session_id"])
+            session_mode = self.SESSION.mode
         else:
+            trainer_id = kwargs['trainer']
+            trainee_id = kwargs['trainee']
+            session_mode = int(kwargs['mode'])
+            course_id = kwargs['course']
             self.SESSION = start_session_helper.createSession(trainer_id, trainee_id,session_mode, course_id)
         
         # connect bluetooth
@@ -83,13 +85,16 @@ class Command(BaseCommand):
         
         pool = concurrent.futures.ThreadPoolExecutor(max_workers=4)
         
+        # switch between sensor types RFID/IP address
         if sensor_type == self.VEHICLE_SENSORS_RFID:
             pool.submit(self.read_location_inputs)
         else:
             pool.submit(self.read_vehicle_sensor)
         pool.submit(self.readSTMInputs)
         pool.submit(self.generateReport)
-        pool.submit(self.playAudio)
+        #play audio in training mode
+        if session_mode == Session.MODE_TRAINING:
+            pool.submit(self.playAudio)
         
         pool.shutdown(wait=True)
 
@@ -181,16 +186,21 @@ class Command(BaseCommand):
             RF_ID_reader = rf_id_helper.RFIDReader()
             OSTracker = None
             
-            #rf_id_gen = DataGenerator.RFIDGenerator()
             while(True):
                 readRFID = RF_ID_reader.getInputFromRFID()
-                #readRFID = next(rf_id_gen)
+                
+                #use for testing without RF_ID
+                """
+                # look in from course.helper.data_generator import read_rf_id_mock
+                # paste rf_id string in rf_id.txt
+                """
+                #readRFID = read_rf_id_mock()
                 
                 #uppercase
                 readRFID = readRFID.upper()
                 if len(readRFID) == 16:
                     if readRFID in self.RF_ID_OBSTACLE_MAP:
-                        print(readRFID)
+                        
                         tempObstacleObj = self.RF_ID_OBSTACLE_MAP[readRFID]
 
                         self.CURRENT_REF_ID = readRFID
@@ -238,32 +248,33 @@ class Command(BaseCommand):
                     # print(data)
                 
                 if self.COLLECT_SENSOR_INPUTS:
-                    data = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]  
                     if STM_reader.dataWaiting():
                         data = STM_reader.getSTMInput()
+
+                        if self.OBS_TASK_IP_ADDRESS:
+                            addrs = json.loads(self.OBS_TASK_IP_ADDRESS)
+                            for key, value in addrs.items():
+                                for ip_address in value:
+                                    distance_val = VehicleSensor.distance_ip_addrs(ip_address)
+                                    # print("distance_val",distance_val)
+                                    if key=='s0':
+                                        data[1] = int(distance_val)
+                                    if key=='s1':
+                                        data[2] = int(distance_val)
+                                    if key=='s10':
+                                        data[11] = int(distance_val)
+                        
                         sensor_logger.info(data)
-                    if self.OBS_TASK_IP_ADDRESS:
-                        addrs = json.loads(self.OBS_TASK_IP_ADDRESS)
-                        for key, value in addrs.items():
-                            for ip_address in value:
-                                distance_val = VehicleSensor.distance_ip_addrs(ip_address)
-                                # print("distance_val",distance_val)
-                                if key=='s0':
-                                    data[1] = int(distance_val)
-                                if key=='s1':
-                                    data[2] = int(distance_val)
-                                if key=='s10':
-                                    data[11] = int(distance_val)
-                    # conside data less than 19 as noise
-                    if len(data) == 19 and data != lastSensorFeed and self.CURRENT_REF_ID in self.RF_ID_OBSTACLE_MAP:
+                        # conside data less than 19 as noise
+                        if len(data) == 19 and data != lastSensorFeed and self.CURRENT_REF_ID in self.RF_ID_OBSTACLE_MAP:
 
-                        ObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_REF_ID]
+                            ObstacleObj = self.RF_ID_OBSTACLE_MAP[self.CURRENT_REF_ID]
 
-                        SensorFeed.objects.create(obstacle=ObstacleObj, s0=data[1], s1=data[2], s2=data[3], s3=data[4],\
-                                                s4=data[5], s5=data[6], s6=data[7], s7=data[8], s8=data[9], s9=data[10],\
-                                                s10=data[11],s11=data[12], s12=data[13], s13=data[14], s14=data[15], s15=data[16],\
-                                                s16=data[17] )
+                            SensorFeed.objects.create(obstacle=ObstacleObj, s0=data[1], s1=data[2], s2=data[3], s3=data[4],\
+                                                    s4=data[5], s5=data[6], s6=data[7], s7=data[8], s8=data[9], s9=data[10],\
+                                                    s10=data[11],s11=data[12], s12=data[13], s13=data[14], s14=data[15], s15=data[16],\
+                                                    s16=data[17] )
 
-                        lastSensorFeed = data
+                            lastSensorFeed = data
         except Exception as e:
             sensor_logger.exception('Error: '+str(e))
