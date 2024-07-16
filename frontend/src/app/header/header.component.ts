@@ -13,10 +13,10 @@ export class HeaderComponent {
   public getDatetime='';
   public environment = environment;
   public veh_no:any;
-  public left_logo:any;
-  public right_logo:any;
-  public title:any;
-  public subtitle:any;
+  public left_logo:any=''
+  public right_logo:any='';
+  public title:any='';
+  public subtitle:any='';
 
   constructor(
     private http: HttpClient

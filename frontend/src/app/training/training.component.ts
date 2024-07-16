@@ -134,7 +134,8 @@ export class TrainingComponent {
       if(this.unique_ref_id){
         // const uniqueRefIdInt = parseInt(this.unique_ref_id, 10);
         this.selectedItem = this.users.filter((user: any) =>
-          user.type == 2 &&  
+          user.type == 2);
+        this.selectedItem = this.selectedItem.filter((user: any) =>
           user.unique_ref_id.startsWith(this.unique_ref_id) || 
           user.id == parseInt(this.unique_ref_id, 10));
         console.log("Selected Instructor",this.selectedItem[0])
@@ -144,7 +145,7 @@ export class TrainingComponent {
           this.type = this.ins_form.value['type']
           this.fetInsData();
         }else{
-          window.alert("User not exist")
+          window.alert("User does not exist in the instructor mode.")
           this.ins_form.get('unique_ref_id')?.reset()
           this.ins_form.get('name')?.reset()
           this.ins_form.get('rank')?.setValue('')
@@ -214,7 +215,7 @@ export class TrainingComponent {
         },
         (error: any) => {
           console.error('Error fetching data:', error);
-          window.alert("Please select course id and drive mode")
+          window.alert("Please select course id")
         }
       );
     }else{
@@ -231,7 +232,8 @@ export class TrainingComponent {
       if(this.unique_ref_id){
         // const uniqueRefIdInt = parseInt(this.unique_ref_id, 10);
         this.selectedItem = this.users.filter((user: any) => 
-          user.type == 1 &&
+          user.type == 1);
+        this.selectedItem = this.selectedItem.filter((user: any) =>
           user.unique_ref_id.startsWith(this.unique_ref_id) || 
           user.id == parseInt(this.unique_ref_id, 10));
         // this.selectedItem = this.users.filter((user: any) => user.id == uniqueRefIdInt && user.type == 1);
@@ -242,7 +244,7 @@ export class TrainingComponent {
           this.type = this.driver_form.value['type']
           this.fetDriData();
         }else{
-          window.alert("User not exist")
+          window.alert("User does not exist in the driver mode.")
           this.driver_form.get('unique_ref_id')?.reset()
           this.driver_form.get('name')?.reset()
           this.driver_form.get('rank')?.setValue('')
