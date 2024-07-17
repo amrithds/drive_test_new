@@ -11,6 +11,7 @@ from django.db.models import Min, Q, Max
 from report.helper import report_helper
 import datetime
 import logging
+from django.db import connection
 
 logger = logging.getLogger("reportLog")
 
@@ -21,6 +22,20 @@ class ReportGenerator():
     DISTANCE_SENSOR_LEFT_AND_RIGHT = 2
     DISTANCE_SENSOR_LEFT_AND_RIGHT_ZIG_ZAG = 3
     DISTANCE_SENSOR_BACK = 4
+
+    LEFT_SENSOR_SQL = "select min(id) from (SELECT id, s0,s1,s10, CASE WHEN LEAD(s0) OVER (ORDER BY id asc) \
+            BETWEEN {left_min_range} and {left_max_range} THEN TRUE ELSE FALSE END AS in_range_1, CASE WHEN LEAD(s0,2) OVER (ORDER BY id asc) \
+            BETWEEN {left_min_range} and {left_max_range} THEN TRUE ELSE FALSE END AS in_range_2, CASE WHEN LEAD(s0,3) OVER (ORDER BY id asc) \
+            BETWEEN {left_min_range} and {left_max_range} THEN TRUE ELSE FALSE END AS in_range_3 FROM report_sensor_feed where obstacle_id = {obstacle_id} {min_id_criteria} \
+            ORDER BY ID ASC) \
+            a where s0 BETWEEN {left_min_range} and {left_max_range} and in_range_1 and in_range_2 and in_range_3;"
+        
+    RIGHT_SENSOR_SQL = "select min(id) from (SELECT id, s0,s1,s10, CASE WHEN LEAD(s1) OVER (ORDER BY id asc) \
+        BETWEEN {right_min_range} and {right_max_range} THEN TRUE ELSE FALSE END AS in_range_1, CASE WHEN LEAD(s1,2) OVER (ORDER BY id asc) \
+        BETWEEN {right_min_range} and {right_max_range} THEN TRUE ELSE FALSE END AS in_range_2, CASE WHEN LEAD(s1,3) OVER (ORDER BY id asc) \
+        BETWEEN {right_min_range} and {right_max_range} THEN TRUE ELSE FALSE END AS in_range_3 FROM report_sensor_feed where obstacle_id = {obstacle_id} {min_id_criteria} \
+        ORDER BY ID ASC ) \
+        a where s1 BETWEEN {right_min_range} and {right_max_range} and in_range_1 and in_range_2 and in_range_3;"
 
     def __init__(self, session: Session, resume: int=False) -> None:
         """init
@@ -43,9 +58,10 @@ class ReportGenerator():
             
             for OSTracker in OSTrackers:
                 #SessionReport
-                session_reports = SessionReport.objects.filter(obstacle_id=OSTracker.obstacle_id)
+                session_reports = SessionReport.objects.exclude(result=SessionReport.RESULT_PASS).filter(obstacle_id=OSTracker.obstacle_id)
                 
                 for session_report in session_reports:
+                    
                     ObsTaskScore = ObstacleTaskScore.objects.get(obstacle_id=session_report.obstacle_id\
                                                       , task_id=session_report.task_id)
 
@@ -121,6 +137,7 @@ class ReportGenerator():
             bool: result (True : pass, False : Fail)
         """
         task_category = ObsTaskScore.task.category
+        
         result = False
         if task_category == Task.TASK_TYPE_BOOLEAN:
             result = self.__booleanTasksResult(ObsTaskScore)
@@ -145,7 +162,6 @@ class ReportGenerator():
 
             #either parking light or hand brake is enabled
             filter = Q(obstacle_id= obs_task_score.obstacle_id) & Q(~Q(**{"%s" % hand_brake_sensor_id: 0}) | ~Q(**{"%s" % park_light_sensor_id: 0}))
-            # ,or_(~Q(**{"%s" % reverse_sensor_id: '0'}),\ ~Q(**{"%s" % park_light_sensor_id: '0'}))
         else:
             filter = Q(obstacle_id= obs_task_score.obstacle_id)
         latest_sensor_feeds = SensorFeed.objects.filter(filter).order_by('-created_at')[:5000]
@@ -161,7 +177,7 @@ class ReportGenerator():
                 dis_sensor_calculation = self.DISTANCE_SENSOR_BACK
             
             result = self.__distance_sensor_result(dis_sensor_calculation, latest_sensor_feeds, obs_task_score)
-            print('result')
+            
         return result
     
     def __distance_sensor_result(self, sensor_calculation: int, sensor_feeds: SensorFeed, obs_task_score:ObstacleTaskScore) -> bool:
@@ -179,6 +195,7 @@ class ReportGenerator():
         if(len(sensor_ids)>2):
             back_sensor_id = sensor_ids[2]
         else:
+            #default back sensor
             back_sensor_id = "s10"
 
         result = False
@@ -287,29 +304,228 @@ class ReportGenerator():
         Returns:
             Bool: Boolean
         """
-        dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_AND_RIGHT
         
         task_category = obs_task_score.task.category
-
-        dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_AND_RIGHT
+       
         if task_category == Task.TASK_TYPE_LEFT_TURNING:
-            dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_ONLY
+            return self.__turn_with_one_sensor_result(obs_task_score, 1)
         elif task_category == Task.TASK_TYPE_RIGHT_TURNING:
-            dis_sensor_calculation = self.DISTANCE_SENSOR_RIGHT_ONLY
+            return self.__turn_with_one_sensor_result(obs_task_score, 2)
         elif task_category == Task.TASK_TYPE_DUAL_SENSOR_TURNING:
-            dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_AND_RIGHT
+            return self.__turn_with_left_right_sensor(obs_task_score)
         elif task_category == Task.TASK_TYPE_DUAL_SENSOR_TURNING_ZIG_ZAG:
-            dis_sensor_calculation = self.DISTANCE_SENSOR_LEFT_AND_RIGHT_ZIG_ZAG
+            return self.__zig_zag_turn_result(obs_task_score)
+        elif task_category == Task.TASK_TYPE_FIGURE_OF_EIGHT:
+            return self.__figure_of_eight_result(obs_task_score)
         
-        filter_query = Q(**{ "obstacle_id": obs_task_score.obstacle_id })
-        sensor_feed = SensorFeed.objects.filter(filter_query).order_by('created_at')
-        result = self.__distance_sensor_result(dis_sensor_calculation, sensor_feed, obs_task_score)
+        return False
+    
+    def __turn_with_one_sensor_result(self, obs_task_score: ObstacleTaskScore, sensor_type: int):
+        """Result using Left/Right sensor value
+
+        Args:
+            obs_task_score (ObstacleTaskScore): _description_
+            sensor_type (int): 
+            1 : Left
+            2 : right
+
+        Returns:
+            _type_: _description_
+        """
+
+        obstacle_id = obs_task_score.obstacle_id
+
+        with connection.cursor() as cursor:
+            def execute_raw_sql(sql: str):
+                """
+                execute raw query
+                """
+                cursor.execute(sql)
+                result = cursor.fetchone()
+                return result[0]
+
+            # left sensor result
+            sql = ''
+            if sensor_type == 1:
+                left_min_range = obs_task_score.task_metrics.left_min_range
+                left_max_range = obs_task_score.task_metrics.left_max_range
+                sql = self.LEFT_SENSOR_SQL.format(obstacle_id=obstacle_id, min_id_criteria='', left_min_range=left_min_range,\
+                                                                left_max_range=left_max_range)
+            else:
+                right_min_range = obs_task_score.task_metrics.right_min_range
+                right_max_range = obs_task_score.task_metrics.right_max_range
+                sql = self.RIGHT_SENSOR_SQL.format(obstacle_id=obstacle_id, min_id_criteria='', left_min_range=left_min_range,\
+                                                                left_max_range=left_max_range)
+            min_id = execute_raw_sql(sql)
+            if min_id:
+                return True
+            
+        return False
+
+
+    
+    def __turn_with_left_right_sensor(self, obs_task_score: ObstacleTaskScore):
+        """Both  left and right sensors should be in range while turning
+
+        Args:
+            obs_task_score (ObstacleTaskScore): _description_
+        """
+        left_min_range = obs_task_score.task_metrics.left_min_range
+        left_max_range = obs_task_score.task_metrics.left_max_range
+        right_min_range = obs_task_score.task_metrics.right_min_range
+        right_max_range = obs_task_score.task_metrics.right_max_range
+        obstacle_id = obs_task_score.obstacle_id
+
+        sql = "select min(id) from (SELECT id, s0,s1,s10, CASE WHEN LEAD(s0) OVER (ORDER BY id asc) \
+            BETWEEN {left_min_range} and {left_max_range} THEN TRUE ELSE FALSE END AS left_in_range_1, CASE WHEN LEAD(s0,2) OVER (ORDER BY id asc) \
+            BETWEEN {left_min_range} and {left_max_range} THEN TRUE ELSE FALSE END AS left_in_range_2, CASE WHEN LEAD(s0,3) OVER (ORDER BY id asc) \
+            BETWEEN {left_min_range} and {left_max_range} THEN TRUE ELSE FALSE END AS left_in_range_3, \
+            CASE WHEN LEAD(s1) OVER (ORDER BY id asc) \
+            BETWEEN {right_min_range} and {right_max_range} THEN TRUE ELSE FALSE END AS right_in_range_1, CASE WHEN LEAD(s0,2) OVER (ORDER BY id asc) \
+            BETWEEN {right_min_range} and {right_max_range} THEN TRUE ELSE FALSE END AS right_in_range_2, CASE WHEN LEAD(s0,3) OVER (ORDER BY id asc) \
+            BETWEEN {right_min_range} and {right_max_range} THEN TRUE ELSE FALSE END AS right_in_range_3 \
+            FROM report_sensor_feed where obstacle_id = {obstacle_id} \
+            ORDER BY ID ASC) \
+            a where s0 BETWEEN {left_min_range} and {left_max_range}  and left_in_range_1 and left_in_range_2 and left_in_range_3 \
+            and s1 BETWEEN {right_min_range} and {right_max_range} and right_in_range_1 and right_in_range_2 and right_in_range_3;".format(\
+                left_min_range=left_min_range, left_max_range=left_max_range, right_min_range=right_min_range, right_max_range=right_max_range, obstacle_id=obstacle_id\
+            )
         
-        return result
+        with connection.cursor() as cursor:
+            cursor.execute(sql)
+            result = cursor.fetchone()
+            min_id = result[0]
+            print(str(sql)+'........')
+            if min_id:
+                return True
+            
+        return False
+    
+    def __zig_zag_turn_result(self, obs_task_score: ObstacleTaskScore):
+        """Get result for zig zag turning
+
+        Args:
+            obs_task_score (ObstacleTaskScore): _description_
+
+        Returns:
+            Bool: _description_
+        """
+        left_min_range = obs_task_score.task_metrics.left_min_range
+        left_max_range = obs_task_score.task_metrics.left_max_range
+        right_min_range = obs_task_score.task_metrics.right_min_range
+        right_max_range = obs_task_score.task_metrics.right_max_range
+        obstacle_id = obs_task_score.obstacle_id
+
+        
+
+        with connection.cursor() as cursor:
+            def execute_raw_sql(sql: str):
+                """
+                execute raw query
+                """
+                cursor.execute(sql)
+                result = cursor.fetchone()
+                return result[0]
+
+            # turn right first and then left
+            min_id = execute_raw_sql(self.LEFT_SENSOR_SQL.format(obstacle_id=obstacle_id, min_id_criteria='', left_min_range=left_min_range,\
+                                                            left_max_range=left_max_range))
+            
+            if min_id:
+                min_id = execute_raw_sql(self.RIGHT_SENSOR_SQL.format(obstacle_id=obstacle_id,min_id_criteria=f'and id > {min_id}', \
+                                                                 right_min_range=right_min_range,right_max_range=right_max_range))
+                
+                if min_id:
+                    return True
+            
+            # turn left first and then right
+            min_id = execute_raw_sql(self.RIGHT_SENSOR_SQL.format(obstacle_id=obstacle_id, min_id_criteria='',\
+                                                             right_min_range=right_min_range,right_max_range=right_max_range))
+            
+            if min_id:
+                min_id = execute_raw_sql(self.LEFT_SENSOR_SQL.format(obstacle_id=obstacle_id,min_id_criteria=f'and id > {min_id}' , \
+                                                                    left_min_range=left_min_range,left_max_range=left_max_range))
+                
+                if min_id:
+                    return True
+                
+
+            return False
+           
+    
+    def __figure_of_eight_result(self, obs_task_score: ObstacleTaskScore):
+        """Result for  figure of 8 driving
+
+        Args:
+            obs_task_score (ObstacleTaskScore): _description_
+
+        Returns:
+            Bool: _description_
+        """
+        left_min_range = obs_task_score.task_metrics.left_min_range
+        left_max_range = obs_task_score.task_metrics.left_max_range
+        right_min_range = obs_task_score.task_metrics.right_min_range
+        right_max_range = obs_task_score.task_metrics.right_max_range
+        obstacle_id = obs_task_score.obstacle_id
+        
+        
+        with connection.cursor() as cursor:
+            def execute_raw_sql(sql: str):
+                """
+                execute raw query
+                """
+                cursor.execute(sql)
+                result = cursor.fetchone()
+                return result[0]
+
+            # if vehicle move right -> left -> right -> left
+            min_id = execute_raw_sql(self.LEFT_SENSOR_SQL.format(obstacle_id=obstacle_id, min_id_criteria='', left_min_range=left_min_range,\
+                                                            left_max_range=left_max_range))
+            
+            if min_id:
+                min_id = execute_raw_sql(self.RIGHT_SENSOR_SQL.format(obstacle_id=obstacle_id,min_id_criteria=f'and id > {min_id}', \
+                                                                 right_min_range=right_min_range,right_max_range=right_max_range))
+                print('2')
+                if min_id:
+                    min_id = execute_raw_sql(self.LEFT_SENSOR_SQL.format(obstacle_id=obstacle_id,min_id_criteria=f'and id > {min_id}' , \
+                                                                    left_min_range=left_min_range,left_max_range=left_max_range))
+                    print('3')
+                    if min_id:
+                        min_id = execute_raw_sql(self.RIGHT_SENSOR_SQL.format(obstacle_id=obstacle_id, min_id_criteria=f'and id > {min_id}', \
+                                                                         right_min_range=right_min_range,right_max_range=right_max_range))
+                        print('4')
+                        if min_id:
+                            return True
+            
+            # if vehicle move left -> right -> left -> right
+            min_id = execute_raw_sql(self.RIGHT_SENSOR_SQL.format(obstacle_id=obstacle_id, min_id_criteria='',\
+                                                             right_min_range=right_min_range,right_max_range=right_max_range))
+            
+            if min_id:
+                min_id = execute_raw_sql(self.LEFT_SENSOR_SQL.format(obstacle_id=obstacle_id,min_id_criteria=f'and id > {min_id}' , \
+                                                                    left_min_range=left_min_range,left_max_range=left_max_range))
+                
+                if min_id:
+                    min_id = execute_raw_sql(self.RIGHT_SENSOR_SQL.format(obstacle_id=obstacle_id, min_id_criteria=f'and id > {min_id}', \
+                                                                         right_min_range=right_min_range,right_max_range=right_max_range))
+                    
+                    if min_id:
+                        min_id = execute_raw_sql(self.LEFT_SENSOR_SQL.format(obstacle_id=obstacle_id,min_id_criteria=f'and id > {min_id}' , \
+                                                                    left_min_range=left_min_range,left_max_range=left_max_range))
+                        
+                        if min_id:
+                            return True
+            
+            return False
+
+
+        
+
+
+
 
     def __booleanTasksResult(self, ObsTaskScore:ObstacleTaskScore) -> bool:
         success_value = ObsTaskScore.task_metrics.success_value
         sensor_id = ObsTaskScore.task.sensor_id
         filter_query = Q(**{"%s" % sensor_id: success_value, "obstacle_id": ObsTaskScore.obstacle_id })
         return SensorFeed.objects.filter(filter_query).exists()
-        

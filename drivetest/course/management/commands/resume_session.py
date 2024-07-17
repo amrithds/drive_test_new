@@ -22,6 +22,3 @@ class Command(BaseCommand):
                     session.pid = p.pid
                     session.save()
             time.sleep(10)
-
-
-
