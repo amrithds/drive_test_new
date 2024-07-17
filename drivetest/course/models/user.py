@@ -58,10 +58,14 @@ class User(AbstractUser, BaseModel):
             (1, "Driver"),
             (2, "Instructor")
         ), default=2)
-    
     REQUIRED_FIELDS = ['unique_ref_id']
     class Meta:
-        unique_together = ('course', 'unique_ref_id')
+        
+        constraints = [
+            models.UniqueConstraint(fields=['course', 'unique_ref_id'], name="course_unique_ref_id"),
+            models.UniqueConstraint(fields=['course', 'serial_no'], name="course_serial_no"),
+        ]
+        #unique_together = ('course', 'unique_ref_id')
         #unique_together = ('course', 'unique_ref_id')
         ordering = ['-created_at']
     
