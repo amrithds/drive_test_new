@@ -36,7 +36,7 @@ export class TrainingComponent {
   public report:any=[];
   private intervalId: any;
   public session_id:any;
-  public ranks: string[] = ['L Nk', 'Nk', 'L Hav', 'Hav', 'Nb Sub', 'Sub', 'Sub Maj', 'Lt', 'Maj', 'Capt', 'Lt Col'];
+  public ranks: string[] = ['AV', 'Rect', 'SEP', 'L Nk', 'Nk', 'Hav', 'Nb Sub', 'Sub', 'Sub Maj', 'Lt',  'Capt', 'Maj', 'Lt Col', 'Col'];
   public selectedItem:any;
   public old_data:any;
 
