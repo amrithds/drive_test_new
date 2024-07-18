@@ -38,6 +38,7 @@ class User(AbstractUser, BaseModel):
     unique_ref_id=models.CharField(max_length=100, default='superuser')
     course=models.ForeignKey(Course, on_delete=models.CASCADE, blank=True, null=True)
     rank=models.CharField(max_length=50, choices=(
+            ("AV" , "AV"),
             ("Rect" , "Rect"),
             ("SEP" , "SEP"),
             ("L Nk" , "L Nk"),
@@ -51,6 +52,7 @@ class User(AbstractUser, BaseModel):
             ("Maj" , "Maj"),
             ("Capt" , "Capt"),
             ("Lt Col" , "Lt Col"),
+            ("Col" , "Col"),
         ), default='Rect', blank=True, null=True
     )
     unit=models.CharField(max_length=50, default='', blank=True, null=True)

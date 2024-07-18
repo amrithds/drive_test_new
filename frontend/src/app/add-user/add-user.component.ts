@@ -61,7 +61,7 @@ export class AddUserComponent {
         this.fetchUser(this.form.value['course']);
       }).catch((error: HttpErrorResponse) => {
         if (error.status === 400) {
-          window.alert('Rank Id or serial no already exist')
+          window.alert('Army no or serial no already exist')
         }
       });
       this.form.get('serial_no')?.reset()
