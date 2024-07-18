@@ -4,7 +4,7 @@ After=network-online.target
 
 [Service]
 User=admin
-ExecStart=/home/admin/Desktop/app/drive_test/server/resume_session.sh >> /home/admin/log.log
+ExecStart=/home/admin/driving_project/server/resume_session.sh >> /home/admin/log.log
 Restart=on-failure
 RestartSec=10
 
