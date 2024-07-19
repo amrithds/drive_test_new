@@ -14,13 +14,14 @@ export class AddUserComponent {
   public form!: FormGroup;
   public editUserForm !: FormGroup;
   public environment = environment;
-  ranks: string[] = ['Rect', 'SEP', 'L Nk', 'Nk', 'L Hav', 'Hav', 'Nb Sub', 'Sub', 'Sub Maj', 'Lt', 'Maj', 'Capt', 'Lt Col'];
+  ranks: string[] = ['AV', 'Rect', 'SEP', 'L Nk', 'Nk', 'Hav', 'Nb Sub', 'Sub', 'Sub Maj', 'Lt',  'Capt', 'Maj', 'Lt Col', 'Col'];
   editIndex: number = -1;
   public users:any=[];
   filteredOptions: any = [];
   courses:any;
-  course_id:any;
   public searchTerm:any;
+  public user_id:any;
+  public edituser:boolean=false;
 
   constructor(
     private fb: FormBuilder,
@@ -33,7 +34,7 @@ export class AddUserComponent {
     this.form = this.fb.group({
       type: [1],
       course: [null,Validators.required],
-      id: [null,Validators.required],
+      serial_no: [null,Validators.required],
       name: [null,Validators.required],
       rank: [null,Validators.required],
       unit: [null,Validators.required],
@@ -43,7 +44,7 @@ export class AddUserComponent {
     this.editUserForm  = this.fb.group({
       type: [null],
       course: [null],
-      id: [null],
+      serial_no: [null],
       name: [null],
       rank: [null],
       unit: [null],
@@ -54,17 +55,16 @@ export class AddUserComponent {
   addUser() {
     if (this.form.valid) {
       const newUser = this.form.value;
-      console.log(this.users)
-      console.log(this.form.value)
       firstValueFrom(this.http.post(this.environment.apiUrl + 'v1/course/user/', this.form.value)).then((data: any) => {
-        console.log(data);
+        console.log("User Added")
         this.users.push(newUser);
+        this.fetchUser(this.form.value['course']);
       }).catch((error: HttpErrorResponse) => {
         if (error.status === 400) {
-          window.alert('Rank Id already exist')
+          window.alert('Rank Id or serial no already exist')
         }
       });
-      this.form.get('id')?.reset()
+      this.form.get('serial_no')?.reset()
       this.form.get('name')?.reset()
       this.form.get('rank')?.reset()
       this.form.get('unit')?.reset()
@@ -75,11 +75,12 @@ export class AddUserComponent {
   }
 
   editUser(index:any,data:any) {
-    console.log(data,index)
+    this.user_id = data.id;
+    this.edituser = true;
     this.editIndex = index;
     this.editUserForm.get('type')?.setValue(data.type)
     this.editUserForm.get('course')?.setValue(data.course)
-    this.editUserForm.get('id')?.setValue(data.id)
+    this.editUserForm.get('serial_no')?.setValue(data.serial_no)
     this.editUserForm.get('name')?.setValue(data.name)
     this.editUserForm.get('rank')?.setValue(data.rank)
     this.editUserForm.get('unit')?.setValue(data.unit)
@@ -87,13 +88,14 @@ export class AddUserComponent {
   }
 
   removeUser(index: number) {
-    console.log(index,this.users)
+    // console.log(index,this.users)
     const user_id = this.users[index].id;
     this.http.delete(this.environment.apiUrl+ 'v1/course/user/'+user_id+'/').subscribe(
       () => {
         if (index >= 0 && index < this.users.length) {
           this.users.splice(index, 1);
         }
+        console.log("User deleted")
       },
       (error) => {
         console.error('Error deleting user:', error);
@@ -103,10 +105,12 @@ export class AddUserComponent {
 
   saveUser() {
     this.editIndex = -1;
-    firstValueFrom(this.http.put(this.environment.apiUrl + 'v1/course/user/'+this.editUserForm.value['id']+'/',this.editUserForm.value)).then((data: any) => {
-      console.log(data);
-      this.course_id = this.form.value['course']
-      this.fetchUser(this.course_id);
+    if(!this.edituser){
+      this.user_id = this.editUserForm.value['serial_no']
+    }
+    firstValueFrom(this.http.put(this.environment.apiUrl + 'v1/course/user/'+this.user_id+'/',this.editUserForm.value)).then((data: any) => {
+      console.log("User saved successfully!");
+      this.fetchUser(this.form.value['course']);
     });
   }
 
@@ -115,8 +119,7 @@ export class AddUserComponent {
   }
 
   handleChange(event: Event) {
-    const selectedValue = (event.target as HTMLSelectElement).value;
-    console.log(selectedValue);
+    // const selectedValue = (event.target as HTMLSelectElement).value;
     this.users=[];
     if(this.searchTerm){
       this.fetchUser(this.searchTerm);
@@ -155,10 +158,15 @@ export class AddUserComponent {
   }
 
   onSearchChange(): void {
-    this.course_id = this.form.value['course']
-    this.filteredOptions = this.courses.filter((course: any) =>
-      course.name.toLowerCase().includes(this.course_id?.toLowerCase())
-    );
+    if(this.form.value['course']){
+      this.filteredOptions = this.courses.filter((course: any) =>
+        course.name.toLowerCase().includes(this.form.value['course']?.toLowerCase())
+      );
+    }else{
+      this.filteredOptions = [];
+      this.users = [];
+    }
+
   }
 
   selectOption(option: any): void {

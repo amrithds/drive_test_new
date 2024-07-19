@@ -22,7 +22,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     course = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all())
     class Meta:
         model = User
-        fields = ['id', 'url', 'name', 'username', 'unique_ref_id', 'course', 'rank', 'unit', 'type']
+        fields = ['id', 'url', 'name', 'username', 'unique_ref_id', 'course', 'rank', 'unit', 'type','serial_no']
         
 
 class CourseSerializer(serializers.HyperlinkedModelSerializer):

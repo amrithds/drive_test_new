@@ -42,7 +42,7 @@
                     <tbody>
                         <tr >
                             <td>
-                                <input type="text" class="form-control" formControlName="id">
+                                <input type="text" class="form-control" formControlName="serial_no">
                             </td>
                             <td>                            
                                 <input type="text" class="form-control" formControlName="unique_ref_id">
@@ -65,7 +65,7 @@
                         </tr>               
                         <tr *ngFor="let user of users;let i=index" [formGroup]="editUserForm">
                             <ng-container *ngIf="editIndex !== i; else editMode">
-                                <td>{{ user.id }}</td>
+                                <td>{{ user.serial_no }}</td>
                                 <td>{{ user.unique_ref_id }}</td>
                                 <td>{{ user.name }}</td>
                                 <td>{{ user.rank }}</td>
@@ -76,7 +76,7 @@
                                 </td>
                               </ng-container>
                               <ng-template #editMode>
-                                <td><input type="text" class="form-control" formControlName="id"></td>
+                                <td><input type="text" class="form-control" formControlName="serial_no"></td>
                                 <td><input type="text" class="form-control" formControlName="unique_ref_id"></td>
                                 <td><input type="text" class="form-control" formControlName="name"></td>
                                 <td>
