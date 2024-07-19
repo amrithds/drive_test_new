@@ -41,6 +41,7 @@ class ObstacleSerializer(serializers.ModelSerializer):
 class SessionSerializer(serializers.HyperlinkedModelSerializer):
     trainee = UserSerializer()
     trainer = UserSerializer()
+    course = CourseSerializer()
     class Meta:
         model = Session
         fields = ['id', 'url', 'trainer', 'trainee', 'status', 'mode', 'course', 'created_at']

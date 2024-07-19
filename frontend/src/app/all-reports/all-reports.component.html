@@ -96,7 +96,7 @@
                 <table class="table table-sm table-bordered table-hover">
                     <thead class="table_column" style="height: 105px;">
                         <tr>
-                            <th  [attr.colspan]="obstacles?.length">14 Obstacles Marks</th>
+                            <th  [attr.colspan]="obstacles?.length">{{obstacles?.length}} Obstacles Marks</th>
                             <th  colspan="1" rowspan="2">OBS Marks</th>
                             <th  colspan="1" rowspan="2">Time Marks</th>
                             <th  colspan="1" rowspan="2">Total Marks <br>(10+{{getTotalMarks()}}+10)</th>
@@ -277,13 +277,13 @@
     <div class="row" style="border-bottom: 1px solid rgb(178, 177, 177);">
         <app-header></app-header>
     </div>
-    <div >
+    <div>
         <label style="text-align: center;"class="col-12">SMART SKILL DRIVING TEST CONDUCT ON</label>
         <label style="text-align: center;"class="col-4">COURSE ID - {{form.value['course_id']}}</label>
         <label style="text-align: center;"class="col-4">FROM DATE - {{form.value['from_date'] | date:'dd-MM-yyyy'}} </label>
         <label style="text-align: center;"class="col-4">TO DATE - {{form.value['to_date'] | date:'dd-MM-yyyy'}}</label>
     </div>
-    <div class="row" style="font-size: xx-small;">
+    <div class="row" style="font-size: xx-small;text-align: center;">
         <div class="col-6">
             <table class="table table-sm table-bordered table-hover" >
               <thead class="table_column">
@@ -322,13 +322,13 @@
                   <ng-container>
                     <tr>
                         <td *ngFor="let number of data.numbers; let i = index">
-                            <input type="text" style="width:20px" 
+                            <input type="text" style="width:20px;text-align: center;font-size: 12px;" 
                             [(ngModel)]="data.numbers[i]" 
                             (input)="calculateTotalMarks(data)"
                             (keydown)="onKeyDown($event)">
                           </td>
                     </tr>
-                  </ng-container>
+                    </ng-container>
                   
                   <td>{{data.totalMarks}}</td>
                 </tr>
@@ -339,7 +339,7 @@
             <table class="table table-sm table-bordered table-hover">
                 <thead class="table_column" style="height: 105px;">
                     <tr>
-                        <th  [attr.colspan]="obstacles?.length">14 Obstacles Marks</th>
+                        <th  [attr.colspan]="obstacles?.length">{{obstacles?.length}} Obstacles Marks</th>
                         <th  colspan="1" rowspan="2">OBS Marks</th>
                         <th  colspan="1" rowspan="2">Time Marks</th>
                         <th  colspan="1" rowspan="2">Total Marks <br>(10+{{getTotalMarks()}}+10)</th>
@@ -382,7 +382,7 @@
             <table class="table table-sm table-bordered table-hover">
                 <thead class="table_column">
                     <tr>
-                        <th colspan="2">STARTING POINT</th>
+                        <th style="text-align: center;" colspan="2">STARTING POINT</th>
                     </tr>
                 </thead>
                 <tbody>

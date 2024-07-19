@@ -67,7 +67,7 @@
                     <label>Rank: {{view_report?.trainee?.rank}}</label>
                     <label>Name: {{view_report?.trainee?.name}}</label>
                     <label>Unit: {{view_report?.trainee?.unit}}</label>
-                    <label>Course ID: {{view_report?.trainee?.course}}</label>
+                    <label>Course ID: {{view_report?.course.name}}</label>
                     <label>Time Taken: {{ getTotalTimeTaken() }}</label>
                 </div>  
                 <div class="label_align">
@@ -92,7 +92,7 @@
                           <tbody>
                             <tr *ngFor="let item of report; let i=index">
                                 <td style="text-align: center">{{ i + 1 }}.</td>
-                                <td [style.color]="getObsColor(item.result)">{{ item.obstacle.name }}</td>
+                                <td>{{ item.obstacle.name }}</td>
                                 <td>
                                   <ng-container *ngFor="let obj of item.data; let idx = index">
                                     <span [style.color]="getTaskColor(obj.result)">
@@ -153,7 +153,7 @@
                 <label>Rank: {{view_report?.trainee?.rank}}</label>
                 <label>Name: {{view_report?.trainee?.name}}</label>
                 <label>Unit: {{view_report?.trainee?.unit}}</label>
-                <label>Course ID: {{view_report?.trainee?.course}}</label>
+                <label>Course ID: {{view_report?.course?.name}}</label>
                 <label>Time Taken: {{ getTotalTimeTaken() }}</label>
             </div>  
             <div class="label_align">
@@ -178,7 +178,7 @@
                     <tbody>
                       <tr *ngFor="let item of report; let i=index">
                           <td style="text-align: center">{{ i + 1 }}.</td>
-                          <td [style.color]="getObsColor(item.result)">{{ item.obstacle.name }}</td>
+                          <td>{{ item.obstacle.name }}</td>
                           <td>
                             <ng-container *ngFor="let obj of item.data; let idx = index">
                               <span [style.color]="getTaskColor(obj.result)">
