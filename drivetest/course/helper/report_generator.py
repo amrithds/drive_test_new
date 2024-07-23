@@ -12,6 +12,7 @@ from report.helper import report_helper
 import datetime
 import logging
 from django.db import connection
+from django.db.models import Q
 
 logger = logging.getLogger("reportLog")
 
@@ -58,8 +59,8 @@ class ReportGenerator():
             
             for OSTracker in OSTrackers:
                 #SessionReport
-                session_reports = SessionReport.objects.exclude(result=SessionReport.RESULT_PASS).filter(obstacle_id=OSTracker.obstacle_id)
-                
+                session_reports = SessionReport.objects.exclude(~Q(task__category=Task.TASK_TYPE_BOOLEAN_ALL_SUCCESS), result=SessionReport.RESULT_PASS).filter(obstacle_id=OSTracker.obstacle_id)
+                print()
                 for session_report in session_reports:
                     
                     ObsTaskScore = ObstacleTaskScore.objects.get(obstacle_id=session_report.obstacle_id\
@@ -139,7 +140,7 @@ class ReportGenerator():
         task_category = ObsTaskScore.task.category
         
         result = False
-        if task_category == Task.TASK_TYPE_BOOLEAN:
+        if task_category in Task.BOOLEAN_TASKS:
             result = self.__booleanTasksResult(ObsTaskScore)
         elif task_category in Task.PARKING_TYPES:
             result = self.__parkingTasksResult(ObsTaskScore )
@@ -485,15 +486,15 @@ class ReportGenerator():
             if min_id:
                 min_id = execute_raw_sql(self.RIGHT_SENSOR_SQL.format(obstacle_id=obstacle_id,min_id_criteria=f'and id > {min_id}', \
                                                                  right_min_range=right_min_range,right_max_range=right_max_range))
-                print('2')
+            
                 if min_id:
                     min_id = execute_raw_sql(self.LEFT_SENSOR_SQL.format(obstacle_id=obstacle_id,min_id_criteria=f'and id > {min_id}' , \
                                                                     left_min_range=left_min_range,left_max_range=left_max_range))
-                    print('3')
+                    
                     if min_id:
                         min_id = execute_raw_sql(self.RIGHT_SENSOR_SQL.format(obstacle_id=obstacle_id, min_id_criteria=f'and id > {min_id}', \
                                                                          right_min_range=right_min_range,right_max_range=right_max_range))
-                        print('4')
+                        
                         if min_id:
                             return True
             
@@ -518,14 +519,27 @@ class ReportGenerator():
             
             return False
 
+    def __booleanTasksResult(self, obs_task_score:ObstacleTaskScore) -> bool:
+        """Boolean task result
 
-        
+        Args:
+            obs_task_score (ObstacleTaskScore): _description_
 
-
-
-
-    def __booleanTasksResult(self, ObsTaskScore:ObstacleTaskScore) -> bool:
-        success_value = ObsTaskScore.task_metrics.success_value
-        sensor_id = ObsTaskScore.task.sensor_id
-        filter_query = Q(**{"%s" % sensor_id: success_value, "obstacle_id": ObsTaskScore.obstacle_id })
-        return SensorFeed.objects.filter(filter_query).exists()
+        Returns:
+            bool: _description_
+        """
+        task_category = obs_task_score.task.category
+        sensor_id = obs_task_score.task.sensor_id
+        print('here')
+        #if task is boolean all success then failure should not be present
+        if task_category == Task.TASK_TYPE_BOOLEAN:
+            value = obs_task_score.task_metrics.success_value
+            filter_query = Q(**{"%s" % sensor_id: value, "obstacle_id": obs_task_score.obstacle_id })
+            return SensorFeed.objects.filter(filter_query).exists()
+        else:
+            value = obs_task_score.task_metrics.failure_value
+            filter_query = Q(**{"%s" % sensor_id: value, "obstacle_id": obs_task_score.obstacle_id })
+            print(SensorFeed.objects.filter(filter_query).query)
+            if SensorFeed.objects.filter(filter_query).count():
+                return False
+            return True
