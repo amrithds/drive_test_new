@@ -39,5 +39,11 @@ th, td {
 }
 
 .no-bottom-border {
-border-bottom: none;
+    border-bottom: none;
 }
+
+@media print {
+    .final_report {
+      box-shadow: none;
+    }
+  }

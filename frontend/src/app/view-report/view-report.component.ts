@@ -222,6 +222,10 @@ export class ViewReportComponent {
     return totalTimeTaken;
   }
 
+  print(): void{
+    window.print()
+  }
+
   generatePDF() {
     const data = document.getElementById('reportContent')!;
     console.log(data)

@@ -38,3 +38,18 @@
     cursor:pointer;
     float: right;
 }
+
+.report{
+    text-align: center;
+}
+
+@media print {
+    .right_sidebar {
+      width: 100%;
+      box-shadow: none;
+    }
+    .report {
+        display: block;
+        text-align: center;
+      }
+  }

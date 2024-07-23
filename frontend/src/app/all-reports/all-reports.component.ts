@@ -206,6 +206,10 @@ export class AllReportsComponent {
     this.filteredOptions = [];
   }
 
+  print(): void {
+    window.print();
+  }
+
   generatePDF() {
     const data = document.getElementById('reportContent')!;
     console.log(data)

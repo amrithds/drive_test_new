@@ -1,4 +1,4 @@
-<div *ngIf="!all_reports"class="row">
+<div *ngIf="!all_reports"class="row d-print-none">
         <app-header></app-header>
 </div>
 <div class="flex-container">
@@ -28,10 +28,13 @@
         </div>
     </div>
 
-    <div *ngIf="all_reports" class="final_report">
-        <div>
+    <div *ngIf="all_reports" class="final_report d-print-block">
+        <div class="row d-none d-print-block" style="border-bottom: 1px solid rgb(178, 177, 177);">
+            <app-header [enableBoxShadow]="false"></app-header>
+        </div>
+        <div class="d-print-none">
             <img src="./assets/images/back_button.png" class="back_button" (click)="all_reports=false;form.reset()">
-            <img src="./assets/images/printout.png" class="print_out" (click)="generatePDF()">
+            <img src="./assets/images/printout.png" class="print_out" (click)="print()">
         </div>
         <div >
             <label style="text-align: center;"class="col-12">SMART SKILL DRIVING TEST CONDUCT ON</label>

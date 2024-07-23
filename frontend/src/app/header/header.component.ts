@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { formatDate } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environment/environment';
@@ -9,6 +9,7 @@ import { environment } from '../../environment/environment';
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
+  @Input() enableBoxShadow: boolean = true;
   public today= new Date();
   public getDatetime='';
   public environment = environment;
