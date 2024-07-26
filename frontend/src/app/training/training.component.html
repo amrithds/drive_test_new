@@ -1,8 +1,11 @@
-<div class="row">
-    <app-header></app-header>
+<div class="row d-print-none">
+  <app-header></app-header>
+</div>
+<div class="row d-none d-print-block" style="border-bottom: 1px solid rgb(178, 177, 177);">
+<app-header [enableBoxShadow]="false"></app-header>
 </div>
 <div class="flex-container">
-  <div class="menubar">
+  <div class="menubar d-print-none">
     <app-menubar></app-menubar>
   </div>
   <div class="right_sidebar">
@@ -96,9 +99,9 @@
     </div>
     <div *ngIf="startsession">
         <div class="mb-2">
-            <img src="./assets/images/back_button.png" class="back_button" (click)="startsession=false">
+            <img src="./assets/images/back_button.png" class="back_button d-print-none" (click)="startsession=false">
             <!-- <label style="text-align: center;">Report ID: 111</label> -->
-            <img src="./assets/images/printout.png" class="print_out" (click)="generatePDF()">
+            <img src="./assets/images/printout.png" class="print_out d-print-none" (click)="print()">
         </div>
         
         <div class="label_align">
@@ -118,7 +121,7 @@
             <label>Name: {{ins_form.value['name']}}</label>
             <label>Unit: {{ins_form.value['unit']}}</label>
         </div>  
-        <div class="row mt-3">
+        <div class="row mt-3  d-print-none">
             <div *ngIf="!stop_test" class="col-12 text-center">
                 <button type="submit" class="btn btn-success" (click)="fetchSessionID();">Start</button>
             </div>
@@ -130,7 +133,7 @@
             <table class="table table-responsive table-striped" id="tableDataID">
                 <thead class="table_column">
                     <tr>
-                      <th style="text-align: center">Sl.no</th>
+                      <th style="text-align: center;">Sl.no</th>
                       <th>Obstacle Name</th>
                       <th>Tasks</th>
                       <th>Result</th>
@@ -173,28 +176,27 @@
                             <td></td>
                           </ng-container>
                         </tr>
+                        
                       </ng-container>
+                      <tr>
+                        <td></td>
+                        <td>Total Speed / Time Taken</td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align: center">{{ getSpeed() }} / {{getTotalTimeTaken() }}</td>
+                        <td style="text-align: center">{{getTotalTimeMarks()}}</td>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td>Total Marks</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align: center">{{ getTotalObtainedMarks() }} / {{getTotalMarks()}}</td>
+                        <td></td>
+                      </tr>
                   </tbody>
-                  <tfoot>
-                    <tr>
-                      <td></td>
-                      <td>Total Speed / Time Taken</td>
-                      <td></td>
-                      <td></td>
-                      <td style="text-align: center">{{ getSpeed() }} / {{getTotalTimeTaken() }}</td>
-                      <td style="text-align: center">{{getTotalTimeMarks()}}</td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td>Total Marks</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td style="text-align: center">{{ getTotalObtainedMarks() }} / {{getTotalMarks()}}</td>
-                      <td></td>
-                    </tr>
-                  </tfoot>
             </table>
         </div>
     </div>

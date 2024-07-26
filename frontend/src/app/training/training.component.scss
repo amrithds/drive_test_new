@@ -1,6 +1,6 @@
 
 .table_column{
-    font-size: 15px;
+    font-size: 18px;
     text-align: left;
     font-weight: 200px;
 }
@@ -8,7 +8,7 @@
 .label_align{
     // margin-left: 20px;
     label{
-        padding-right: 50px;
+        padding-right: 30px;
     }
 }
 
@@ -30,4 +30,10 @@
     cursor:pointer;
     float: right;
 }
-  
+
+@media print {
+    .right_sidebar {
+      width: 100%;
+      box-shadow: none;
+    }
+  }

@@ -562,6 +562,10 @@ export class TrainingComponent {
     }
   }
 
+  print(): void{
+    window.print()
+  }
+
   generatePDF() {
     const data = document.getElementById('reportContent')!;
     console.log(data)
