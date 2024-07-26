@@ -1,95 +1,104 @@
-<div class="row d-print-none">
-    <app-header></app-header>
-</div>
-<div class="row d-none d-print-block" style="border-bottom: 1px solid rgb(178, 177, 177);">
-  <app-header [enableBoxShadow]="false"></app-header>
-</div>
-<div class="flex-container">
-    <div class="menubar d-print-none">
-      <app-menubar></app-menubar>
+<div class="print">
+    <div class="row d-print-none">
+        <app-header></app-header>
     </div>
-    <div class="right_sidebar">
-        <div *ngIf="!enabletable && !enablereport" class="d-flex flex-column">
-            <form [formGroup]="form">
-                <div class="row">
-                    <div class="col-12">
-                        <label class="form-label required">Trainee ID</label>
-                        <input type="text" placeholder="Enter trainee id" class="form-control" (input)="onSearchChange()" formControlName="trainee_id">
-                        <div class="autocomplete-container">
-                            <div class="autocomplete-items" *ngIf="filteredOptions.length">
-                              <div class="autocomplete-item" *ngFor="let option of filteredOptions" (click)="selectOption(option.unique_ref_id)">
-                                {{ option.unique_ref_id }}
-                              </div>
+    <div class="row d-none d-print-block mtop" >
+      <app-header [enableBoxShadow]="false"></app-header>
+    </div>
+    <div class="flex-container">
+        <div class="menubar d-print-none">
+          <app-menubar></app-menubar>
+        </div>
+        <div class="right_sidebar">
+            <div *ngIf="!enabletable && !enablereport" class="d-flex flex-column">
+                <form [formGroup]="form">
+                    <div class="row">
+                        <div class="col-12">
+                            <label class="form-label required">Trainee ID</label>
+                            <input type="text" placeholder="Enter trainee id" class="form-control" (input)="onSearchChange()" formControlName="trainee_id">
+                            <div class="autocomplete-container">
+                                <div class="autocomplete-items" *ngIf="filteredOptions.length">
+                                  <div class="autocomplete-item" *ngFor="let option of filteredOptions" (click)="selectOption(option.unique_ref_id)">
+                                    {{ option.unique_ref_id }}
+                                  </div>
+                                </div>
                             </div>
                         </div>
+                        <div class="py-3">
+                            <button type="submit" class="btn btn-primary" (click)="getreports()">Submit</button>
+                        </div>
                     </div>
-                    <div class="py-3">
-                        <button type="submit" class="btn btn-primary" (click)="getreports()">Submit</button>
-                    </div>
+                </form>         
+            </div>
+            <div *ngIf="enabletable && !enablereport">
+                <div>
+                    <img src="./assets/images/back_button.png" class="back_button" (click)="enabletable=false;">
                 </div>
-            </form>         
-        </div>
-        <div *ngIf="enabletable && !enablereport">
-            <div>
-                <img src="./assets/images/back_button.png" class="back_button" (click)="enabletable=false;">
-            </div>
-            <div class="row py-3">
-                <table class="table table-bordered table-hover">
-                    <thead class="table_column">
-                          <tr>
-                            <th>Report Id</th>
-                            <th>Date</th>
-                            <th>Trainee Id</th>
-                            <th>Name</th>
-                            <th>Action</th>
-                          </tr>	
-                          <tr *ngFor="let item of individual_report | paginate: { itemsPerPage: 10, currentPage: currentPage };let i = index">
-                            <td>{{item.id}}</td>
-                            <td>{{ item.created_at | date:'mediumDate' }}</td>
-                            <td>{{item.trainee.unique_ref_id}}</td>
-                            <td>{{item.trainee.name}}</td>
-                            <td><button type="button" class="btn btn-primary" (click)="viewReport(item)">View Report</button></td>
-                          </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
-            <pagination-controls style="text-align: right;" (pageChange)="pageChanged($event)"></pagination-controls>
-        </div>
-        <div *ngIf="!enabletable && enablereport">
-            <div>
-                <img src="./assets/images/back_button.png" class="back_button d-print-none" (click)="enabletable=true;enablereport=false">
-                <label class="report">Report ID: {{report_id}}</label>
-                <img src="./assets/images/printout.png" class="print_out d-print-none" (click)="print()">
-            </div>
-            <div>
-                <div class="label_align">
-                    <label style="font-size: 20px;color: red;">Trainee:</label>
-                    <label>Army No: {{view_report?.trainee?.unique_ref_id}}</label>
-                    <label>Rank: {{view_report?.trainee?.rank}}</label>
-                    <label>Name: {{view_report?.trainee?.name}}</label>
-                    <label>Unit: {{view_report?.trainee?.unit}}</label>
-                    <label>Course ID: {{view_report?.course.name}}</label>
-                    <label>Time Taken: {{ getTotalTimeTaken() }}</label>
-                </div>  
-                <div class="label_align">
-                    <label style="font-size: 20px;color: red;">Instructor:</label>
-                    <label>Army No: {{view_report?.trainer?.unique_ref_id}}</label>
-                    <label>Rank: {{view_report?.trainer?.rank}}</label>
-                    <label>Name: {{view_report?.trainer?.name}}</label>
-                    <label>Unit: {{view_report?.trainer?.unit}}</label>
-                </div>  
                 <div class="row py-3">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table_column">
+                              <tr>
+                                <th>Report Id</th>
+                                <th>Date</th>
+                                <th>Trainee Id</th>
+                                <th>Name</th>
+                                <th>Action</th>
+                              </tr>	
+                              <tr *ngFor="let item of individual_report | paginate: { itemsPerPage: 10, currentPage: currentPage };let i = index">
+                                <td>{{item.id}}</td>
+                                <td>{{ item.created_at | date:'mediumDate' }}</td>
+                                <td>{{item.trainee.unique_ref_id}}</td>
+                                <td>{{item.trainee.name}}</td>
+                                <td><button type="button" class="btn btn-primary" (click)="viewReport(item)">View Report</button></td>
+                              </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <pagination-controls style="text-align: right;" (pageChange)="pageChanged($event)"></pagination-controls>
+            </div>
+            <div *ngIf="!enabletable && enablereport">
+                <div class="d-print-none">
+                    <img src="./assets/images/back_button.png" class="back_button" (click)="enabletable=true;enablereport=false">
+                    <label class="report">Report ID: {{report_id}}</label>
+                    <img src="./assets/images/printout.png" class="print_out" (click)="print()">
+                </div>
+                <div>
+                    <table class="label_align">
+                      <thead></thead>
+                      <tbody>
+                        <tr>
+                          <td style="font-size: 20px;color: red;">Trainee:</td>
+                          <td><strong>Army No:</strong> {{view_report?.trainee?.unique_ref_id}}</td>
+                          <td><strong>Rank:</strong> {{view_report?.trainee?.rank}}</td>
+                          <td><strong>Name:</strong> {{view_report?.trainee?.name}}</td>
+                          <td><strong>Unit:</strong> {{view_report?.trainee?.unit}}</td>
+                          <td style="padding-left:10px"><strong>Course ID:</strong> {{view_report?.course.name}}</td>
+                          
+                        </tr>
+                        <tr>
+                          <td style="font-size: 20px;color: red;">Instructor:</td>
+                          <td><strong>Army No:</strong> {{view_report?.trainer?.unique_ref_id}}</td>
+                          <td><strong>Rank:</strong> {{view_report?.trainer?.rank}}</td>
+                          <td><strong>Name:</strong> {{view_report?.trainer?.name}}</td>
+                          <td><strong>Unit:</strong> {{view_report?.trainer?.unit}}</td>
+                          <td style="padding-left:10px"><strong>Time Taken:</strong> {{ getTotalTimeTaken() }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+          
+                </div> 
+                <div class="row">
                     <table class="table table-striped" id="tableDataID">
                         <thead class="table_column1">
                             <tr>
-                              <th style="text-align: center">Sl.no</th>
-                              <th>Obstacle Name</th>
-                              <th>Tasks</th>
-                              <th>Result</th>
-                              <th style="text-align: center">Speed (km/h)/Time Taken</th>
-                              <th style="text-align: center">Marks</th>
+                              <th>SL.NO</th>
+                              <th>OBSTACLE NAME</th>
+                              <th>TASKS</th>
+                              <th>RESULT</th>
+                              <th>SPEED / TIME</th>
+                              <th>MARKS</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -133,7 +142,6 @@
                           </tbody>
                     </table>
                 </div>
-                <!-- <pagination-controls (pageChange)="pageChanged($event)" [maxSize]="5" [responsive]="true"></pagination-controls> -->
             </div>
         </div>
     </div>

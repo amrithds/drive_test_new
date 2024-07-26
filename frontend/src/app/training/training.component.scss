@@ -1,15 +1,8 @@
 
 .table_column{
     font-size: 18px;
-    text-align: left;
+    text-align: center;
     font-weight: 200px;
-}
-
-.label_align{
-    // margin-left: 20px;
-    label{
-        padding-right: 30px;
-    }
 }
 
 .table.table.table-condensed{
@@ -35,5 +28,26 @@
     .right_sidebar {
       width: 100%;
       box-shadow: none;
+      padding: 0px;
+    }
+    .label_align{
+        border-top: 1px solid rgb(178, 177, 177);
+        margin-top: -40px;
+    }
+    .mtop{
+        margin-top: -25px;
     }
   }
+
+.label_align {
+    border-collapse: collapse;
+    width: 100%; 
+    font-family: Arial, sans-serif;
+    th, td {
+        border: none;
+        text-align: left;
+        padding: 0px;
+    }
+}
+
+  

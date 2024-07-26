@@ -6,16 +6,9 @@
 }
 
 .table_column1{
-    font-size: 18px;
-    text-align: left;
+    font-size: 17px;
+    text-align: center;
     font-weight: 200px;
-}
-
-.label_align{
-    // margin-left: 20px;
-    label{
-        padding-right: 20px;
-    }
 }
 
 .table.table.table-condensed{
@@ -47,9 +40,35 @@
     .right_sidebar {
       width: 100%;
       box-shadow: none;
+      padding: 0px;
     }
     .report {
         display: block;
         text-align: center;
       }
-  }
+    .label_align{
+        border-top: 1px solid rgb(178, 177, 177);
+        margin-top: -30px;
+    }
+    .mtop{
+        margin-top: -23px; 
+    }
+    .print{
+        transform: scale(0.9); /* Scale down to 85% of the original size */
+        transform-origin: top left; /* Scale from the top-left corner */
+        width: 110%; /* Adjust width to ensure it fits within page bounds after scaling */
+        height:auto
+    }
+
+}
+
+.label_align {
+    border-collapse: collapse; /* Ensure table borders are collapsed */
+    width: 100%; 
+    font-family: Arial, sans-serif;
+    th, td {
+        border: none;
+        text-align: left;
+        padding: 0px;
+    }
+}
