@@ -1,25 +1,14 @@
-<!-- <div class="header">
-    <img src="./assets/images/army_logo_1.jpg" alt="army_logo_1" width="8%" style="margin-left: 30px;">
-    <div class="header-content">
-        <h3>5685 ASC BN,HALDWANI UTTRAKHAND</h3>
-        <p>INDOMITABLE SMART SKILL DRIVING TRACK</p>
-    </div>
-    <img src="./assets/images/army_logo_2.jpg" alt="army_logo_2" width="8%" style="margin-right: 30px;">
-
-</div> -->
-
 <div class="header-container"  [class.with-box-shadow]="enableBoxShadow">
     <div class="header">
-        <img [src]="'./assets/images/' + left_logo" alt="army_logo_1" width="8%" style="margin-left: 30px;">
+        <img class="header_image_1" [src]="'./assets/images/' + left_logo" alt="army_logo_1">
         <div class="header-content">
             <h3>{{title}}</h3>
             <p>{{subtitle}}</p>
         </div>
-        <img [src]="'./assets/images/' + right_logo" alt="army_logo_2" width="7%" style="margin-right: 30px;">
+        <img class="header_image_2" [src]="'./assets/images/' + right_logo" alt="army_logo_2">
     </div>
     <div class="top_header">
         <label>Vehicle BA No: {{veh_no}}</label>
         <label style="text-align: right;">{{getDatetime}}</label>
     </div>
-
 </div>
