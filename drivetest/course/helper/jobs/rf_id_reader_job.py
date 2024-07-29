@@ -24,25 +24,25 @@ def vehicle_location_sensor(session: Session):
     
     try:
         
-        #RF_logger.info('Init RFID reader')
+        RF_logger.info('Init RFID reader')
         #get all obstacles
         RF_ID_OBSTACLE_MAP = start_session_helper.get_obstacle_mapping()
         
         #init
-        # RF_ID_reader = rf_id_helper.RFIDReader()
+        RF_ID_reader = rf_id_helper.RFIDReader()
         OSTracker = None
         
         while(True):
-            #readRFID = RF_ID_reader.getInputFromRFID()
+            readRFID = RF_ID_reader.getInputFromRFID()
             
-        #     #use for testing without RF_ID
-        #     """
-        #     # look  course.helper.data_generator import read_rf_id_mock
-        #     # paste rf_id string in rf_id.txt
-        #     """
-            readRFID = read_rf_id_mock()
+            #     #use for testing without RF_ID
+            #     """
+            #     # look  course.helper.data_generator import read_rf_id_mock
+            #     # paste rf_id string in rf_id.txt
+            #     """
+            #readRFID = read_rf_id_mock()
             
-        #     #uppercase
+            #uppercase
             readRFID = readRFID.upper()
             if len(readRFID) == 16:
                 CURRENT_REF_ID = cache.get('CURRENT_REF_ID', None)
