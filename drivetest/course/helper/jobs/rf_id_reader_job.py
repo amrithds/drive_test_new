@@ -29,18 +29,18 @@ def vehicle_location_sensor(session: Session):
         RF_ID_OBSTACLE_MAP = start_session_helper.get_obstacle_mapping()
         
         #init
-        RF_ID_reader = rf_id_helper.RFIDReader()
+        #RF_ID_reader = rf_id_helper.RFIDReader()
         OSTracker = None
         
         while(True):
-            readRFID = RF_ID_reader.getInputFromRFID()
+            #readRFID = RF_ID_reader.getInputFromRFID()
             
             #     #use for testing without RF_ID
             #     """
             #     # look  course.helper.data_generator import read_rf_id_mock
             #     # paste rf_id string in rf_id.txt
             #     """
-            #readRFID = read_rf_id_mock()
+            readRFID = read_rf_id_mock()
             
             #uppercase
             readRFID = readRFID.upper()

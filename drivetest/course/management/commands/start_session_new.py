@@ -1,28 +1,15 @@
-from django.core.management.base import BaseCommand
-from course.models.session import Session
-from course.models.obstacle import Obstacle
-
-from course.models.obstacle_session_tracker import ObstacleSessionTracker
-from course.helper import start_session_helper
-from course.helper import cache_helper
-from course.helper.report_generator import ReportGenerator
-from course.helper.data_generator import read_rf_id_mock
-from course.helper import rf_id_helper
-from course.helper import STM_helper
-from course.models.obstacle_task_score import ObstacleTaskScore
-from course.models.task import Task 
-
-from django.conf import settings
-from app_config.helper import bluetooth_speaker_helper
-from course.helper.vehicle_sensor import VehicleSensor
-from app_config.models import Config
-import os
-import json 
-
 from concurrent.futures import ProcessPoolExecutor
 from course.helper.jobs import rf_id_reader_job
 from course.helper.jobs import read_STM_job
 from course.helper.jobs import report_job
+
+from django.core.management.base import BaseCommand
+from course.models.session import Session
+from course.helper import start_session_helper
+from course.helper import cache_helper
+from course.helper.data_generator import read_rf_id_mock
+
+from django.conf import settings
 
 
 import logging
