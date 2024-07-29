@@ -10,6 +10,7 @@ from course.helper import cache_helper
 from course.helper.data_generator import read_rf_id_mock
 
 from django.conf import settings
+import course.helper.jobs.db_connection_reset_helper
 
 
 import logging
