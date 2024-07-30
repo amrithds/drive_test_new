@@ -214,8 +214,8 @@ def session_in_progress(request):
     # session_obj = Session.objects.filter(status=Session.STATUS_IN_PROGRESS)[:1]
     session_obj = Session.objects.filter(status=Session.STATUS_IN_PROGRESS).first()
     if session_obj:
-        return JsonResponse({'session_id': session_obj.id}, status=200)
-        # return JsonResponse(session_obj.serialize(), status=200)
+        serializer = SessionSerializer(session_obj, context={'request': request})
+        return JsonResponse(serializer.data, status=200)
     else:
         return JsonResponse({}, status=200)
     
