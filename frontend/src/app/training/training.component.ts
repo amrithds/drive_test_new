@@ -116,7 +116,7 @@ export class TrainingComponent {
   // }
 
   fetchUser(): void {
-    this.http.get(this.environment.apiUrl + 'v1/course/user/?course_id='+this.course_id).subscribe(
+    this.http.get(this.environment.apiUrl + 'v1/course/user/').subscribe(
       (data: any) => {
         console.log("Fetched Total Users",data.results);
         this.users = data.results
@@ -198,7 +198,7 @@ export class TrainingComponent {
 
   fetInsData(): void{
     if(this.unique_ref_id){
-      this.http.get(this.environment.apiUrl + 'v1/course/user/?course_id='+this.course_id+'&search_id='+this.unique_ref_id+'&type='+this.type).subscribe(
+      this.http.get(this.environment.apiUrl + 'v1/course/user/?search_id='+this.unique_ref_id+'&type='+this.type).subscribe(
         (data: any) => {
           console.log("Fetched Users",data.results);
           this.instructor_data = data.results
@@ -305,6 +305,9 @@ export class TrainingComponent {
           this.driver_form.get('rank')?.setValue(this.driver_data[0].rank)
           this.driver_form.get('unit')?.setValue(this.driver_data[0].unit)
           this.trainee_id = this.driver_data[0].id
+        }else{
+          this.driver_form.get('unique_ref_id')?.reset()
+          window.alert("User does not exist in this course.")
         }
       },
       (error: any) => {
