@@ -1,5 +1,5 @@
 .thead-bg {
-    background-color:#B1A0C7; /* Change this to your desired color */
+    background-color:#B1A0C7;
     color:white;
     text-align: center;
   }
@@ -14,3 +14,44 @@
     background-color: #ffffff;
     justify-content: space-between;
 }
+
+.table_column{
+    font-size: 16px;
+    text-align: center;
+    font-weight: 200px;
+}
+
+.label_align {
+    border-collapse: collapse;
+    width: 100%; 
+    font-family: Arial, sans-serif;
+    margin-left: -3px;
+    th, td {
+        border: none;
+        text-align: left;
+        padding: 0px;
+        margin-left: 2px;
+    }
+}
+
+@keyframes zoom {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .live-button {
+    font-size: 16px;
+    color: #fff;
+    background-color: red;
+    border: none;
+    border-radius: 5px;
+    animation: zoom 2s infinite;
+    transition: background-color 0.3s;
+  }

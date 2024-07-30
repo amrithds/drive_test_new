@@ -1,54 +1,87 @@
-<div class="row py-3">
-    <h3 style="text-align: center;color:#428bca;">5685 ASC BN,HALDWANI UTTRAKHAND
-        INDOMITABLE SMART SKILL DRIVING TRACK - <span style="color: red;">LIVE</span></h3>
+
+<div class="row" style="position:fixed;border-bottom: 1px solid rgb(178, 177, 177);">
+  <app-header [enableBoxShadow]="false"></app-header>
 </div>
 <div class="row">
-    <div class="col-4">
-        <img src="./assets/images/live_image.png" alt="army_logo_1" style="width: 103%;">
-
+    <div class="col-4" style="position:fixed;margin-top:10%">
+        <img src="./assets/images/live_image.png" alt="army_logo_1" style="width: 100%;height:100vh">
     </div>
-    <div class="col" style="margin-left: -11px;">
-        <table class="table" style="font-size: 15px;">
-            <thead>
-              <tr>
-                <th class="thead-bg">PLATOON NO</th>
-                <th class="thead-bg">RECRUIT ARMY NO</th>
-                <th class="thead-bg">NAME</th>
-                <th class="thead-bg">INSTRUCTOR ARMY NO</th>
-                <th class="thead-bg">NAME</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr style="text-align: center;">
-                <td>Mark</td>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>mdo</td>
-                <td>mdo</td>
-              </tr>
-            </tbody>
-          </table>
-        
-          <table class="table" style="font-size: 15px;">
-            <thead>
-              <tr>
-                <th class="thead-bg">OBSTACLES</th>
-                <th class="thead-bg">STATUS</th>
-                <th class="thead-bg" colspan="3">ACTION</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr style="text-align: center;">
-                <td>Mark</td>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>mdo</td>
-                <td>mdo</td>
-              </tr>
-            </tbody>
-          </table>
-    </div>
+    <div class="col" style="margin-left: 33%;margin-top: 10%;">
+      <div>
+        <table class="label_align">
+          <thead>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-size: 20px;color: red;">Trainee:</td>
+              <td><strong>Army No:</strong> {{session?.trainee?.unique_ref_id}}</td>
+              <td><strong>Rank:</strong> {{session?.trainee?.rank}}</td>
+              <td><strong>Name:</strong> {{session?.trainee?.name}}</td>
+              <td><strong>Unit:</strong> {{session?.trainee?.unit}}</td>
+              <td><strong>Course ID:</strong> {{session?.course?.name}}</td>
+            </tr>
 
+            <tr>
+              <td style="font-size: 20px;color: red;">Instructor:</td>
+              <td><strong>Army No:</strong> {{session?.trainer?.unique_ref_id}}</td>
+              <td><strong>Rank:</strong> {{session?.trainer?.rank}}</td>
+              <td><strong>Name:</strong> {{session?.trainer?.name}}</td>
+              <td><strong>Unit:</strong> {{session?.trainer?.unit}}</td>
+              <!-- <td><img src="assets/images/truck.gif" style="width:10px;" alt="Description of GIF"></td>
+              <td><button class="live-button">Live</button></td> -->
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="row">
+        <table class="table table-responsive table-striped" id="tableDataID">
+            <thead class="table_column">
+                <tr>
+                  <th>SL.NO</th>
+                  <th>OBSTACLE NAME</th>
+                  <th>TASKS</th>
+                  <th>RESULT</th>
+                </tr>
+              </thead>
+              <tbody style="font-size: 15px;">
+                <ng-container *ngFor="let data of obstacles; let i=index">
+                    <tr>
+                      <td style="text-align: center">{{ i + 1 }}.</td>
+                      <td>{{ data.name }}</td>
+                      <td>
+                        <ng-container *ngFor="let i of data.obstacletaskscore_set; let idx = index">
+                          <span [style.color]="getColor(i.result)">
+                            {{ getDisplayText(i) }}
+                          </span>
+                          <span *ngIf="(idx + 1) % 3 !== 0 && idx !== data.obstacletaskscore_set.length - 1"> | </span>
+                          <br *ngIf="(idx + 1) % 3 === 0 && idx !== data.obstacletaskscore_set.length - 1">
+                        </ng-container>
+                      </td>
+                      <ng-container *ngIf="report.length==0">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </ng-container>
+                      <!-- <ng-container *ngFor="let item of report">
+                        <ng-container *ngIf="data.id === item.id">
+                          <td [style.color]="item.result === 1 ? 'green' : 'red'">{{item.result == 1 ? 'Pass' : 'Fail'}}</td>
+                          <td></td>                          
+                        </ng-container>                           
+                      </ng-container>
+                      <ng-container *ngIf="report.length != 0 && !hasDataForReportItem(data.id)">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </ng-container> -->
+                    </tr>
+                    
+                  </ng-container>
+              </tbody>
+        </table>
+      </div>
+    </div>
 </div>
 
 
