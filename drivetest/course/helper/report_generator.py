@@ -60,7 +60,7 @@ class ReportGenerator():
             for OSTracker in OSTrackers:
                 #SessionReport
                 session_reports = SessionReport.objects.exclude(~Q(task__category=Task.TASK_TYPE_BOOLEAN_ALL_SUCCESS), result=SessionReport.RESULT_PASS).filter(obstacle_id=OSTracker.obstacle_id)
-                print()
+                
                 for session_report in session_reports:
                     
                     ObsTaskScore = ObstacleTaskScore.objects.get(obstacle_id=session_report.obstacle_id\

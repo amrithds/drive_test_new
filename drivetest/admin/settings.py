@@ -251,3 +251,10 @@ CORS_ORIGIN_ALLOW_ALL = DEBUG
 #     "http://localhost:4200",
 #     "http://127.0.0.1:4200",
 # ]
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'cache/'),
+    }
+}
