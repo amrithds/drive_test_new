@@ -15,7 +15,7 @@
                         <option value="2">Instructor</option>
                     </select>
                 </div>
-                <div class="col-3">
+                <div class="col-3" *ngIf="form.value['type']==1">
                     <label>Course ID: </label>
                     <input type="text" placeholder="Course ID" (input)="onSearchChange()" class="form-control" formControlName="course"/>
                     <div class="autocomplete-container">

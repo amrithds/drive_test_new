@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient,HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environment/environment';
-import { Observable, firstValueFrom, map, startWith } from 'rxjs';
+import { firstValueFrom} from 'rxjs';
 @Component({
   selector: 'app-add-user',
   templateUrl: './add-user.component.html',
@@ -22,6 +22,7 @@ export class AddUserComponent {
   public searchTerm:any;
   public user_id:any;
   public edituser:boolean=false;
+  public type:any;
 
   constructor(
     private fb: FormBuilder,
@@ -33,7 +34,7 @@ export class AddUserComponent {
     this.fetchCourse();
     this.form = this.fb.group({
       type: [1],
-      course: [null,Validators.required],
+      course: [null],
       serial_no: [null,Validators.required],
       name: [null,Validators.required],
       rank: [null,Validators.required],
@@ -53,12 +54,24 @@ export class AddUserComponent {
   }
 
   addUser() {
+    if(this.form.value['type'] == 1 ){
+      this.form.get('course')?.setValidators(Validators.required);
+    }else{
+      this.form.get('course')?.clearValidators();
+    }
+    this.form.get('course')?.updateValueAndValidity();
+    console.log(this.form.valid,this.form.value)
     if (this.form.valid) {
       const newUser = this.form.value;
       firstValueFrom(this.http.post(this.environment.apiUrl + 'v1/course/user/', this.form.value)).then((data: any) => {
         console.log("User Added")
         this.users.push(newUser);
-        this.fetchUser(this.form.value['course']);
+        if(this.form.value['type'] == 1 ){
+          this.fetchUser(this.form.value['course']);
+          this.fetchCourse();
+        }else{
+          this.fetchInsUser();
+        }
       }).catch((error: HttpErrorResponse) => {
         if (error.status === 400) {
           window.alert('Army no or serial no already exist')
@@ -108,9 +121,14 @@ export class AddUserComponent {
     if(!this.edituser){
       this.user_id = this.editUserForm.value['serial_no']
     }
+    this.type = this.editUserForm.value['type']
     firstValueFrom(this.http.put(this.environment.apiUrl + 'v1/course/user/'+this.user_id+'/',this.editUserForm.value)).then((data: any) => {
       console.log("User saved successfully!");
-      this.fetchUser(this.form.value['course']);
+      if(this.type==1){
+        this.fetchUser(this.form.value['course']);
+      }else{
+        this.fetchInsUser();
+      }
     });
   }
 
@@ -119,10 +137,16 @@ export class AddUserComponent {
   }
 
   handleChange(event: Event) {
-    // const selectedValue = (event.target as HTMLSelectElement).value;
+    var selectedValue = (event.target as HTMLSelectElement).value;
+    console.log(selectedValue)
     this.users=[];
-    if(this.searchTerm){
-      this.fetchUser(this.searchTerm);
+    if(selectedValue=='2'){
+      this.form.get("course")?.reset();
+      this.searchTerm = '';
+      this.fetchInsUser();
+    }else{
+      if(this.searchTerm)
+      this.fetchUser(this.searchTerm);     
     }
   }
 
@@ -134,7 +158,7 @@ export class AddUserComponent {
     if(searchTerm !=''){
       this.http.get(this.environment.apiUrl + 'v1/course/user/?course_id='+searchTerm+'&type='+type).subscribe(
         (data: any) => {
-          console.log("Fetched Users",data.results);
+          console.log("Fetched Dri Users",data.results);
           this.users = data.results
           this.users = this.users.sort((a:any, b:any) => b.ID - a.ID);
         },
@@ -143,6 +167,19 @@ export class AddUserComponent {
         }
       );
     }   
+  }
+
+  fetchInsUser(): void {
+    this.users = [];
+    this.http.get(this.environment.apiUrl + 'v1/course/user/?type='+this.form.value['type']).subscribe(
+      (data: any) => {
+        console.log("Fetched Ins Users",data.results);
+        this.users = data.results.sort((a:any, b:any) => b.ID - a.ID);
+      },
+      (error: any) => {
+        console.error('Error fetching data:', error);
+      }
+    );
   }
 
   fetchCourse() { 

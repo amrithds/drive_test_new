@@ -19,7 +19,7 @@ class ObstacleTaskScoreSerializer(serializers.ModelSerializer):
     def get_result(self, obj):
         return 0
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    course = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all())
+    course = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all(), allow_null=True, required=False)
     class Meta:
         model = User
         fields = ['id', 'url', 'name', 'username', 'unique_ref_id', 'course', 'rank', 'unit', 'type','serial_no']

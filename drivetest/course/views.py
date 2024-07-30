@@ -41,9 +41,15 @@ class UserViewSet(viewsets.ModelViewSet):
     def create(self, request):
         #request.data._mutable=True
         post_data = request.data
-        course_name = post_data['course']
-        course,_ = Course.objects.get_or_create(name=course_name)
-        request.data['course'] = course.id
+        user_driver_str = str(User.DRIVER)
+        if post_data['type'] == user_driver_str or User.DRIVER:
+            course_name = post_data.get('course')
+            if course_name:
+                course, _ = Course.objects.get_or_create(name=course_name)
+                post_data['course'] = course.id
+        else:
+            post_data['course'] = None
+        request._full_data = post_data
         return super().create(request)
     
     def destroy(self, request, pk=None, *args, **kwargs):

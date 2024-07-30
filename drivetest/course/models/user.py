@@ -17,6 +17,8 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
         Token.objects.create(user=instance)
 
 class User(AbstractUser, BaseModel):
+    DRIVER = 1
+    INSTRUCTOR = 2
     username_validator = UnicodeUsernameValidator()
     def random_name():
         return str(str(random.randint(10000, 99999))+str(datetime.datetime.now()))
@@ -57,8 +59,8 @@ class User(AbstractUser, BaseModel):
     )
     unit=models.CharField(max_length=50, default='', blank=True, null=True)
     type=models.IntegerField(choices=(
-            (1, "Driver"),
-            (2, "Instructor")
+            (DRIVER, "Driver"),
+            (INSTRUCTOR, "Instructor")
         ), default=2)
     REQUIRED_FIELDS = ['unique_ref_id']
     class Meta:
