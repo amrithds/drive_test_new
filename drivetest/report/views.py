@@ -47,28 +47,28 @@ def live_report(request):
         session_reports = SessionReport.objects.filter(obstacle_id=obs_session_tracker.obstacle_id)
         
         
-        obstacle_report = {"tasks": [], "result": obs_session_tracker.status\
+        obstacle_report = {"tasks": [], "result": SessionReport.RESULT_UNKNOWN\
                             ,"total_marks": 0, "obtained_marks": 0}
-        if obs_session_tracker.status != ObstacleSessionTracker.STATUS_IN_PROGRESS:
-            for session_report in session_reports:
-                task_score_obj = ObstacleTaskScore.objects.get(obstacle_id=session_report.obstacle_id\
-                                                            ,task_id=session_report.task_id)
-                task_report = {"name": session_report.task.name, "score" : 0,"result": session_report.result, "remark": session_report.remark}
+        
+        for session_report in session_reports:
+            task_score_obj = ObstacleTaskScore.objects.get(obstacle_id=session_report.obstacle_id\
+                                                           ,task_id=session_report.task_id)
+            task_report = {"name": session_report.task.name, "score" : 0,"result": session_report.result, "remark": session_report.remark}
 
-                #if mandatory task fails then whole obstacle result is marked as fail
-                if session_report.result == SessionReport.RESULT_FAIL and task_score_obj.is_mandatory:
-                    obstacle_report["result"] = SessionReport.RESULT_FAIL
-                elif session_report.result == SessionReport.RESULT_PASS:
-                    task_report["score"] = task_score_obj.score
-                    obstacle_report["obtained_marks"] += task_score_obj.score
-                    obstacle_report["result"] = SessionReport.RESULT_PASS
-                
-                obstacle_report["total_marks"] += task_score_obj.score
-
-                obstacle_report["tasks"].append(task_report)
-            #mark fail if all task were failed in a obstacle
-            if obstacle_report["result"] == SessionReport.RESULT_UNKNOWN:
+            #if mandatory task fails then whole obstacle result is marked as fail
+            if session_report.result == SessionReport.RESULT_FAIL and task_score_obj.is_mandatory:
                 obstacle_report["result"] = SessionReport.RESULT_FAIL
+            elif session_report.result == SessionReport.RESULT_PASS:
+                task_report["score"] = task_score_obj.score
+                obstacle_report["obtained_marks"] += task_score_obj.score
+                obstacle_report["result"] = SessionReport.RESULT_PASS
+            
+            obstacle_report["total_marks"] += task_score_obj.score
+
+            obstacle_report["tasks"].append(task_report)
+        #mark fail if all task were failed in a obstacle
+        if obstacle_report["result"] == SessionReport.RESULT_UNKNOWN:
+            obstacle_report["result"] = SessionReport.RESULT_FAIL
         
         obstacle_report["obstacle_duration"] = get_obstacle_duration(obs_session_tracker.obstacle_id)
         obstacle_report["name"] = obs_session_tracker.obstacle.name
