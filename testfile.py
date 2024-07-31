@@ -1,34 +1,19 @@
-import time
-import threading
-def test():
+from concurrent.futures import ProcessPoolExecutor
+from time import sleep
+
+def task2(m):
+    while True:
+        print('ttttt')
+        sleep(2)
+def task(message):
+    while True:
         print('test')
-        while True:
-                print('1')
-                time.sleep(3)
-def test2():
-        print('test2')
-        while True:
-                print('2')
-                time.sleep(5)
-# readRFIDThread = threading.Thread(target=test())
-# readSTMThread = threading.Thread(target=test2())
-# readRFIDThread.start()
-# readSTMThread.start()
+        sleep(5)
 
-# readRFIDThread.join()
-# readSTMThread.join()
-
-
-import concurrent.futures
- 
-def worker():
-    print("Worker thread running")
- 
-pool = concurrent.futures.ThreadPoolExecutor(max_workers=2)
- 
-pool.submit(test)
-pool.submit(test2)
- 
-pool.shutdown(wait=True)
- 
-print("Main thread continuing to run")
+def main():
+   executor = ProcessPoolExecutor(5)
+   future = executor.submit(task, ("Completed"))
+   f = executor.submit(task2, ("Completed"))
+   
+if __name__ == '__main__':
+    main()
