@@ -209,7 +209,8 @@ def stop_session(request):
         return JsonResponse({'message': str(e)}, status=500)
 
 def __terminate_session(sessionObj: Session):
-    process_helper.stop_process(sessionObj.pid)
+    import os
+    os.system("pkill -9 -f 'manage.py start_session'")
 
     sessionObj.status = Session.STATUS_COMPELETED
     sessionObj.save()

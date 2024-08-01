@@ -8,14 +8,18 @@ class ObstacleSessionTracker(BaseModel):
     STATUS_IN_PROGRESS = 0
     STATUS_COMPLETED = 1
 
+    RESULT_UNKNOWN = 0
+    RESULT_PASS = 1
+    RESULT_FAIL = 2
+
     obstacle = models.ForeignKey(Obstacle, on_delete=models.DO_NOTHING)
     session = models.ForeignKey(Session, on_delete=models.DO_NOTHING)
     status = models.IntegerField(choices=(
-            (STATUS_IN_PROGRESS , "In Progres"),
+            (STATUS_IN_PROGRESS , "In Progress"),
             (STATUS_COMPLETED , "Completed")
     ), default= STATUS_IN_PROGRESS)
     report_status = models.IntegerField(choices=(
-            (STATUS_IN_PROGRESS , "In Progres"),
+            (STATUS_IN_PROGRESS , "In Progress"),
             (STATUS_COMPLETED , "Completed")
     ), default= STATUS_IN_PROGRESS)
 

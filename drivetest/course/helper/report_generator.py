@@ -1,5 +1,4 @@
 from course.models.obstacle_session_tracker import ObstacleSessionTracker
-from singleton_decorator import singleton
 from course.models.obstacle_task_score import ObstacleTaskScore
 from course.models.obstacle import Obstacle
 from report.models.session_report import SessionReport
@@ -16,7 +15,6 @@ from django.db.models import Q
 
 logger = logging.getLogger("reportLog")
 
-@singleton
 class ReportGenerator():
     DISTANCE_SENSOR_LEFT_ONLY = 0
     DISTANCE_SENSOR_RIGHT_ONLY = 1
