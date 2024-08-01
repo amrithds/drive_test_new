@@ -39,7 +39,7 @@ def live_report(request):
         "tasks": [{name: <task_name> , status: 1, remarks: '', total_marks: 0, obtained_marks:0}]
         ]
     """
-    data = cache.set('LIVE_REPORT', {})
+    data = cache.get('LIVE_REPORT', {})
 
     return HttpResponse(json.dumps(data), status=200)
 class FinalReportViewSet(viewsets.ModelViewSet):
