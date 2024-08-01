@@ -4,8 +4,6 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environment/environment';
 import { AuthService } from '../auth.service';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-training',
@@ -48,7 +46,7 @@ export class TrainingComponent {
   ){}
 
   ngOnInit() {
-    this.fetchCourse();
+    this.resumeSession();
     this.ins_form = this.fb.group({
       mode: [1,Validators.required],
       course: [null,Validators.required],
@@ -326,7 +324,6 @@ export class TrainingComponent {
           this.old_data = JSON.parse(JSON.stringify(data.results));
           this.obstacles = data.results.sort((a:any, b:any) => a.order - b.order);
           this.old_data.sort((a:any, b:any) => a.order - b.order);
-          // this.resumeSession();
         },
         (error: any) => {
           console.error('Error fetching data:', error);
@@ -366,7 +363,7 @@ export class TrainingComponent {
 
   fetchLiveReport() {
     // Initial longer interval (7000 milliseconds)
-    setTimeout(() => {
+    this.intervalId = setTimeout(() => {
       this.livereport(); // Execute live report once after initial delay
       // Switch to shorter interval (2000 milliseconds)
       this.intervalId = setInterval(() => {
@@ -533,11 +530,31 @@ export class TrainingComponent {
       (data: any) => {
         console.log("Fetched session in progress",data);
         if(Object.keys(data).length > 0){
+          this.http.get(this.environment.apiUrl + 'v1/course/obstacle/').subscribe(
+            (data: any) => {
+              console.log("Fetched obstacles",data.results);
+              this.obstacles = data.results.sort((a:any, b:any) => a.order - b.order);
+            },
+            (error: any) => {
+              console.error('Error fetching data:', error);
+            }
+          );
           this.fetchLiveReport();
+          this.startsession = true;
           this.stop_test = true;
-          this.session_id = data.session_id;
+          this.session_id = data.id;
+          this.ins_form.get('course')?.setValue(data.course.name)
+          this.ins_form.get('name')?.setValue(data.trainer.name)
+          this.ins_form.get('unit')?.setValue(data.trainer.unit)
+          this.ins_form.get('unique_ref_id')?.setValue(data.trainer.unique_ref_id)
+          this.ins_form.get('rank')?.setValue(data.trainer.rank)
+          this.driver_form.get('name')?.setValue(data.trainee.name)
+          this.driver_form.get('rank')?.setValue(data.trainee.rank)
+          this.driver_form.get('unit')?.setValue(data.trainee.unit)
+          this.driver_form.get('unique_ref_id')?.setValue(data.trainee.unique_ref_id)
         }else{
           console.log("There is no session in progress")
+          this.fetchCourse();
         }
       },
       (error: any) => {

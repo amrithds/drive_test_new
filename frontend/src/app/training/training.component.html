@@ -169,7 +169,9 @@
                           </ng-container>
                           <ng-container *ngFor="let item of report">
                             <ng-container *ngIf="data.id === item.id">
-                              <td [style.color]="item.result === 1 ? 'green' : 'red'">{{item.result == 1 ? 'Pass' : 'Fail'}}</td>
+                              <td [style.color]="item.result === 1 ? 'green' : item.result === 0 ? '' : 'red'">
+                                {{item.result === 1 ? 'Pass' : item.result === 0 ? '' : 'Fail'}}
+                              </td>                              
                               <td style="text-align: center">{{item.speed}} / {{item.obstacle_duration}}</td>
                               <td style="text-align: center">{{item.obtained_marks}} / {{item.total_marks}}</td>
                               <td></td>                          
@@ -203,11 +205,6 @@
                         <td></td>
                       </tr>
                   </tbody>
-                  <tfoot>
-                    <tr>
-                        <td style="border: none;"></td>
-                    </tr>
-                  </tfoot>
             </table>
         </div>
     </div>
