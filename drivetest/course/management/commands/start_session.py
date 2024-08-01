@@ -3,6 +3,7 @@ from course.helper.jobs import rf_id_reader_job
 from course.helper.jobs import read_STM_job
 from course.helper.jobs import report_job
 from course.helper.jobs import play_audio_job
+from course.helper.jobs import live_report_job
 
 from django.core.management.base import BaseCommand
 from course.models.session import Session
@@ -56,7 +57,7 @@ class Command(BaseCommand):
             self.SESSION = start_session_helper.createSession(trainer_id, trainee_id,session_mode, course_id)
         
         #cache keys
-        CACHE_KEYS = ('CURRENT_REF_ID', 'COLLECT_SENSOR_INPUTS', 'AUDIO_FILE')
+        CACHE_KEYS = ('CURRENT_REF_ID', 'COLLECT_SENSOR_INPUTS', 'AUDIO_FILE', 'LIVE_REPORT')
         
 
         if not self.RESUME:
@@ -66,14 +67,14 @@ class Command(BaseCommand):
             #reset cache
             cache_helper.delete_cache(CACHE_KEYS)
 
-        executor = ProcessPoolExecutor(4)
+        executor = ProcessPoolExecutor(5)
         
         rf_id_reader = executor.submit(rf_id_reader_job.vehicle_location_sensor, self.SESSION)
         STM_reader = executor.submit(read_STM_job.readSTMInputs)
         report = executor.submit(report_job.report_generator, self.SESSION, self.RESUME)
         play_audio = executor.submit(play_audio_job.playAudio)
-        
-    
+        live_report = executor.submit(live_report_job.live_report)
+
 
 
 

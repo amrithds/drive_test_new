@@ -1,4 +1,5 @@
-
+import django
+django.setup()
 from course.helper import start_session_helper
 from course.models.obstacle_session_tracker import ObstacleSessionTracker
 import copy
