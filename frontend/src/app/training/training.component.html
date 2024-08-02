@@ -173,7 +173,7 @@
                               <td *ngIf="item.status == 1" [style.color]="item.result === 1 ? 'green' : item.result === 0 ? '' : 'red'">
                                 {{item.result === 1 ? 'Pass' : item.result === 0 ? '' : 'Fail'}}
                               </td>                              
-                              <td style="text-align: center">{{item.speed}} / {{item.obstacle_duration}}</td>
+                              <td style="text-align: center">{{item.speed}} / {{item.obstacle_duration ? item.obstacle_duration : 0}}</td>
                               <td style="text-align: center">{{item.obtained_marks}} / {{item.total_marks}}</td>
                               <td></td>                          
                             </ng-container>                           
