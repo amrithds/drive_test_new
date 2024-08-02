@@ -459,7 +459,7 @@ export class TrainingComponent {
               report.speed = 0;
             }
             
-            if(obstacle.id==report.id){
+            if(obstacle.id==report.id && report.tasks.length>0){
               obstacle.obstacletaskscore_set = report.tasks
               obstacle.result = report.result
             }
