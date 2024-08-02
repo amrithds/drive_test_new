@@ -199,6 +199,10 @@ def stop_session(request):
         session_id = request.GET['session_id']
         sessionObj = Session.objects.get(id=session_id)
         report_gen = ReportGenerator(sessionObj)
+        import logging
+        logger = logging.getLogger("reportLog")
+        logger.info(session_id)
+        logger.info('id asdasdadadadsadas.......')
         report_gen.generateFinalReport()
         
         __terminate_session(sessionObj)
