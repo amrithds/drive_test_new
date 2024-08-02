@@ -34,7 +34,7 @@ def live_report():
                 
                 if obs_session_tracker.status != ObstacleSessionTracker.STATUS_IN_PROGRESS:
                     #if mandatory task fails then whole obstacle result is marked as fail
-                    if session_report.result != SessionReport.RESULT_FAIL and task_score_obj.is_mandatory:
+                    if session_report.result == SessionReport.RESULT_FAIL and task_score_obj.is_mandatory:
                         obstacle_report["result"] = SessionReport.RESULT_FAIL
                     elif session_report.result == SessionReport.RESULT_PASS:
                         task_report["score"] = task_score_obj.score
