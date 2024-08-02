@@ -169,7 +169,8 @@
                           </ng-container>
                           <ng-container *ngFor="let item of report">
                             <ng-container *ngIf="data.id === item.id">
-                              <td [style.color]="item.result === 1 ? 'green' : item.result === 0 ? '' : 'red'">
+                              <td *ngIf="item.status == 0"></td>
+                              <td *ngIf="item.status == 1" [style.color]="item.result === 1 ? 'green' : item.result === 0 ? '' : 'red'">
                                 {{item.result === 1 ? 'Pass' : item.result === 0 ? '' : 'Fail'}}
                               </td>                              
                               <td style="text-align: center">{{item.speed}} / {{item.obstacle_duration}}</td>
