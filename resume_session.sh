@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-cd /home/super/Desktop/app/drive_test
+cd /home/admin/Desktop/app/drive_test
 source venv/bin/activate
 cd drivetest
 python manage.py resume_session
