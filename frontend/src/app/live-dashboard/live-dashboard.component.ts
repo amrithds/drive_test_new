@@ -16,6 +16,7 @@ export class LiveDashboardComponent {
   public session:any;
   public old_data:any;
   public intervalId:any;
+  public percentage: number = 60;
 
   constructor(
     private router: Router,
@@ -56,7 +57,13 @@ export class LiveDashboardComponent {
         console.log(this.report)
         for(const obstacle of this.obstacles){
           for(let i = 0; i < this.report.length; i++){
-            const report = this.report[i];            
+            const report = this.report[i];   
+            let resultvalidation = (this.percentage / 100) * report.total_marks;
+            if (report.obtained_marks>=resultvalidation){
+              report.result = 1
+            }else{
+              report.result = 2
+            }
             if(obstacle.id==report.id){
               obstacle.obstacletaskscore_set = report.tasks
               obstacle.result = report.result
@@ -75,7 +82,7 @@ export class LiveDashboardComponent {
       (data: any) => {
         console.log("Fetched session in progress",data);
         if(Object.keys(data).length > 0){
-          // this.fetchLiveReport();
+          this.fetchLiveReport();
           this.session = data;
         }else{
           console.log("There is no session in progress")
