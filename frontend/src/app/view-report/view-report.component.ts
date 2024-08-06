@@ -28,6 +28,7 @@ export class ViewReportComponent {
   public filteredOptions: any = [];
   public filteredInsOptions:any=[];
   public users:any=[];
+  public percentage: number = 60;
 
 
   constructor(
@@ -131,6 +132,13 @@ export class ViewReportComponent {
             }
           }else{
             report.speed = 0
+          }
+
+          let resultvalidation = (this.percentage / 100) * report.total_marks;
+          if (report.obtained_marks>=resultvalidation){
+            report.result = 1
+          }else{
+            report.result = 2
           }
           
         }
