@@ -27,8 +27,8 @@
               <td><strong>Rank:</strong> {{session?.trainer?.rank}}</td>
               <td><strong>Name:</strong> {{session?.trainer?.name}}</td>
               <td><strong>Unit:</strong> {{session?.trainer?.unit}}</td>
-              <!-- <td><img src="assets/images/truck.gif" style="width:10px;" alt="Description of GIF"></td>
-              <td><button class="live-button">Live</button></td> -->
+              <td><img src="assets/images/truck.gif" style="width:50px;float:right;margin-right: -40px;" alt="Description of GIF"></td>
+              <td><button class="live-button">Live</button></td>
             </tr>
           </tbody>
         </table>
@@ -59,22 +59,15 @@
                       </td>
                       <ng-container *ngIf="report.length==0">
                         <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
                       </ng-container>
-                      <!-- <ng-container *ngFor="let item of report">
+                      <ng-container *ngFor="let item of report">
                         <ng-container *ngIf="data.id === item.id">
-                          <td [style.color]="item.result === 1 ? 'green' : 'red'">{{item.result == 1 ? 'Pass' : 'Fail'}}</td>
-                          <td></td>                          
+                          <td *ngIf="item.status == 0"></td>
+                          <td *ngIf="item.status == 1" [style.color]="item.result === 1 ? 'green' : item.result === 0 ? '' : 'red'">
+                            {{item.result === 1 ? 'Pass' : item.result === 0 ? '' : 'Fail'}}
+                          </td>                        
                         </ng-container>                           
                       </ng-container>
-                      <ng-container *ngIf="report.length != 0 && !hasDataForReportItem(data.id)">
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                      </ng-container> -->
                     </tr>
                     
                   </ng-container>
