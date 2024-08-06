@@ -37,6 +37,9 @@ export class TrainingComponent {
   public ranks: string[] = ['AV', 'Rect', 'SEP', 'L Nk', 'Nk', 'Hav', 'Nb Sub', 'Sub', 'Sub Maj', 'Lt',  'Capt', 'Maj', 'Lt Col', 'Col'];
   public selectedItem:any;
   public old_data:any;
+  public filterItem:any;
+  public course:any;
+  public percentage: number = 60;
 
   constructor(
     private fb: FormBuilder,
@@ -82,36 +85,18 @@ export class TrainingComponent {
 
   onSearchChangeCourse() {
     this.course_id = this.ins_form.value['course']
-    this.selectedItem = this.courses.find((item: any) => 
+    this.course = this.courses.find((item: any) => 
       item.name.toLowerCase().startsWith(this.ins_form.value['course'].toLowerCase())
     );
-    if (this.selectedItem) {
-      console.log("Selected Course:", this.selectedItem);
-      this.ins_form.get('course')?.setValue(this.selectedItem.name);
+    if (this.course) {
+      console.log("Selected Course:", this.course);
+      this.ins_form.get('course')?.setValue(this.course.name);
       this.course_id = this.ins_form.value['course']
       this.fetchUser();
     } else {
       window.alert("No matching course found");
     }
   }
-
-  // onSearchChange(): void {
-  //   this.course_id = this.ins_form.value['course']
-  //   if(this.course_id){
-  //     this.filteredOptions = this.courses.filter((course: any) =>
-  //       course.name.toLowerCase().includes(this.course_id?.toLowerCase())
-  //     );
-  //   }else{
-  //     this.filteredOptions = []
-  //   }
-  // }
-
-  // selectOption(option: any): void {
-  //   this.ins_form.get('course')?.setValue(option);
-  //   this.course_id = this.ins_form.value['course'];
-  //   this.filteredOptions = [];
-  //   this.fetchUser();
-  // }
 
   fetchUser(): void {
     this.http.get(this.environment.apiUrl + 'v1/course/user/').subscribe(
@@ -130,12 +115,14 @@ export class TrainingComponent {
     console.log("Entered Ins ID",this.unique_ref_id)
     if(this.course_id){
       if(this.unique_ref_id){
-        // const uniqueRefIdInt = parseInt(this.unique_ref_id, 10);
-        this.selectedItem = this.users.filter((user: any) =>
+        this.filterItem = this.users.filter((user: any) =>
           user.type == 2);
-        this.selectedItem = this.selectedItem.filter((user: any) =>
-          user.unique_ref_id.startsWith(this.unique_ref_id) || 
-          user.id == parseInt(this.unique_ref_id, 10));
+        this.selectedItem = this.filterItem.filter((user: any) =>
+          user.serial_no == parseInt(this.unique_ref_id, 10));
+        if(this.selectedItem.length==0){
+          this.selectedItem = this.filterItem.filter((user: any) =>
+            user.unique_ref_id.startsWith(this.unique_ref_id));
+        }
         console.log("Selected Instructor",this.selectedItem[0])
         if(this.selectedItem.length>0){
           this.ins_form.get('unique_ref_id')?.setValue(this.selectedItem[0].unique_ref_id);
@@ -159,40 +146,6 @@ export class TrainingComponent {
       this.ins_form.get('unique_ref_id')?.reset()
     }
   }
-
-  // onSearchChangeIns(): void {
-  //   this.unique_ref_id = this.ins_form.value['unique_ref_id']
-  //   console.log(this.unique_ref_id)
-  //   if(this.course_id){
-  //     if(this.unique_ref_id){
-  //       this.filteredInsOptions = this.users.filter((user: any) =>
-  //         user.unique_ref_id.toLowerCase().includes(this.unique_ref_id?.toLowerCase()) &&
-  //         user.type == 2
-  //       );
-  //       console.log(this.filteredInsOptions)
-  //       if(this.filteredInsOptions.length==0){
-  //         this.ins_form.get('unique_ref_id')?.reset()
-  //         window.alert("User not exist")
-  //       }
-  //     }else{
-  //       this.filteredInsOptions = [];
-  //       this.ins_form.get('name')?.reset()
-  //       this.ins_form.get('rank')?.reset()
-  //       this.ins_form.get('unit')?.reset()
-  //     }
-  //   }else{
-  //     window.alert("Please select course id")
-  //     this.ins_form.get('unique_ref_id')?.reset()
-  //   }
-  // }
-
-  // selectOptionIns(option: any): void {
-  //   this.ins_form.get('unique_ref_id')?.setValue(option);
-  //   this.unique_ref_id = this.ins_form.value['unique_ref_id'];
-  //   this.type = this.ins_form.value['type']
-  //   this.filteredInsOptions = [];
-  //   this.fetInsData();
-  // }
 
   fetInsData(): void{
     if(this.unique_ref_id){
@@ -228,13 +181,14 @@ export class TrainingComponent {
     console.log("Entered Dri ID",this.unique_ref_id)
     if(this.course_id){
       if(this.unique_ref_id){
-        // const uniqueRefIdInt = parseInt(this.unique_ref_id, 10);
-        this.selectedItem = this.users.filter((user: any) => 
-          user.type == 1);
-        this.selectedItem = this.selectedItem.filter((user: any) =>
-          user.unique_ref_id.startsWith(this.unique_ref_id) || 
-          user.id == parseInt(this.unique_ref_id, 10));
-        // this.selectedItem = this.users.filter((user: any) => user.id == uniqueRefIdInt && user.type == 1);
+        this.filterItem = this.users.filter((user: any) => 
+          user.type == 1 && user.course==this.course.id);
+        this.selectedItem = this.filterItem.filter((user: any) =>
+          user.serial_no == parseInt(this.unique_ref_id, 10));
+        if(this.selectedItem.length==0){
+          this.selectedItem = this.filterItem.filter((user: any) =>
+            user.unique_ref_id.startsWith(this.unique_ref_id));
+        }      
         console.log("Selected Driver",this.selectedItem[0])
         if(this.selectedItem.length>0){
           this.driver_form.get('unique_ref_id')?.setValue(this.selectedItem[0].unique_ref_id);
@@ -258,40 +212,6 @@ export class TrainingComponent {
       this.driver_form.get('unique_ref_id')?.reset()
     }
   }
-
-  // onSearchChangeDri(): void {
-  //   this.unique_ref_id = this.driver_form.value['unique_ref_id']
-  //   console.log(this.unique_ref_id)
-  //   if(this.course_id){
-  //     if(this.unique_ref_id){
-  //       this.filteredDriOptions = this.users.filter((user: any) =>
-  //         user.unique_ref_id.toLowerCase().includes(this.unique_ref_id?.toLowerCase()) &&
-  //         user.type == 1
-  //       );
-  //       console.log(this.filteredDriOptions)
-  //       if(this.filteredDriOptions.length==0){
-  //         this.driver_form.get('unique_ref_id')?.reset()
-  //         window.alert("User not exist")
-  //       }
-  //     }else{
-  //       this.filteredDriOptions = [];
-  //       this.driver_form.get('name')?.reset()
-  //       this.driver_form.get('rank')?.reset()
-  //       this.driver_form.get('unit')?.reset()
-  //     }
-  //   }else{
-  //     window.alert("Please select course id and drive mode")
-  //     this.driver_form.get('unique_ref_id')?.reset()
-  //   }
-  // }
-
-  // selectOptionDri(option: any): void {
-  //   this.driver_form.get('unique_ref_id')?.setValue(option);
-  //   this.unique_ref_id = this.driver_form.value['unique_ref_id'];
-  //   this.type = this.driver_form.value['type']
-  //   this.filteredDriOptions = [];
-  //   this.fetDriData();
-  // }
 
   fetDriData(): void{
     this.http.get(this.environment.apiUrl + 'v1/course/user/?course_id='+this.course_id+'&search_id='+this.unique_ref_id+'&type='+this.type).subscribe(
@@ -368,7 +288,7 @@ export class TrainingComponent {
       // Switch to shorter interval (2000 milliseconds)
       this.intervalId = setInterval(() => {
         this.livereport();
-      }, 2000);
+      }, 1000);
     }, 7000);
   }
 
@@ -380,64 +300,8 @@ export class TrainingComponent {
     this.http.get(this.environment.apiUrl + 'v1/report/live_report/').subscribe(
       (data: any) => {
         this.report = data
-        // this.report=[
-        //   {
-        //     "tasks": [
-        //       {
-        //         "name": "Seat Belt",
-        //         "score": 10,
-        //         "result": 1,
-        //         "remark": "Seat Belt Fastened"
-        //       },
-        //       {
-        //         "name": "Head Light",
-        //         "score": 0,
-        //         "result": 1,
-        //         "remark": "Head Light on"
-        //       }
-        //     ],
-        //     "result": 1,
-        //     "total_marks": 20,
-        //     "obtained_marks": 10,
-        //     "obstacle_duration": 16,
-        //     "name": "start",
-        //     "id": 2
-        //   },
-        //   {
-        //     "tasks": [
-        //       {
-        //         "name": "Parking",
-        //         "score": 0,
-        //         "result": 2,
-        //         "remark": "Parking Failure"
-        //       },
-        //     ],
-        //     "result": 2,
-        //     "total_marks": 35,
-        //     "obtained_marks": 0,
-        //     "obstacle_duration": 38,
-        //     "name": "Left Parking",
-        //     "id": 3
-        //   },
-        //   {
-        //     "tasks": [
-        //       {
-        //         "name": "Parking",
-        //         "score": 0,
-        //         "result": 2,
-        //         "remark": "Parking Failure"
-        //       },
-        //     ],
-        //     "result": 2,
-        //     "total_marks": 35,
-        //     "obtained_marks": 0,
-        //     "obstacle_duration": 68,
-        //     "name": "Left Parking",
-        //     "id": 4
-        //   }
-        // ]
         console.log(this.report)
-        // console.log(this.obstacles)
+
         const averageSpeed = 25; // km/h
         const speedModifiers = [1, 2, 3, -1, -2];
 
@@ -457,6 +321,13 @@ export class TrainingComponent {
               }
             }else{
               report.speed = 0;
+            }
+
+            let resultvalidation = (this.percentage / 100) * report.total_marks;
+            if (report.obtained_marks>=resultvalidation){
+              report.result = 1
+            }else{
+              report.result = 2
             }
             
             if(obstacle.id==report.id && report.tasks.length>0){
@@ -496,7 +367,6 @@ export class TrainingComponent {
       totalObstacleDurationInSeconds += student.obstacle_duration;
     }
     totalObstacleDurationInMinutes = Math.round(totalObstacleDurationInSeconds/60);
-    // console.log("totalObstacleDurationInMinutes",totalObstacleDurationInMinutes)
     if (totalObstacleDurationInMinutes >= 16 && totalObstacleDurationInMinutes <= 20) {
       time_marks = 10;
     } else if (totalObstacleDurationInMinutes > 20 && totalObstacleDurationInMinutes <= 24) {
