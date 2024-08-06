@@ -134,8 +134,8 @@ export class ViewReportComponent {
             report.speed = 0
           }
 
-          let resultvalidation = (this.percentage / 100) * report.total_marks;
-          if (report.obtained_marks>=resultvalidation){
+          let resultvalidation = (this.percentage / 100) * report.total_score;
+          if (report.obtained_score>=resultvalidation){
             report.result = 1
           }else{
             report.result = 2
