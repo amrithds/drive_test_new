@@ -46,8 +46,8 @@ export class LiveDashboardComponent {
       this.livereport();
       this.intervalId = setInterval(() => {
         this.livereport();
-      }, 2000);
-    }, 7000);
+      }, 1000);
+    }, 1000);
   }
   
   livereport() {
