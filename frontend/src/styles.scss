@@ -75,7 +75,7 @@ $frontend-theme: mat.define-light-theme((
 }
 
 .flex-container > div {
-    margin: 10px;
+    margin: 5px;
     padding: 20px;
     border-radius: 5px;
 }
@@ -87,7 +87,7 @@ $frontend-theme: mat.define-light-theme((
 }
 
 .right_sidebar{
-    width: 88%;
+    width: 89%;
     box-shadow: 0px 0px 10px -2px #8e8e8e80;
 }
 
@@ -100,10 +100,10 @@ $frontend-theme: mat.define-light-theme((
 .btn-square-md {
     background-color: #32a2c7;
     cursor: pointer;
-    width: 75px !important;
+    width: 108px !important;
     max-width: 100% !important;
     max-height: 100% !important;
-    height: 75px !important;
+    height: 40px !important;
     text-align: center;
     padding: 5px 10px;
     font-size:10px;
