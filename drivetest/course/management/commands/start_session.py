@@ -1,5 +1,6 @@
 from concurrent.futures import ProcessPoolExecutor
 from course.helper.jobs import rf_id_reader_job
+from course.helper.jobs import rfid_pwd_reader_job
 from course.helper.jobs import read_STM_job
 from course.helper.jobs import report_job
 from course.helper.jobs import play_audio_job
@@ -69,7 +70,8 @@ class Command(BaseCommand):
 
         executor = ProcessPoolExecutor(5)
         
-        rf_id_reader = executor.submit(rf_id_reader_job.vehicle_location_sensor, self.SESSION)
+        #rf_id_reader = executor.submit(rf_id_reader_job.vehicle_location_sensor, self.SESSION)
+        rf_id_pwd_reader = executor.submit(rfid_pwd_reader_job.vehicle_location_sensor, self.SESSION)
         STM_reader = executor.submit(read_STM_job.readSTMInputs)
         report = executor.submit(report_job.report_generator, self.SESSION, self.RESUME)
         play_audio = executor.submit(play_audio_job.playAudio)
