@@ -75,9 +75,9 @@ $frontend-theme: mat.define-light-theme((
 }
 
 .flex-container > div {
-    margin: 5px;
+    margin-top: 1px;
+    margin-left: 1PX;
     padding: 20px;
-    border-radius: 5px;
 }
 
 .menubar{
@@ -88,7 +88,7 @@ $frontend-theme: mat.define-light-theme((
 }
 
 .right_sidebar{
-    width: 89%;
+    width: 90%;
     box-shadow: 0px 0px 10px -2px #8e8e8e80;
 }
 
