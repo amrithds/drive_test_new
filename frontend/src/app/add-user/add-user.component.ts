@@ -23,6 +23,7 @@ export class AddUserComponent {
   public user_id:any;
   public edituser:boolean=false;
   public type:any;
+  public currentPage = 1;
 
   constructor(
     private fb: FormBuilder,
@@ -210,5 +211,10 @@ export class AddUserComponent {
     this.form.get('course')?.setValue(option);
     this.filteredOptions = [];
     this.fetchUser(option);
+  }
+
+  pageChanged(pageNumber: number) {
+    console.log(pageNumber)
+    this.currentPage = pageNumber;
   }
 }
