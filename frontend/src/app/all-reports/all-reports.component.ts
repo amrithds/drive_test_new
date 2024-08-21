@@ -1,11 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 import { environment } from '../../environment/environment';
 import { HttpClient } from '@angular/common/http';
-
-
 @Component({
   selector: 'app-all-reports',
   templateUrl: './all-reports.component.html',
@@ -19,15 +15,11 @@ export class AllReportsComponent {
   public course_id:any;
   public filteredOptions:any = [];
   public selected_option:any;
-  groupedReports: { [sessionId: number]: Report[] }[] = [];
   sessions: { session: any, reports: any[], numbers: number[],totalMarks: number;timemarks:number;totalobtainedscore:number  }[] = []; 
   public header_num = Array(10).fill(1);
-  retainFocus = true; // Flag to control whether to retain focus
   firstColumn: any[] = [];
   secondColumn: any[] = [];
   public obstacles:any;
-
-
 
   constructor(
     private fb:FormBuilder,
@@ -208,29 +200,5 @@ export class AllReportsComponent {
 
   print(): void {
     window.print();
-  }
-
-  generatePDF() {
-    const data = document.getElementById('reportContent')!;
-    console.log(data)
-    html2canvas(data).then(canvas => {
-      const imgWidth = 210;
-      const imgHeight = canvas.height * imgWidth / canvas.width;
-
-      const contentDataURL = canvas.toDataURL('image/png');
-      let pdf = new jsPDF('p', 'mm', 'a4');
-      const position = 0;
-      pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight);
-
-       // Add footer
-      pdf.setFontSize(10);
-       pdf.text('Smart Skill Driving Technology By | FIRSTSERVE.com | Mob:99000 99100', 50, pdf.internal.pageSize.height - 10); 
-
-      // Open the PDF in a new tab and trigger the print dialog
-      const pdfOutput = pdf.output('blob');
-      const blobUrl = URL.createObjectURL(pdfOutput);
-      
-      const printWindow = window.open(blobUrl);
-    });
   }
 }
