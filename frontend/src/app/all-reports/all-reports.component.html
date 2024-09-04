@@ -29,7 +29,7 @@
     </div>
 
     <div *ngIf="all_reports" class="final_report d-print-block">
-        <div class="row d-none d-print-block" style="border-bottom: 1px solid rgb(178, 177, 177);">
+        <div class="row d-none d-print-block mtop" style="border-bottom: 1px solid rgb(178, 177, 177);">
             <app-header [enableBoxShadow]="false"></app-header>
         </div>
         <div class="d-print-none">
@@ -39,11 +39,11 @@
         <div >
             <label style="text-align: center;"class="col-12">SMART SKILL DRIVING TEST CONDUCT ON</label>
             <label style="text-align: center;"class="col-4">COURSE ID - {{form.value['course_id']}}</label>
-            <label style="text-align: center;"class="col-4">FROM DATE - {{form.value['from_date'] | date:'dd-MM-yyyy'}} </label>
-            <label style="text-align: center;"class="col-4">TO DATE - {{form.value['to_date'] | date:'dd-MM-yyyy'}}</label>
+            <label style="text-align: center;"class="col-4">FROM DATE - <input [(ngModel)]="getFromDate"></label>
+            <label style="text-align: center;"class="col-4">TO DATE - <input [(ngModel)]="getToDate"> </label>
         </div>
   
-        <div class="row" style="font-size: xx-small;text-align: center;">
+        <div class="row mt-2" style="font-size: xx-small;text-align: center;">
             <div class="col-6">
                 <table class="table table-sm table-bordered table-hover">
                   <thead class="table_column">
@@ -129,7 +129,7 @@
                             <td>{{data.totalobtainedscore}}</td>
                             <td>{{data.timemarks}}</td>
                             <td>{{ data.totalMarks + data.totalobtainedscore + data.timemarks }}</td>
-                            <td>{{ data.totalMarks + data.totalobtainedscore + data.timemarks > 60 ? 'Pass' : 'Retest' }}</td>
+                            <td>{{ (data.totalMarks + data.totalobtainedscore + data.timemarks) >= 60 ? 'Pass' : 'Retest' }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -192,7 +192,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-3">
+            <div class="col-4">
                 <table class="table table-sm table-bordered table-hover">
                     <thead class="table_column">
                         <tr>
@@ -210,7 +210,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-3">
+            <div class="col-2">
                 <table class="table table-sm table-bordered table-hover">
                     <thead class="table_column">
                         <tr>

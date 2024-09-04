@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { environment } from '../../environment/environment';
 import { HttpClient } from '@angular/common/http';
+import { formatDate } from '@angular/common';
 @Component({
   selector: 'app-all-reports',
   templateUrl: './all-reports.component.html',
@@ -20,6 +21,8 @@ export class AllReportsComponent {
   firstColumn: any[] = [];
   secondColumn: any[] = [];
   public obstacles:any;
+  public getFromDate:any;
+  public getToDate:any;
 
   constructor(
     private fb:FormBuilder,
@@ -34,6 +37,11 @@ export class AllReportsComponent {
       from_date: [null,Validators.required],
       to_date: [null],
     });
+  }
+
+  onChangeDate() {
+    this.getFromDate = formatDate(this.form.value['from_date'], 'dd-MM-yyyy', 'en-US');
+    this.getToDate =  formatDate(this.form.value['to_date'], 'dd-MM-yyyy', 'en-US');
   }
 
   calculateTotalMarks(data: any) {
@@ -56,6 +64,7 @@ export class AllReportsComponent {
   }
 
   getreports() {
+    this.onChangeDate();
     this.http.get(this.environment.apiUrl + 'v1/report/finalReport/?course_id=' + this.selected_option.id + '&from_date=' + this.form.value['from_date'] + '&to_date=' + this.form.value['to_date'])
       .subscribe(
         (data: any) => {
