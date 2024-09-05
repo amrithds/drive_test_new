@@ -63,7 +63,7 @@
                                 <button type="submit" class="btn btn-primary" (click)="addUser()">+ Add User</button>
                             </td>
                         </tr>               
-                        <tr *ngFor="let user of users;let i=index" [formGroup]="editUserForm">
+                        <tr *ngFor="let user of users | paginate: { itemsPerPage: 10, currentPage: currentPage };let i = index" [formGroup]="editUserForm">
                             <ng-container *ngIf="editIndex !== i; else editMode">
                                 <td>{{ user.serial_no }}</td>
                                 <td>{{ user.unique_ref_id }}</td>
@@ -94,6 +94,7 @@
                         </tr>
                     </tbody>
                 </table>   
+                <pagination-controls style="text-align: right;" (pageChange)="pageChanged($event)"></pagination-controls>
             </div>
         </form>
     </div>

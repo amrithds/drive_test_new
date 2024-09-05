@@ -1,8 +1,6 @@
 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environment/environment';
