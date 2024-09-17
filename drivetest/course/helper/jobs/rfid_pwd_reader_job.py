@@ -14,6 +14,7 @@ from report.helper import report_helper
 import shlex
 import subprocess
 import time
+import re
 
 running_process = None
 
