@@ -322,10 +322,11 @@ export class TrainingComponent {
             }else{
               report.speed = 0;
             }
+            
+            //if(report.obstacle_duration!=0 && report.obstacle_duration!=null){
+              //report.obstacle_duration = Math.round(report.obstacle_duration / 60)
+            //}
 
-            if(report.obstacle_duration!=0 && report.obstacle_duration!=null){
-              report.obstacle_duration = Math.round(report.obstacle_duration / 60)
-            }
 
             let resultvalidation = (this.percentage / 100) * report.total_marks;
             if (report.obtained_marks>=resultvalidation){
@@ -365,13 +366,13 @@ export class TrainingComponent {
 
   getTotalTimeMarks(): number {
     let totalObstacleDurationInMinutes = 0;
-    // let totalObstacleDurationInSeconds = 0;
+    let totalObstacleDurationInSeconds = 0;
     let time_marks = 0;
     for (const student of this.report) {
-      // totalObstacleDurationInSeconds += student.obstacle_duration;
-      totalObstacleDurationInMinutes += student.obstacle_duration;
+      totalObstacleDurationInSeconds += student.obstacle_duration;
+      //totalObstacleDurationInMinutes += student.obstacle_duration;
     }
-    // totalObstacleDurationInMinutes = Math.round(totalObstacleDurationInSeconds/60);
+    totalObstacleDurationInMinutes = Math.round(totalObstacleDurationInSeconds/60);
     if (totalObstacleDurationInMinutes >= 16 && totalObstacleDurationInMinutes <= 20) {
       time_marks = 10;
     } else if (totalObstacleDurationInMinutes > 20 && totalObstacleDurationInMinutes <= 24) {

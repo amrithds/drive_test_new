@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'course',
     'report',
+    'NRF24L01',
     'app_config'
 ]
 

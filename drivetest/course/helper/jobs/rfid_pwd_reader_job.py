@@ -46,11 +46,11 @@ def vehicle_location_sensor(session: Session):
                         #print("data",data)
 
                         if len(data) == 2:
-                            readRFID = data[0].strip()
+                            readRFID = extract_number(data[0])
                             distance = data[1].strip()
                             print("readRFID", readRFID)
-                            print("distance", distance)
-
+                            #print("distance", distance)
+                            
                             # Update cache with distance
                             cache.set('DISTANCE', distance)
                             CURRENT_REF_ID = cache.get('CURRENT_REF_ID', None)
@@ -77,11 +77,11 @@ def vehicle_location_sensor(session: Session):
                                         previousOSTracker.save()
 
                                     # Check obstacle end RFID
-                                    if tempObstacleObj.end_rf_id == report_helper.get_obstacle_duration(tempObstacleObj.id):
+                                    if report_helper.get_obstacle_duration(tempObstacleObj.id)!=None and int(tempObstacleObj.end_rf_id) >= report_helper.get_obstacle_duration(tempObstacleObj.id):
                                         cache.set('COLLECT_SENSOR_INPUTS', False)
                                         OSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
                                         OSTracker.save()
-                    
+
                 else:
                     RF_logger.info("No data found in the file")
                 time.sleep(1)
@@ -116,3 +116,13 @@ def read_lines_from_file(filename='output.txt'):
         RF_logger.error(f"File '{filename}' not found.")
     except IOError as e:
         RF_logger.error(f"An error occurred while reading the file: {e}")
+
+
+def extract_number(s):
+    s = s.strip()
+    if s.isdigit():
+        return s
+    match = re.search(r'\d+', s)
+    if match:
+        return match.group()
+    return None
