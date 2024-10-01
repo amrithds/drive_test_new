@@ -30,6 +30,7 @@ from report.models import FinalReport
 from rest_framework.decorators import api_view, permission_classes
 import json
 import logging
+import os
 logger = logging.getLogger("default")
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -175,6 +176,12 @@ def start_session(request):
         trainer_id = request.GET['trainer_id']
         trainee_id = request.GET['trainee_id']
         mode = request.GET['mode']
+
+        output_file_path = '/home/admin/driving_project/drivetest/output.txt'
+        
+        # Delete the output file if it exists
+        if os.path.exists(output_file_path):
+            os.remove(output_file_path)
         
         #close pending sessions
         pending_sessions = Session.objects.filter(status=Session.STATUS_IN_PROGRESS)

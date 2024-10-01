@@ -203,7 +203,7 @@ class ReportGenerator():
         ZIG_ZAG_LEFT_RESULT = 0
         ZIG_ZAG_RIGHT_RESULT = 0
         task = obs_task_score.task
-        print('here : get result')
+        print('distance_sensor_result')
         for sensor_feed in sensor_feeds:
             left_sensor_val = getattr(sensor_feed, left_sensor_id)
             right_sensor_val = getattr(sensor_feed, right_sensor_id)
@@ -222,12 +222,19 @@ class ReportGenerator():
 
             elif sensor_calculation == self.DISTANCE_SENSOR_LEFT_ONLY:
                 if  left_min_range <= left_sensor_val and left_sensor_val <= left_max_range:
-                    total_valid_count += 1
+                    if back_min_range <= back_sensor_val and back_sensor_val <= back_max_range:
+                        total_valid_count += 1
+                    else:
+                        total_valid_count = 0
                 else:
                     total_valid_count = 0
+                    
             elif sensor_calculation == self.DISTANCE_SENSOR_RIGHT_ONLY:
                 if right_min_range <= right_sensor_val and right_sensor_val  <= right_max_range:
-                    total_valid_count += 1
+                    if back_min_range <= back_sensor_val and back_sensor_val <= back_max_range:
+                        total_valid_count += 1
+                    else:
+                        total_valid_count = 0
                 else:
                     total_valid_count = 0
             elif sensor_calculation == self.DISTANCE_SENSOR_LEFT_AND_RIGHT:
@@ -528,7 +535,7 @@ class ReportGenerator():
         """
         task_category = obs_task_score.task.category
         sensor_id = obs_task_score.task.sensor_id
-        print('here')
+        #print('here')
         #if task is boolean all success then failure should not be present
         if task_category == Task.TASK_TYPE_BOOLEAN:
             value = obs_task_score.task_metrics.success_value

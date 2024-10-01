@@ -8,8 +8,6 @@ import copy
 from course.models.session import Session
 from django.conf import settings
 from django.core.cache import cache
-from course.helper import rf_id_helper
-from course.helper.data_generator import read_rf_id_mock
 import logging
 RF_logger = logging.getLogger("RFLog")
 from report.helper import report_helper
@@ -17,13 +15,14 @@ import shlex
 import subprocess
 import time
 import re
+import ast
 
 running_process = None
-
 def vehicle_location_sensor(session: Session):
     global running_process
     try:
         print('Init RFID PWD reader')
+        distance_ip = []
         RF_ID_OBSTACLE_MAP = start_session_helper.get_obstacle_mapping()
         OSTracker = None
         script_path = '/home/admin/driving_project/drivetest/NRF24L01/transm.py'
@@ -39,48 +38,52 @@ def vehicle_location_sensor(session: Session):
                 if lines:
                     for line in lines:
                         data = line.split(" : ")
-
                         if len(data) == 2:
                             readRFID = data[0].strip()
                             distance = data[1].strip()
                             print("readRFID", readRFID,distance)
                             CURRENT_REF_ID = cache.get('CURRENT_REF_ID', None)
                             if readRFID in RF_ID_OBSTACLE_MAP:
+                                print("start id triggered")
                                 tempObstacleObj = RF_ID_OBSTACLE_MAP[readRFID]
                                 cache.set('CURRENT_REF_ID', readRFID)
                                 cache.set('COLLECT_SENSOR_INPUTS', True)
+
+                                ObsTaskScores = ObstacleTaskScore.objects.filter(obstacle_id=tempObstacleObj.id)
+                                for obs_task_score in ObsTaskScores:
+                                    if obs_task_score.task.category not in Task.BOOLEAN_TASKS and obs_task_score.ip_address!='0':
+                                            distance_ip = ast.literal_eval(obs_task_score.ip_address)
+                                            #print("distance_ip",distance_ip)
+                                print("OSTracker",OSTracker)
+                                
                                 if OSTracker is None or OSTracker.obstacle_id != tempObstacleObj.id:
-                                        if session.mode == Session.MODE_TRAINING:
-                                                cache.set('AUDIO_FILE', str(settings.MEDIA_ROOT) + str(tempObstacleObj.audio_file))
+                                    if session.mode == Session.MODE_TRAINING:
+                                        cache.set('AUDIO_FILE', str(settings.MEDIA_ROOT) + str(tempObstacleObj.audio_file))
 
-                                        previousOSTracker = copy.deepcopy(OSTracker)
-                                        OSTracker, _ = ObstacleSessionTracker.objects.get_or_create(obstacle=tempObstacleObj,session=session)
+                                    previousOSTracker = copy.deepcopy(OSTracker)
+                                    OSTracker, _ = ObstacleSessionTracker.objects.get_or_create(obstacle=tempObstacleObj,session=session)
+                                    
+                                    # Mark the previous obstacle as completed if needed
+                                    if previousOSTracker is not None and previousOSTracker.status == ObstacleSessionTracker.STATUS_IN_PROGRESS:
+                                        print("1 ended")
+                                        previousOSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
+                                        previousOSTracker.save()
                                         
-                                        # Mark the previous obstacle as completed if needed
-                                        if previousOSTracker is not None and previousOSTracker.status == ObstacleSessionTracker.STATUS_IN_PROGRESS:
-                                                previousOSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
-                                                previousOSTracker.save()
-                                        
-                                obstacle_duration = report_helper.get_obstacle_duration(tempObstacleObj.id)
-                                if obstacle_duration is not None and obstacle_duration != 0 and obstacle_duration >= int(tempObstacleObj.end_rf_id) :
-                                        cache.set('COLLECT_SENSOR_INPUTS', False)
-                                        OSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
-                                        OSTracker.save()
-                            ObsTaskScores = ObstacleTaskScore.objects.filter(obstacle_id=tempObstacleObj.id)
-                            for obs_task_score in ObsTaskScores:
-                                if obs_task_score.task.category not in Task.BOOLEAN_TASKS:
-                                    distance_ip = obs_task_score.ip_address
-
-                                    if len(distance_ip) > 0:
-                                        print("DSfsd",distance)
-                                        if readRFID == distance_ip[0]:
-                                            cache.set('S0',distance)
-                                        elif readRFID == distance_ip[1]:
-                                            cache.set('S1',distance)
-                                        elif readRFID == distance_ip[2]:
-                                            cache.set('S10',distance)
-
-
+                            #obstacle_duration = report_helper.get_obstacle_duration(tempObstacleObj.id)
+                            #if obstacle_duration is not None and obstacle_duration != 0 and obstacle_duration >= int(tempObstacleObj.end_rf_id) :
+                                #print("2 ended")
+                                #cache.set('COLLECT_SENSOR_INPUTS', False)
+                                #OSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
+                                #OSTracker.save()
+                            #print("cache distance_ip")   
+                            if len(distance_ip)>0:
+                                #print("cache",readRFID,distance_ip[0],distance_ip[1],distance_ip[2],distance)
+                                if readRFID == distance_ip[0]:
+                                    cache.set('S0',distance)
+                                elif readRFID == distance_ip[1]:
+                                    cache.set('S1',distance)
+                                elif readRFID == distance_ip[2]:
+                                    cache.set('S10',distance)
                 else:
                     RF_logger.info("No data found in the file")
                 time.sleep(1)
