@@ -9,6 +9,6 @@
     production: false,
     get apiUrl() {
       const ipAddress = window.location.hostname;
-      return `http://${ipAddress}:8081/`;
+      return `http://${ipAddress}:8000/`;
     }
   };
