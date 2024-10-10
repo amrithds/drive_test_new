@@ -32,6 +32,7 @@ import json
 import logging
 import os
 logger = logging.getLogger("default")
+from course.shared_state import terminate_process
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-created_at')
@@ -176,13 +177,10 @@ def start_session(request):
         trainer_id = request.GET['trainer_id']
         trainee_id = request.GET['trainee_id']
         mode = request.GET['mode']
+        
+        with open('output.txt', 'w', encoding='utf-8') as f:
+            pass
 
-        output_file_path = '/home/admin/driving_project/drivetest/output.txt'
-        
-        # Delete the output file if it exists
-        if os.path.exists(output_file_path):
-            os.remove(output_file_path)
-        
         #close pending sessions
         pending_sessions = Session.objects.filter(status=Session.STATUS_IN_PROGRESS)
         for pending_session in pending_sessions:
@@ -203,6 +201,8 @@ def start_session(request):
 @permission_classes((IsAuthenticated, ))
 def stop_session(request):
     try:
+        with open('output.txt', 'w', encoding='utf-8') as f:
+            pass
         session_id = request.GET['session_id']
         sessionObj = Session.objects.get(id=session_id)
         report_gen = ReportGenerator(sessionObj)
@@ -211,9 +211,8 @@ def stop_session(request):
         logger.info(session_id)
         logger.info('id asdasdadadadsadas.......')
         report_gen.generateFinalReport()
-        
+            
         __terminate_session(sessionObj)
-
         return JsonResponse({'session_id': sessionObj.id}, status=200)
     except Exception as e:
         logger.exception(e)

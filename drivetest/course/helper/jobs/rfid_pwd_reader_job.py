@@ -1,5 +1,6 @@
 import django
 django.setup()
+import threading
 from course.helper import start_session_helper
 from course.models.obstacle_session_tracker import ObstacleSessionTracker
 from course.models.obstacle_task_score import ObstacleTaskScore
@@ -18,92 +19,106 @@ import re
 import ast
 
 running_process = None
-def vehicle_location_sensor(session: Session):
+def start_subprocess(script_path, python_path):
     global running_process
-    try:
-        print('Init RFID PWD reader')
-        distance_ip = []
-        RF_ID_OBSTACLE_MAP = start_session_helper.get_obstacle_mapping()
-        OSTracker = None
-        script_path = '/home/admin/driving_project/drivetest/NRF24L01/transm.py'
-        python_path = '/home/admin/driving_project/venv/bin/python3'
-        command = shlex.split(f'sudo {python_path} {script_path}')
+    command = shlex.split(f'sudo {python_path} {script_path}')
+    while True:
         running_process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        try:
-            while True:
-                if running_process.poll() is not None:
-                    RF_logger.info("Process terminated")
-                    break
-                lines = read_lines_from_file()
-                if lines:
-                    for line in lines:
-                        data = line.split(" : ")
-                        if len(data) == 2:
-                            readRFID = data[0].strip()
-                            distance = data[1].strip()
-                            print("readRFID", readRFID,distance)
-                            CURRENT_REF_ID = cache.get('CURRENT_REF_ID', None)
-                            if readRFID in RF_ID_OBSTACLE_MAP:
-                                print("start id triggered")
-                                tempObstacleObj = RF_ID_OBSTACLE_MAP[readRFID]
-                                cache.set('CURRENT_REF_ID', readRFID)
-                                cache.set('COLLECT_SENSOR_INPUTS', True)
+        time.sleep(10)
+        if running_process.poll() is not None:
+            RF_logger.info("Process terminated")
+            break
 
-                                ObsTaskScores = ObstacleTaskScore.objects.filter(obstacle_id=tempObstacleObj.id)
-                                for obs_task_score in ObsTaskScores:
-                                    if obs_task_score.task.category not in Task.BOOLEAN_TASKS and obs_task_score.ip_address!='0':
-                                            distance_ip = ast.literal_eval(obs_task_score.ip_address)
-                                            #print("distance_ip",distance_ip)
-                                print("OSTracker",OSTracker)
-                                
-                                if OSTracker is None or OSTracker.obstacle_id != tempObstacleObj.id:
-                                    if session.mode == Session.MODE_TRAINING:
-                                        cache.set('AUDIO_FILE', str(settings.MEDIA_ROOT) + str(tempObstacleObj.audio_file))
+def process_sensor_data(session, RF_ID_OBSTACLE_MAP):
+    distance_ip = []
+    OSTracker = None
+    try:
+        while True:
+            lines = read_lines_from_file()
+            if lines:
+                for line in lines:
+                    parts = line.split('=')
+                    if len(parts) != 2:
+                        RF_logger.error(f"Unexpected line format: {line}")
+                        continue
 
-                                    previousOSTracker = copy.deepcopy(OSTracker)
-                                    OSTracker, _ = ObstacleSessionTracker.objects.get_or_create(obstacle=tempObstacleObj,session=session)
-                                    
-                                    # Mark the previous obstacle as completed if needed
-                                    if previousOSTracker is not None and previousOSTracker.status == ObstacleSessionTracker.STATUS_IN_PROGRESS:
-                                        print("1 ended")
-                                        previousOSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
-                                        previousOSTracker.save()
-                                        
-                            #obstacle_duration = report_helper.get_obstacle_duration(tempObstacleObj.id)
-                            #if obstacle_duration is not None and obstacle_duration != 0 and obstacle_duration >= int(tempObstacleObj.end_rf_id) :
-                                #print("2 ended")
-                                #cache.set('COLLECT_SENSOR_INPUTS', False)
-                                #OSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
-                                #OSTracker.save()
-                            #print("cache distance_ip")   
-                            if len(distance_ip)>0:
-                                #print("cache",readRFID,distance_ip[0],distance_ip[1],distance_ip[2],distance)
-                                if readRFID == distance_ip[0]:
-                                    cache.set('S0',distance)
-                                elif readRFID == distance_ip[1]:
-                                    cache.set('S1',distance)
-                                elif readRFID == distance_ip[2]:
-                                    cache.set('S10',distance)
-                else:
-                    RF_logger.info("No data found in the file")
-                time.sleep(1)
+                    left_part = parts[0].strip()
+                    right_part = parts[1].strip()
+                    left_numbers = left_part.split(':')
+
+                    if len(left_numbers) != 2:
+                        continue
+
+                    distance = left_numbers[1].strip()
+                    readRFID = right_part.strip()
+                    RF_logger.info(f"readRFID: {readRFID}, distance: {distance}")
+
+                    CURRENT_REF_ID = cache.get('CURRENT_REF_ID', None)
+
+                    if readRFID in RF_ID_OBSTACLE_MAP:
+                        print("start id triggered")
+                        tempObstacleObj = RF_ID_OBSTACLE_MAP[readRFID]
+                        cache.set('CURRENT_REF_ID', readRFID)
+                        cache.set('COLLECT_SENSOR_INPUTS', True)
+
+                        ObsTaskScores = ObstacleTaskScore.objects.filter(obstacle_id=tempObstacleObj.id)
+                        for obs_task_score in ObsTaskScores:
+                            if obs_task_score.task.category not in Task.BOOLEAN_TASKS and obs_task_score.ip_address != '0':
+                                distance_ip = ast.literal_eval(obs_task_score.ip_address)
+
+                        if OSTracker is None or OSTracker.obstacle_id != tempObstacleObj.id:
+                            if session.mode == Session.MODE_TRAINING:
+                                cache.set('AUDIO_FILE', str(settings.MEDIA_ROOT) + str(tempObstacleObj.audio_file))
+
+                            previousOSTracker = copy.deepcopy(OSTracker)
+                            OSTracker, _ = ObstacleSessionTracker.objects.get_or_create(obstacle=tempObstacleObj, session=session)
+
+                            if previousOSTracker is not None and previousOSTracker.status == ObstacleSessionTracker.STATUS_IN_PROGRESS:
+                                previousOSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
+                                previousOSTracker.save()
+
+                    if len(distance_ip) > 0:
+                        if readRFID == distance_ip[0]:
+                            cache.set('S0', distance)
+                        elif readRFID == distance_ip[1]:
+                            cache.set('S1', distance)
+                        elif readRFID == distance_ip[2]:
+                            cache.set('S10', distance)
+
+            else:
+                RF_logger.info("No data found in the file")
+            time.sleep(1)
+
+    except Exception as e:
+        RF_logger.error(f"An unexpected error occurred: {e}")
+
+def vehicle_location_sensor(session):
+    global running_process
+
+    try:
+        with open('output.txt', 'w', encoding='utf-8') as f:
+            pass  
+        RF_logger.info('Init RFID PWD reader')
+
         
-        except Exception as e:
-            RF_logger.error(f"An unexpected error occurred: {e}")
+        RF_ID_OBSTACLE_MAP = start_session_helper.get_obstacle_mapping()
 
-        finally:
-            # Ensure the process is terminated
-            if running_process and running_process.poll() is None:
-                RF_logger.info("Terminating the process...")
-                running_process.terminate()  # Attempt a soft termination
-                try:
-                    running_process.wait(timeout=5)  # Wait up to 5 seconds for termination
-                except subprocess.TimeoutExpired:
-                    RF_logger.info("Process did not terminate in time. Killing the process...")
-                    running_process.kill()  # Forcefully kill the process
-                    running_process.wait()  # Wait for the process to exit
-            RF_logger.info("Subprocess terminated.")
-    
+        
+        script_path = '/home/super/driving_project/drive_test/drivetest/NRF24L01/transm.py'
+        python_path = '/home/super/driving_project/drive_test/venv/bin/python3'
+
+        
+        subprocess_thread = threading.Thread(target=start_subprocess, args=(script_path, python_path))
+        sensor_thread = threading.Thread(target=process_sensor_data, args=(session, RF_ID_OBSTACLE_MAP))
+
+        
+        subprocess_thread.start()
+        sensor_thread.start()
+
+        
+        subprocess_thread.join()
+        sensor_thread.join()
+
     except Exception as e:
         RF_logger.error(f"An unexpected error occurred: {e}")
 

@@ -4,13 +4,13 @@ NAME="Drivetest"
 
 #path to the folder containing the manage.py file
 
-DIR=/home/admin/driving_project
+DIR=/home/super/driving_project
 
 
 # Replace with your system user
-USER=admin  
+USER=super  
 # Replace with your system group
-GROUP=admin
+GROUP=super
 
 WORKERS=1
 
@@ -27,10 +27,10 @@ HOME_DIR="$(dirname $0)/../.."
 echo $HOME_DIR
 echo "fff"
 #cd $HOME_DIR
-LOG_FILE=/home/admin/driving_project/drivetest/log/gunicorn.log
+LOG_FILE=/home/super/driving_project/drive_test/drivetest/log/gunicorn.log
 
 #activating the virtual environment
-source /home/admin/driving_project/venv/bin/activate
+source /home/super/driving_project/drive_test/venv/bin/activate
 
 export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
 

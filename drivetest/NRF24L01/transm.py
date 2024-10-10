@@ -1,13 +1,16 @@
 import os
 import serial
+import logging
+RF_logger = logging.getLogger("RFLog")
+
 
 def open_serial_port():
     try:
         ser = serial.Serial('/dev/serial0', 9600, timeout=1)
-        print("Connected to /dev/serial0")
+        RF_logger.info("Connected to /dev/serial0")
         return ser
     except serial.SerialException as e:
-        print(f"Could not open port: {e}")
+        RF_logger.info(f"Could not open port: {e}")
         return None
 
 def read_from_serial(ser, max_lines=10):
@@ -16,7 +19,6 @@ def read_from_serial(ser, max_lines=10):
         while True:
             try:
                 if ser.in_waiting > 0:
-                    # Read and decode line with error handling
                     line = ser.readline().decode('utf-8', errors='replace').rstrip()
                     if line:
                         # Write to file and increase line count
@@ -27,11 +29,9 @@ def read_from_serial(ser, max_lines=10):
                         # Check if we have written enough lines to clear the file
                         if line_count >= max_lines:
                             # Clear the file
-                            with open('output.txt', 'w', encoding='utf-8') as f:
-                                pass  # Just open the file in write mode to clear it
-                            print("Cleared output.txt after writing 10 lines.")
+                            open('output.txt','w').close()
                             line_count = 0  # Reset line count
-                        
+
             except Exception as e:
                 print(f"Error reading from serial port: {e}")
                 ser.close()
