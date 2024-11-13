@@ -50,6 +50,7 @@ export class TrainingComponent {
 
   ngOnInit() {
     this.resumeSession();
+    this.updateSystemTime();
     this.ins_form = this.fb.group({
       mode: [1,Validators.required],
       course: [null,Validators.required],
@@ -478,4 +479,15 @@ export class TrainingComponent {
     return content.result == 0 ? content.name : content.remark;
   }
 
+  updateSystemTime(){
+    // get system date time in format YYYY-MM-DD HH:MM:SS
+    const system_time = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    this.http.get(this.environment.apiUrl + 'v1/app_config/update_system_time/?system_time='+system_time).subscribe(
+      (data: any) => {
+        console.log("Updated system time",data);
+      },
+    );
+  }
+
 }
+

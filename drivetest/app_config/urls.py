@@ -6,5 +6,6 @@ router = routers.DefaultRouter()
 router.register(r'config', views.ConfigViewSet)
 
 urlpatterns = [
+    path('update_system_time/', views.updateSystemTime,name='update_system_time'),
     path('', include(router.urls)),
 ]

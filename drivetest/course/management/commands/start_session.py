@@ -58,7 +58,9 @@ class Command(BaseCommand):
             self.SESSION = start_session_helper.createSession(trainer_id, trainee_id,session_mode, course_id)
         
         #cache keys
-        CACHE_KEYS = ('CURRENT_REF_ID', 'COLLECT_SENSOR_INPUTS', 'AUDIO_FILE', 'LIVE_REPORT')
+        CACHE_KEYS = ('CURRENT_REF_ID', 'COLLECT_SENSOR_INPUTS', 'AUDIO_FILE', 'LIVE_REPORT', 
+                      'LEFT_DISTANCE', 'RIGHT_DISTANCE', 'BACK_DISTANCE', 'LEFT_DISTANCE_SENSORS', 
+                      'RIGHT_DISTANCE_SENSORS', 'BACK_DISTANCE_SENSORS')
         
 
         if not self.RESUME:
@@ -70,8 +72,8 @@ class Command(BaseCommand):
 
         executor = ProcessPoolExecutor(5)
         
-        #rf_id_reader = executor.submit(rf_id_reader_job.vehicle_location_sensor, self.SESSION)
-        rf_id_pwd_reader = executor.submit(rfid_pwd_reader_job.vehicle_location_sensor, self.SESSION)
+        rf_id_reader = executor.submit(rf_id_reader_job.vehicle_location_sensor, self.SESSION)
+        #rf_id_pwd_reader = executor.submit(rfid_pwd_reader_job.vehicle_location_sensor, self.SESSION)
         STM_reader = executor.submit(read_STM_job.readSTMInputs)
         report = executor.submit(report_job.report_generator, self.SESSION, self.RESUME)
         play_audio = executor.submit(play_audio_job.playAudio)

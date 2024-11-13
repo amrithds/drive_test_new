@@ -33,6 +33,7 @@ import logging
 import os
 logger = logging.getLogger("default")
 from course.shared_state import terminate_process
+from course.models import ObstacleSessionTracker
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-created_at')
@@ -62,7 +63,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """
         """
-        queryset = User.objects.all()
+        queryset = User.objects.filter(is_superuser=False)
         course_name = self.request.query_params.get('course_id', None)
         search_id = self.request.query_params.get('search_id', None)
         user_type = self.request.query_params.get('type', None)
@@ -77,7 +78,7 @@ class UserViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(type=user_type)
         if course is not None:
             queryset = queryset.filter(course_id=course.id)
-        print(queryset.query, search_id)
+        
         return queryset
 
 class UserLogIn(ObtainAuthToken):
@@ -205,11 +206,18 @@ def stop_session(request):
             pass
         session_id = request.GET['session_id']
         sessionObj = Session.objects.get(id=session_id)
+
+        #close pending obstacle sessions
+        pending_obstacle_sessions = ObstacleSessionTracker.objects.filter(session=sessionObj, status=ObstacleSessionTracker.STATUS_IN_PROGRESS)
+        for pending_obstacle_session in pending_obstacle_sessions:
+            pending_obstacle_session.status = ObstacleSessionTracker.STATUS_COMPLETED
+            pending_obstacle_session.save()
+
         report_gen = ReportGenerator(sessionObj)
-        import logging
+        
         logger = logging.getLogger("reportLog")
         logger.info(session_id)
-        logger.info('id asdasdadadadsadas.......')
+        
         report_gen.generateFinalReport()
             
         __terminate_session(sessionObj)

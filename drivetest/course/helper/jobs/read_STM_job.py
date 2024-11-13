@@ -30,9 +30,10 @@ def readSTMInputs():
                     CURRENT_REF_ID = cache.get('CURRENT_REF_ID')
                     #sensor_logger.info(data)
                     
-                    data[1] = cache.get('S0') if cache.get('S0') else 0
-                    data[2] = cache.get('S1') if cache.get('S1') else 0
-                    data[11] = cache.get('S10') if cache.get('S10') else 0
+                    # get distance from cache
+                    data[1] = cache.get('BACK_DISTANCE', 0)
+                    data[2] = cache.get('LEFT_DISTANCE', 0)
+                    data[11] = cache.get('RIGHT_DISTANCE', 0)
                     sensor_logger.info(data)
                     # conside data less than 19 as noise
                     if len(data) == 19 and data != lastSensorFeed and CURRENT_REF_ID in RF_ID_OBSTACLE_MAP:

@@ -5,14 +5,12 @@ from singleton_decorator import singleton
 @singleton
 class RFIDReader():
     def __init__(self) -> None:
-        self.RF_ID_port = rfid = serial.Serial(
-                port='/dev/ttyUSB0',
-                baudrate=115200,
-                parity=serial.PARITY_NONE,
-                stopbits=serial.STOPBITS_ONE,
-                bytesize=serial.EIGHTBITS,
-                timeout=.01
-            )
+        try:
+            port = '/dev/serial0'
+            self.RF_ID_port = serial.Serial(port, 9600, timeout=1)
+            print(f"Connected to {port}")
+        except serial.SerialException as e:
+            print(f"Could not open port {port}: {e}")
 
     def getInputFromRFID(self, brand=None):
         """getInputFromRFID
@@ -30,6 +28,8 @@ class RFIDReader():
             s = self.RF_ID_port.readline()
             hex_string=s.decode('utf-8','ignore')[1:].strip()
         else:
-            s = self.RF_ID_port.read(8)
-            hex_string= binascii.hexlify(s).decode('utf-8')
+            if self.RF_ID_port.in_waiting > 0:
+                hex_string = self.RF_ID_port.readline().decode('utf-8', errors='replace').strip()
+            else:
+                hex_string = ''
         return hex_string
