@@ -1,3 +1,12 @@
+# create project DIR
+mkdir <home>/app/
+
+# copy project folder
+cd to <project directory>/drivetest
+
+# Create log directory
+mkdir log && chmod 777 log
+
 # create virtual env
 python -m venv venv
 
@@ -18,6 +27,9 @@ sudo apt install libcairo2-dev pkg-config python3-dev libgirepository1.0-dev
 sudo apt-get install libapache2-mod-wsgi-py3
 sudo apt-get install python3-dev default-libmysqlclient-dev
 apt install python3-gst-1.0
+
+
+# NOTES
 
 # Install packages using 
 pip install <package> && pip freeze > requirements.txt
@@ -59,6 +71,15 @@ https://raspberrypi.stackexchange.com/questions/120034/python-script-not-playing
 
 
 # App configs
-BLUETOOTH_SPEAKER
+APP_VERSION (Values: 1, 2)
+BLUETOOTH_SPEAKER - Mac id
 VEHICLE_NUMBER
-LOCATION_SENSOR (Values: RFID, TCP_DISTANCE_SENSOR)
+SUBTITLE - 
+TITLE - Project title
+RIGHT_LOGO
+LEFT_LOGO
+
+When version is 2 then  respective sensor id
+LEFT_DISTANCE_SENSORS - 101,109
+RIGHT_DISTANCE_SENSORS - 111,
+BACK_DISTANCE_SENSORS - 133,122,114
