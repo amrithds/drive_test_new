@@ -8,7 +8,7 @@ class RFIDReader():
     def __init__(self) -> None:
         try:
             self.port = '/dev/serial0'
-            self.__createConnection(self.port)
+            self.__createConnection()
         except serial.SerialException as e:
             print(f"Could not open port {self.port}: {e}")
 
