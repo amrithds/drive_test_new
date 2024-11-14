@@ -15,7 +15,7 @@ def updateSystemTime(request):
     client_system_time = request.GET['system_time']
     if client_system_time:
         command = f"date -s '{client_system_time}'"
-        subprocess.Popen(command)
+        subprocess.Popen(command, shell=True)
     data = {'success': True}
     return HttpResponse(data, content_type='application/json')
     

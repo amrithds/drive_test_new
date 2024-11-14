@@ -30,10 +30,10 @@ from report.models import FinalReport
 from rest_framework.decorators import api_view, permission_classes
 import json
 import logging
-import os
 logger = logging.getLogger("default")
 from course.shared_state import terminate_process
 from course.models import ObstacleSessionTracker
+from django.db.models import Q
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-created_at')
@@ -63,7 +63,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """
         """
-        queryset = User.objects.filter(is_superuser=False)
+        queryset = User.objects.filter(Q(is_superuser=False) | Q(username!='admin'))
         course_name = self.request.query_params.get('course_id', None)
         search_id = self.request.query_params.get('search_id', None)
         user_type = self.request.query_params.get('type', None)
