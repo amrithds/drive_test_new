@@ -103,20 +103,20 @@ def update_distance_cache(sensor_node, distance):
             sensor_type (str): The type of sensor (LEFT, RIGHT, or BACK)
         """
         cache_key = f'{sensor_type}_DISTANCE_SENSORS'
-        if cache.get(cache_key, None) is not None:
-            sensor = Config.objects.filter(name=cache_key).first()
-            if sensor:
-                sensor_values = tuple(sensor.value.split(','))
-                cache.set(cache_key, sensor_values)
-            else:
-                cache.set(cache_key, ())
+        
+        sensor = Config.objects.filter(name=cache_key).first()
+        if sensor:
+            sensor_values = tuple(sensor.value.split(','))
+            cache.set(cache_key, sensor_values)
+        else:
+            cache.set(cache_key, ())
     
     # update left distance cache if cache is not set
-    if cache.get('LEFT_DISTANCE_SENSORS', None) is not None:
+    if cache.get('LEFT_DISTANCE_SENSORS', None) is None:
         update_sensor_cache('LEFT')
-    if cache.get('RIGHT_DISTANCE_SENSORS', None) is not None:
+    if cache.get('RIGHT_DISTANCE_SENSORS', None) is None:
         update_sensor_cache('RIGHT')
-    if cache.get('BACK_DISTANCE_SENSORS', None) is not None:
+    if cache.get('BACK_DISTANCE_SENSORS', None) is None:
         update_sensor_cache('BACK')
     
     # update distance cache based on sensor node

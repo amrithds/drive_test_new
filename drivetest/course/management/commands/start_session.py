@@ -1,6 +1,5 @@
 from concurrent.futures import ProcessPoolExecutor
 from course.helper.jobs import rf_id_reader_job
-from course.helper.jobs import rfid_pwd_reader_job
 from course.helper.jobs import read_STM_job
 from course.helper.jobs import report_job
 from course.helper.jobs import play_audio_job
