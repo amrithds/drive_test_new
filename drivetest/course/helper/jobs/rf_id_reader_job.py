@@ -89,7 +89,13 @@ def parse_rf_id(input_from_rfid):
         readRFID = str(parsed_values[0].strip())
     return readRFID, distance
 
-def update_distance_cache(sensor_node,distance):
+def update_distance_cache(sensor_node, distance):
+    """_summary_
+
+    Args:
+        sensor_node (_type_): _description_
+        distance (_type_): _description_
+    """
     def update_sensor_cache(sensor_type):
         """
         Updates cache for a specific sensor type (LEFT, RIGHT, or BACK)
@@ -102,6 +108,8 @@ def update_distance_cache(sensor_node,distance):
             if sensor:
                 sensor_values = tuple(sensor.value.split(','))
                 cache.set(cache_key, sensor_values)
+            else:
+                cache.set(cache_key, ())
     
     # update left distance cache if cache is not set
     if cache.get('LEFT_DISTANCE_SENSORS', None) is not None:
