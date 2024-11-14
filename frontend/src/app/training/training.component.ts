@@ -262,6 +262,7 @@ export class TrainingComponent {
   }
 
   fetchSessionID(){
+    this.updateSystemTime();
     console.log("Driver",this.trainee_id,"Ins",this.trainer_id)
     this.mode = this.ins_form.value['mode']
     this.startsession=true;
@@ -403,6 +404,7 @@ export class TrainingComponent {
   }
 
   resumeSession(){
+    this.updateSystemTime();
     this.http.get(this.environment.apiUrl + 'v1/course/current_session/').subscribe(
       (data: any) => {
         console.log("Fetched session in progress",data);

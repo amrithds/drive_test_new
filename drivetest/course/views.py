@@ -63,7 +63,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """
         """
-        queryset = User.objects.filter(Q(is_superuser=False) | Q(username!='admin'))
+        queryset = User.objects.filter(is_superuser=False).exclude(username='admin')
         course_name = self.request.query_params.get('course_id', None)
         search_id = self.request.query_params.get('search_id', None)
         user_type = self.request.query_params.get('type', None)
@@ -93,6 +93,7 @@ class UserLogIn(ObtainAuthToken):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token = Token.objects.get(user=user)
+        
         return HttpResponse(json.dumps({
             'token': token.key,
             'id': user.pk,
@@ -144,6 +145,7 @@ class SessionViewSet(viewsets.ModelViewSet):
 
 @api_view(['GET'])
 def user_login(request):
+    print('here')
     if request.method == 'POST':
         username = request.POST.get('username', '').strip()
         password = request.POST.get('password', '').strip()
