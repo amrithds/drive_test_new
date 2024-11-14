@@ -32,10 +32,11 @@ class RFIDReader():
                     hex_string = self.RF_ID_port.readline().decode('utf-8', errors='replace').strip()
                 else:
                     hex_string = ''
-            return hex_string
         except Exception as e:
             print(f"Error reading from serial port: {e}")
             self.__createConnection()
+
+        return hex_string
         
     def __createConnection(self):
         user = os.environ.get('USER')
