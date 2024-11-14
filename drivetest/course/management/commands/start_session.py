@@ -1,6 +1,8 @@
 from concurrent.futures import ProcessPoolExecutor
-from course.helper.jobs import rf_id_reader_job
-from course.helper.jobs import read_STM_job
+from course.helper.jobs.version.one import rf_id_reader_job as rf_id_reader_job_v1
+from course.helper.jobs.version.one import read_STM_job as read_STM_job_v1
+from course.helper.jobs.version.two import rf_id_reader_job as rf_id_reader_job_v2
+from course.helper.jobs.version.two import read_STM_job as read_STM_job_v2
 from course.helper.jobs import report_job
 from course.helper.jobs import play_audio_job
 from course.helper.jobs import live_report_job
@@ -9,6 +11,7 @@ from django.core.management.base import BaseCommand
 from course.models.session import Session
 from course.helper import start_session_helper
 from course.helper import cache_helper
+from app_config.models import Config
 
 from django.conf import settings
 import course.helper.jobs.db_connection_reset_helper
@@ -71,9 +74,14 @@ class Command(BaseCommand):
 
         executor = ProcessPoolExecutor(5)
         
-        rf_id_reader = executor.submit(rf_id_reader_job.vehicle_location_sensor, self.SESSION)
-        #rf_id_pwd_reader = executor.submit(rfid_pwd_reader_job.vehicle_location_sensor, self.SESSION)
-        STM_reader = executor.submit(read_STM_job.readSTMInputs)
+        version = Config.objects.filter(name='APP_VERSION').first()
+        if version.value == 1:
+            rf_id_reader = executor.submit(rf_id_reader_job_v1.vehicle_location_sensor, self.SESSION)
+            STM_reader = executor.submit(read_STM_job_v1.readSTMInputs)
+        else:
+            rf_id_reader = executor.submit(rf_id_reader_job_v2.vehicle_location_sensor, self.SESSION)
+            STM_reader = executor.submit(read_STM_job_v2.readSTMInputs)
+        
         report = executor.submit(report_job.report_generator, self.SESSION, self.RESUME)
         play_audio = executor.submit(play_audio_job.playAudio)
         live_report = executor.submit(live_report_job.live_report)
