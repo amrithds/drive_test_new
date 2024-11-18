@@ -222,19 +222,13 @@ class ReportGenerator():
 
             elif sensor_calculation == self.DISTANCE_SENSOR_LEFT_ONLY:
                 if  left_min_range <= left_sensor_val and left_sensor_val <= left_max_range:
-                    if back_min_range <= back_sensor_val and back_sensor_val <= back_max_range:
-                        total_valid_count += 1
-                    else:
-                        total_valid_count = 0
+                    total_valid_count += 1
                 else:
                     total_valid_count = 0
                     
             elif sensor_calculation == self.DISTANCE_SENSOR_RIGHT_ONLY:
                 if right_min_range <= right_sensor_val and right_sensor_val  <= right_max_range:
-                    if back_min_range <= back_sensor_val and back_sensor_val <= back_max_range:
-                        total_valid_count += 1
-                    else:
-                        total_valid_count = 0
+                    total_valid_count += 1
                 else:
                     total_valid_count = 0
             elif sensor_calculation == self.DISTANCE_SENSOR_LEFT_AND_RIGHT:

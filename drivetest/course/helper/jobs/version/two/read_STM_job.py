@@ -34,8 +34,8 @@ def readSTMInputs():
                     # conside data less than 19 as noise
                     if len(data) == 19 and data != lastSensorFeed and CURRENT_REF_ID in RF_ID_OBSTACLE_MAP:
                         # get distance from cache
-                        data[1] = cache.get('RIGHT_DISTANCE', 0)
-                        data[2] = cache.get('LEFT_DISTANCE', 0)
+                        data[1] = cache.get('LEFT_DISTANCE', 0)
+                        data[2] = cache.get('RIGHT_DISTANCE', 0)
                         data[11] = cache.get('BACK_DISTANCE', 0)
                         sensor_logger.info(data)
                         ObstacleObj = RF_ID_OBSTACLE_MAP[CURRENT_REF_ID]
