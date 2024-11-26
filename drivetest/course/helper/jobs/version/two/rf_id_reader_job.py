@@ -27,7 +27,7 @@ def vehicle_location_sensor(session: Session):
         RF_ID_reader = rf_id_helper.RFIDReader('/dev/serial0')
         OSTracker = None
         #track completed obstacle
-        completed_obstacle = ()
+        completed_obstacle = []
 
         while(True):
             input_from_rfid = RF_ID_reader.getInputFromRFID()
