@@ -355,8 +355,8 @@ class ReportGenerator():
             else:
                 right_min_range = obs_task_score.task_metrics.right_min_range
                 right_max_range = obs_task_score.task_metrics.right_max_range
-                sql = self.RIGHT_SENSOR_SQL.format(obstacle_id=obstacle_id, min_id_criteria='', left_min_range=left_min_range,\
-                                                                left_max_range=left_max_range)
+                sql = self.RIGHT_SENSOR_SQL.format(obstacle_id=obstacle_id, min_id_criteria='', right_min_range=right_min_range,\
+                                                                right_max_range=right_max_range)
             min_id = execute_raw_sql(sql)
             if min_id:
                 return True
