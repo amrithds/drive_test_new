@@ -174,6 +174,7 @@ class ReportGenerator():
                 dis_sensor_calculation = self.DISTANCE_SENSOR_RIGHT_ONLY
             elif task_obj.category == Task.TASK_TYPE_REVERSE_PARKING:
                 dis_sensor_calculation = self.DISTANCE_SENSOR_BACK
+                
             
             result = self.__distance_sensor_result(dis_sensor_calculation, latest_sensor_feeds, obs_task_score)
             

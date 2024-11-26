@@ -27,14 +27,14 @@ HOME_DIR="$(dirname $0)/../.."
 echo $HOME_DIR
 echo "fff"
 #cd $HOME_DIR
-LOG_FILE=/home/super/driving_project/drive_test/drivetest/log/gunicorn.log
+LOG_FILE=/home/super/app/driving_project/drivetest/log/gunicorn.log
 
 #activating the virtual environment
-source /home/super/driving_project/drive_test/venv/bin/activate
+source /home/super/app/driving_project/drivetest/venv/bin/activate
 
 export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
 
 export PYTHONPATH=$DIR:$PYTHONPATH
 
-exec gunicorn admin.wsgi:application --bind=$BIND --user=$USER --log-file=$LOG_FILE --name $NAME --workers $WORKERS --user=$USER --group=$GROUP --log-level=$LOG_LEVEL --log-file=$LOG_FILE
+exec gunicorn admin.wsgi:application --bind=$BIND --user=$USER --name $NAME --workers $WORKERS --group=$GROUP --log-level=$LOG_LEVEL --log-file=$LOG_FILE
 

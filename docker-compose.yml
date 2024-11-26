@@ -20,6 +20,7 @@ services:
       PMA_HOST: db
       PMA_PORT: 3306
       PMA_ARBITRARY: 1
+      UPLOAD_LIMIT: 8M
     restart: always
     ports:
       - 8081:80

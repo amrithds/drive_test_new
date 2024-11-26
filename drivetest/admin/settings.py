@@ -121,6 +121,8 @@ DATABASES = {
 
 #LOG settings
 LOG_DIR = os.path.join(BASE_DIR, 'log')
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)
 
 DEFAULT_LOG_FILE = '/log.log'
 RF_LOG_FILE = '/rfLog.log'

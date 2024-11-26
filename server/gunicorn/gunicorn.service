@@ -10,9 +10,9 @@ User=admin
 Group=admin
 
 
-WorkingDirectory=/home/admin/driving_project/drivetest
+WorkingDirectory=/home/super/app/driving_project/drivetest
 #ExecStart=path to gunicorn_config.py admin.wsgi:application
-ExecStart=/home/admin/driving_project/server/gunicorn/gunicorn_start.sh
+ExecStart=/home/super/app/driving_project/server/gunicorn/gunicorn_start.sh
 
 
 [Install]

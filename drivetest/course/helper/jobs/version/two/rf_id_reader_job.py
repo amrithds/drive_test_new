@@ -26,7 +26,9 @@ def vehicle_location_sensor(session: Session):
         #init
         RF_ID_reader = rf_id_helper.RFIDReader('/dev/serial0')
         OSTracker = None
-        
+        #track completed obstacle
+        completed_obstacle = ()
+
         while(True):
             input_from_rfid = RF_ID_reader.getInputFromRFID()
 
@@ -41,14 +43,20 @@ def vehicle_location_sensor(session: Session):
             
             #uppercase
             input_from_rfid = input_from_rfid.upper()
-
-            readRFID, distance = parse_rf_id(input_from_rfid)
+            RF_logger.info(f'input:{input_from_rfid}')
+            try:
+                readRFID, distance = parse_rf_id(input_from_rfid)
+            except Exception as e:
+                RF_logger.info(f'Parsing issue :{input_from_rfid}')
+                continue
+                
             RF_logger.info(f'readRFID: {readRFID}, distance: {distance}')
             if len(readRFID) >= 3:
                 update_distance_cache(readRFID, distance)
                 CURRENT_REF_ID = cache.get('CURRENT_REF_ID', None)
                 
-                if readRFID in RF_ID_OBSTACLE_MAP:
+                # valid rf_id and not completed obstacle
+                if readRFID in RF_ID_OBSTACLE_MAP and readRFID not in completed_obstacle:
                     
                     tempObstacleObj = RF_ID_OBSTACLE_MAP[readRFID]
                     cache.set('CURRENT_REF_ID', readRFID)
@@ -68,6 +76,7 @@ def vehicle_location_sensor(session: Session):
                         if previousOSTracker is not None and previousOSTracker.status == ObstacleSessionTracker.STATUS_IN_PROGRESS:
                             previousOSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
                             previousOSTracker.save()
+                            completed_obstacle.append(CURRENT_REF_ID)
                         
                 elif CURRENT_REF_ID in RF_ID_OBSTACLE_MAP:
                     tempObstacleObj = RF_ID_OBSTACLE_MAP[CURRENT_REF_ID]
@@ -76,6 +85,7 @@ def vehicle_location_sensor(session: Session):
                         cache.set('COLLECT_SENSOR_INPUTS', False)
                         OSTracker.status = ObstacleSessionTracker.STATUS_COMPLETED
                         OSTracker.save()
+                        completed_obstacle.append(CURRENT_REF_ID)
     except Exception as e:
         RF_logger.exception(e)
 
